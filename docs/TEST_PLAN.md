@@ -27,6 +27,23 @@ Pass:
 - 자동 전송하지 않는다.
 - Undo가 원문을 복원한다.
 
+## 2A. Supported Platform Adapter Flow
+
+Run the same flow on each supported host:
+
+- `https://chatgpt.com/` or `https://chat.openai.com/`
+- `https://claude.ai/`
+- `https://gemini.google.com/`
+
+Pass:
+- The `Clarify` chip appears for a Korean high-intent draft.
+- The keyboard shortcut opens the same Clarify questions without clicking the chip.
+- Preview appears before insertion.
+- Insert writes the raw compiled prompt into the site composer.
+- Undo restores the original draft.
+- No message is automatically sent.
+- If the site DOM changed and the composer is not found, the extension fails quietly without sending or storing text.
+
 ## 3. Simple Prompt Non-interference
 
 다음 입력에는 chip이 뜨지 않아야 한다.

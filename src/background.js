@@ -3,7 +3,7 @@
 
   const COMMAND_TRIGGER_CLARIFY = "cbs-trigger-clarify";
   const MESSAGE_TRIGGER_CLARIFY = { type: "cbs-trigger-clarify" };
-  const CHATGPT_URL_PATTERN = /^https:\/\/(chatgpt\.com|chat\.openai\.com)\//;
+  const SUPPORTED_URL_PATTERN = /^https:\/\/(chatgpt\.com|chat\.openai\.com|claude\.ai|gemini\.google\.com)\//;
 
   chrome.commands.onCommand.addListener((command) => {
     if (command !== COMMAND_TRIGGER_CLARIFY) {
@@ -16,7 +16,7 @@
         return;
       }
 
-      if (tab.url && !CHATGPT_URL_PATTERN.test(tab.url)) {
+      if (!tab.url || !SUPPORTED_URL_PATTERN.test(tab.url)) {
         return;
       }
 

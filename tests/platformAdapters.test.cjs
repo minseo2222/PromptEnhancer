@@ -59,6 +59,7 @@ class FakeElement {
     };
     this.classList = new FakeClassList(this);
     this.textContent = "";
+    this.rect = { top: 680, right: 760, bottom: 740, left: 240, width: 520, height: 60 };
   }
 
   appendChild(child) {
@@ -135,7 +136,7 @@ class FakeElement {
   }
 
   getBoundingClientRect() {
-    return this.rect || { top: 680, right: 760, bottom: 740, left: 240, width: 520, height: 60 };
+    return this.rect;
   }
 
   get offsetWidth() {
@@ -147,6 +148,7 @@ class FakeElement {
   }
 
   get innerText() {
+    if (this.tagName === "BR") return "\n";
     return this.value || this.textContent || this.children.map((child) => child.innerText || child.textContent || "").join("");
   }
 
@@ -219,12 +221,32 @@ class FakeDocument {
 }
 
 function matchesSelector(element, selector) {
+  if (selector === "rich-textarea [contenteditable=\"true\"]") {
+    return element.isContentEditable && Boolean(element.closest("rich-textarea"));
+  }
+
+  if (selector === "[data-testid=\"chat-input\"] [contenteditable=\"true\"]") {
+    return element.isContentEditable && Boolean(element.closest("[data-testid=\"chat-input\"]"));
+  }
+
+  const tagClassAttr = selector.match(/^([a-z0-9-]+)?(?:\.([A-Za-z0-9_-]+))?(?:\[([^=\]*~^$|]+)([*]?=)"([^"]+)"\])?$/i);
+  if (tagClassAttr) {
+    const [, tagName, className, attrName, operator, attrValue] = tagClassAttr;
+    if (tagName && element.tagName.toLowerCase() !== tagName.toLowerCase()) return false;
+    if (className && !element.classList.contains(className)) return false;
+    if (attrName) {
+      const actual = element.getAttribute(attrName) || "";
+      return operator === "*=" ? actual.includes(attrValue) : actual === attrValue;
+    }
+    if (tagName || className) return true;
+  }
+
   if (selector.startsWith("#")) return element.id === selector.slice(1);
   if (selector.startsWith(".")) return element.classList.contains(selector.slice(1));
   if (selector === "textarea") return element instanceof FakeTextAreaElement;
   if (selector === "input") return element instanceof FakeInputElement;
-  if (selector === '[contenteditable="true"]') return element.isContentEditable;
-  if (selector === '[data-testid="composer-textarea"]') return element.getAttribute("data-testid") === "composer-textarea";
+  if (selector === "[contenteditable=\"true\"]") return element.isContentEditable;
+  if (selector === "[data-testid=\"composer-textarea\"]") return element.getAttribute("data-testid") === "composer-textarea";
   return element.tagName.toLowerCase() === selector.toLowerCase();
 }
 
@@ -238,11 +260,22 @@ function queryAll(root, selector) {
   return results;
 }
 
-async function main() {
+function loadScript(relativePath) {
+  vm.runInThisContext(fs.readFileSync(path.join(__dirname, "..", relativePath), "utf8"), {
+    filename: relativePath
+  });
+}
+
+function setupPlatform(platformId) {
   const document = new FakeDocument();
+  const hostByPlatform = {
+    chatgpt: "chatgpt.com",
+    claude: "claude.ai",
+    gemini: "gemini.google.com"
+  };
   const window = {
     document,
-    location: { hostname: "chatgpt.com" },
+    location: { hostname: hostByPlatform[platformId] },
     innerWidth: 1200,
     innerHeight: 800,
     visualViewport: null,
@@ -285,125 +318,104 @@ async function main() {
       return { enabled: true, showLocalBadge: true };
     }
   };
-  let runtimeMessageHandler = null;
+
   const chrome = {
     runtime: {
       onMessage: {
-        addListener(handler) {
-          runtimeMessageHandler = handler;
-        }
+        addListener() {}
       }
     },
     storage: {
       onChanged: {
         addListener() {}
+      },
+      local: {
+        set() {
+          assert.fail("content adapter tests must not write storage");
+        }
       }
     }
   };
   global.chrome = chrome;
   window.chrome = chrome;
 
-  const composer = document.createElement("textarea");
-  composer.id = "prompt-textarea";
-  composer.value = "콜드메일 작성해줘";
-  composer.rect = { top: 680, right: 760, bottom: 740, left: 240, width: 520, height: 60 };
-  document.body.appendChild(composer);
-
-  for (const file of ["src/core/templates.js", "src/core/promptPatterns.js", "src/core/ruleEngine.js", "src/core/briefCompiler.js"]) {
-    vm.runInThisContext(fs.readFileSync(path.join(__dirname, "..", file), "utf8"), { filename: file });
+  const draft = "우리 서비스 마케팅 전략 짜줘";
+  let composer;
+  if (platformId === "chatgpt") {
+    composer = document.createElement("textarea");
+    composer.id = "prompt-textarea";
+    composer.value = draft;
+    document.body.appendChild(composer);
+  } else if (platformId === "claude") {
+    composer = document.createElement("div");
+    composer.setAttribute("class", "ProseMirror");
+    composer.setAttribute("contenteditable", "true");
+    composer.setAttribute("role", "textbox");
+    composer.setAttribute("aria-label", "Message Claude");
+    composer.textContent = draft;
+    document.body.appendChild(composer);
+  } else {
+    const richTextArea = document.createElement("rich-textarea");
+    composer = document.createElement("div");
+    composer.setAttribute("contenteditable", "true");
+    composer.setAttribute("role", "textbox");
+    composer.setAttribute("aria-label", "Enter a prompt here");
+    composer.textContent = draft;
+    richTextArea.appendChild(composer);
+    document.body.appendChild(richTextArea);
   }
 
-  const originalCompileBrief = window.CBSBriefCompiler.compileBrief;
-  const compileCalls = [];
-  window.CBSBriefCompiler.compileBrief = (input) => {
-    compileCalls.push({ ...input });
-    return originalCompileBrief(input);
-  };
+  for (const file of ["src/core/templates.js", "src/core/promptPatterns.js", "src/core/ruleEngine.js", "src/core/briefCompiler.js"]) {
+    loadScript(file);
+  }
+  loadScript("src/content/content.js");
 
-  vm.runInThisContext(fs.readFileSync(path.join(__dirname, "..", "src/content/content.js"), "utf8"), {
-    filename: "src/content/content.js"
-  });
-
-  await new Promise((resolve) => setTimeout(resolve, 320));
-
-  const chip = document.querySelector("#cbs-clarify-chip");
-  assert.ok(chip, "Clarify chip should render for context_line draft");
-  assert.ok(runtimeMessageHandler, "content script should register shortcut message listener");
-  runtimeMessageHandler({ type: "cbs-trigger-clarify" }, {}, () => {});
-
-  let contextInput = document.querySelector(".cbs-context-line-input");
-  assert.ok(contextInput, "context_line input should render");
-  assert.ok(!document.querySelector(".cbs-option"), "context_line case should not render multiple-choice chips");
-  assert.strictEqual(document.activeElement, contextInput, "popover should focus the first interactive control");
-  assert.strictEqual(window.CBSContent.getComposerText(composer), "콜드메일 작성해줘", "shortcut trigger must not auto-send");
-
-  runtimeMessageHandler({ type: "cbs-trigger-clarify" }, {}, () => {});
-  assert.ok(!document.querySelector("#cbs-clarify-popover"), "second shortcut trigger should toggle the popover closed");
-
-  runtimeMessageHandler({ type: "cbs-trigger-clarify" }, {}, () => {});
-  contextInput = document.querySelector(".cbs-context-line-input");
-  assert.ok(contextInput, "shortcut trigger should reopen the popover for the same draft");
-
-  const initialPreview = document.querySelector(".cbs-preview-rendered");
-  assert.ok(initialPreview, "empty context should still render a graceful preview");
-  assert.ok(
-    initialPreview.getAttribute("data-cbs-raw-prompt").includes("확인 필요"),
-    "empty context preview should keep missing context explicit"
-  );
-
-  const contextLine = "HR팀장에게 채용 자동화 SaaS 무료 데모를 제안하는 첫 콜드메일";
-  contextInput.value = contextLine;
-  contextInput.dispatchEvent(new FakeEvent("input", { bubbles: true }));
-
-  const preview = document.querySelector(".cbs-preview-rendered");
-  const rawPrompt = preview.getAttribute("data-cbs-raw-prompt");
-  assert.ok(rawPrompt.includes(contextLine), "preview raw prompt should include the one-line context");
-  assert.ok(document.querySelector(".cbs-section-chip-row"), "section chip row should render for structured prompt");
-  assert.ok(compileCalls.some((call) => call.contextLine === contextLine), "compileBrief should receive contextLine");
-
-  assert.strictEqual(window.CBSContent.getComposerText(composer), "콜드메일 작성해줘", "draft should remain unchanged before insert");
-  assert.ok(!compileCalls.some((call) => String(call.contextLine || "").includes("undefined")), "contextLine should be explicit");
-
-  const fallbackPreview = window.CBSContent.renderPromptPreview("plain prompt without markdown");
-  assert.strictEqual(fallbackPreview.tagName, "PRE", "headerless prompt should use pre fallback");
-  assert.strictEqual(
-    fallbackPreview.getAttribute("data-cbs-raw-prompt"),
-    "plain prompt without markdown",
-    "fallback preview should preserve raw prompt"
-  );
-
-  document.dispatchEvent(new FakeEvent("keydown", { bubbles: true, cancelable: true, key: "Escape" }));
-  assert.ok(!document.querySelector("#cbs-clarify-popover"), "Escape should close the popover");
-  assert.ok(document.querySelector("#cbs-clarify-chip"), "dismiss should leave the existing chip quietly in place");
-
-  await new Promise((resolve) => setTimeout(resolve, 900));
-  assert.strictEqual(document.querySelectorAll("#cbs-clarify-popover").length, 0, "dismissed draft should not auto-reopen popover");
-
-  runtimeMessageHandler({ type: "cbs-trigger-clarify" }, {}, () => {});
-  const reopenedInput = document.querySelector(".cbs-context-line-input");
-  reopenedInput.value = contextLine;
-  reopenedInput.dispatchEvent(new FakeEvent("input", { bubbles: true }));
-  const reopenedPrompt = document.querySelector(".cbs-preview-rendered").getAttribute("data-cbs-raw-prompt");
-  assert.strictEqual(reopenedPrompt, rawPrompt, "reopened preview should preserve the same raw prompt");
-
-  const insertButton = document.querySelectorAll(".cbs-primary-button").find((button) => button.textContent === "입력창에 넣기");
-  assert.ok(insertButton, "insert button should render");
-  insertButton.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
-  assert.strictEqual(window.CBSContent.getComposerText(composer), rawPrompt, "inserted composer text must equal raw compiled prompt");
-
-  const undoButton = document.querySelectorAll(".cbs-primary-button").find((button) => button.textContent === "Undo");
-  assert.ok(undoButton, "undo button should render");
-  undoButton.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
-  assert.strictEqual(window.CBSContent.getComposerText(composer), "콜드메일 작성해줘", "undo should restore original draft");
-
-  composer.value = "안녕";
-  runtimeMessageHandler({ type: "cbs-trigger-clarify" }, {}, () => {});
-  assert.ok(!document.querySelector("#cbs-clarify-popover"), "shortcut trigger should do nothing for suppressed drafts");
-  assert.strictEqual(window.CBSContent.getComposerText(composer), "안녕", "suppressed shortcut trigger must not alter composer text");
-  process.stdout.write("content context_line DOM test ok\n");
+  return { document, composer, draft, platformId };
 }
 
-main().catch((error) => {
+function answerAllMultipleChoiceQuestions(document) {
+  for (let index = 0; index < 2; index += 1) {
+    const group = document.querySelectorAll(".cbs-question")[index];
+    const option = group && group.querySelector(".cbs-option");
+    if (!option) return;
+    option.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
+  }
+}
+
+async function testPlatform(platformId) {
+  const { document, composer, draft } = setupPlatform(platformId);
+  await new Promise((resolve) => setTimeout(resolve, 20));
+
+  assert.strictEqual(window.CBSContent.getCurrentPlatform().id, platformId, `${platformId} should be selected`);
+  assert.strictEqual(window.CBSContent.findComposer(), composer, `${platformId} composer should be detected`);
+
+  window.CBSContent.triggerClarifyFromShortcut();
+  assert.ok(document.querySelector("#cbs-clarify-popover"), `${platformId} should open clarify popover`);
+  assert.strictEqual(window.CBSContent.getComposerText(composer), draft, `${platformId} must not auto-send or alter draft`);
+
+  answerAllMultipleChoiceQuestions(document);
+  const preview = document.querySelector(".cbs-preview-rendered") || document.querySelector(".cbs-preview-text");
+  assert.ok(preview, `${platformId} should render preview before insert`);
+  const rawPrompt = preview.getAttribute("data-cbs-raw-prompt") || preview.textContent;
+  assert.ok(rawPrompt.includes("#"), `${platformId} raw preview should be structured`);
+
+  const insertButton = document.querySelector(".cbs-primary-button");
+  assert.ok(insertButton, `${platformId} insert button should render`);
+  insertButton.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
+  assert.strictEqual(window.CBSContent.getComposerText(composer), rawPrompt, `${platformId} insert should write raw prompt`);
+
+  const undoButton = document.querySelector(".cbs-primary-button");
+  assert.ok(undoButton, `${platformId} undo button should render`);
+  undoButton.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
+  assert.strictEqual(window.CBSContent.getComposerText(composer), draft, `${platformId} undo should restore draft`);
+}
+
+(async () => {
+  for (const platformId of ["chatgpt", "claude", "gemini"]) {
+    await testPlatform(platformId);
+  }
+  process.stdout.write("platform adapter DOM tests ok\n");
+})().catch((error) => {
   process.stderr.write(`${error.stack || error.message}\n`);
   process.exit(1);
 });

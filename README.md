@@ -1,10 +1,10 @@
-# Clarify Before Send Prototype
+# Clarify Before Send
 
-Manifest V3 기반의 local-only Chrome Extension v0입니다. ChatGPT 입력창의 현재 draft만 읽고, 모호한 요청에 작은 `Clarify` chip을 보여준 뒤 객관식 질문, preview, 입력창 삽입, Undo 흐름을 제공합니다.
+Manifest V3 기반의 local-only Chrome Extension v0입니다. ChatGPT, Claude, Gemini 입력창의 현재 draft만 읽고, 모호한 요청에 작은 `Clarify` chip을 보여준 뒤 객관식 질문, preview, 입력창 삽입, Undo 흐름을 제공합니다.
 
 ## What It Does
 
-- ChatGPT composer에서 현재 입력 중인 draft를 감지합니다.
+- ChatGPT, Claude, Gemini composer에서 현재 입력 중인 draft를 감지합니다.
 - 입력이 멈춘 뒤 약 800ms debounce 후에만 `Clarify` chip을 표시합니다.
 - 최대 2개의 객관식 질문을 보여줍니다.
 - 선택한 답변으로 deterministic template 기반 prompt preview를 만듭니다.
@@ -28,14 +28,14 @@ Manifest V3 기반의 local-only Chrome Extension v0입니다. ChatGPT 입력창
 2. 우측 상단 `Developer mode`를 켭니다.
 3. `Load unpacked`를 클릭합니다.
 4. 이 프로젝트 루트 폴더를 선택합니다.
-5. `Clarify Before Send Prototype`이 manifest error 없이 로드되는지 확인합니다.
+5. `Clarify Before Send`가 manifest error 없이 로드되는지 확인합니다.
 
 단축키: 기본값은 Windows/Linux `Ctrl+Shift+Y`, macOS `Command+Shift+Y`입니다. Chrome의 `chrome://extensions/shortcuts`에서 사용자가 변경할 수 있습니다.
 6. 확장 아이콘을 눌러 popup에 `Local Only Mode`가 보이는지 확인합니다.
 
-## Manual Test On ChatGPT
+## Manual Test On Supported Sites
 
-1. `https://chatgpt.com/` 또는 `https://chat.openai.com/`을 엽니다.
+1. `https://chatgpt.com/`, `https://chat.openai.com/`, `https://claude.ai/`, 또는 `https://gemini.google.com/`을 엽니다.
 2. 새 chat 입력창에 `우리 서비스 마케팅 전략 짜줘`처럼 넓은 요청을 입력합니다.
 3. 약 1초 기다립니다.
 4. 입력창 근처에 `Clarify` chip이 뜨는지 확인합니다.
@@ -206,19 +206,30 @@ Generality Layer v1:
 - artifactType/deliverableType layer가 채용 공고, 회의 아젠다, 질문 목록, 발표 구조, 커리큘럼, 매뉴얼, 온보딩 문서, 블로그 목차, 제안서 구조 같은 산출물 요청을 domain 오염 없이 보정합니다.
 - generic stress cases는 `tests/fixtures/promptCases.cjs`와 `node tests/promptQuality.test.cjs`에서 함께 검증합니다.
 
+## Platform Adapters
+
+Clarify Before Send currently injects the same local-only flow on these exact hosts:
+
+- `https://chatgpt.com/*`
+- `https://chat.openai.com/*`
+- `https://claude.ai/*`
+- `https://gemini.google.com/*`
+
+The runtime uses a small `PLATFORMS` adapter table in `src/content/content.js` to choose composer selectors per site. The core rule engine and prompt compiler are unchanged. English trigger quality is still a known limitation; this release only adds platform routing and composer insertion support.
+
 ## Privacy Notes
 
 - v0는 local-only입니다.
-- host permission은 `https://chatgpt.com/*`, `https://chat.openai.com/*`만 사용합니다.
+- host permission은 `https://chatgpt.com/*`, `https://chat.openai.com/*`, `https://claude.ai/*`, `https://gemini.google.com/*`만 사용합니다.
 - Chrome storage에는 `enabled`, `showLocalBadge` 설정만 저장합니다.
 - prompt text와 generated prompt는 memory에서만 흐름을 처리하고 저장하지 않습니다.
 - prompt processing을 위한 네트워크 요청은 없습니다.
 
 ## Known Limitations
 
-- ChatGPT composer DOM 변경에 따라 감지가 best-effort로 동작할 수 있습니다.
+- ChatGPT, Claude, Gemini composer DOM 변경에 따라 감지가 best-effort로 동작할 수 있습니다.
 - 한국어 중심의 deterministic template만 제공합니다.
-- v0는 Claude, Gemini, 다른 웹사이트를 지원하지 않습니다.
+- 영어 trigger 품질은 이번 범위가 아니며 known issue로 남겨둡니다.
 - 직접 삽입이 실패하면 복사 버튼 fallback을 제공합니다.
 
 ## Future Roadmap

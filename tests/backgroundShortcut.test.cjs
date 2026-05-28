@@ -52,12 +52,30 @@ assert.strictEqual(sentMessages.length, 0, "unrelated commands should be ignored
 
 activeTab = { id: 8, url: "https://example.com/" };
 commandHandler("cbs-trigger-clarify");
-assert.strictEqual(sentMessages.length, 0, "non-ChatGPT tab should be ignored");
+assert.strictEqual(sentMessages.length, 0, "unsupported tab should be ignored");
+
+activeTab = { id: 12 };
+commandHandler("cbs-trigger-clarify");
+assert.strictEqual(sentMessages.length, 0, "tabs without a supported URL should be ignored");
 
 activeTab = { id: 9, url: "https://chat.openai.com/c/abc" };
 commandHandler("cbs-trigger-clarify");
 assert.deepStrictEqual(sentMessages.pop(), {
   tabId: 9,
+  message: { type: "cbs-trigger-clarify" }
+});
+
+activeTab = { id: 10, url: "https://claude.ai/chat/abc" };
+commandHandler("cbs-trigger-clarify");
+assert.deepStrictEqual(sentMessages.pop(), {
+  tabId: 10,
+  message: { type: "cbs-trigger-clarify" }
+});
+
+activeTab = { id: 11, url: "https://gemini.google.com/app" };
+commandHandler("cbs-trigger-clarify");
+assert.deepStrictEqual(sentMessages.pop(), {
+  tabId: 11,
   message: { type: "cbs-trigger-clarify" }
 });
 

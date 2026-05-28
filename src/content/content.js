@@ -5,12 +5,49 @@
   const UI_ROOT_CLASS = "cbs-root";
   const CHIP_ID = "cbs-clarify-chip";
   const POPOVER_ID = "cbs-clarify-popover";
-  const COMPOSER_SELECTORS = [
-    "#prompt-textarea",
-    '[data-testid="composer-textarea"]',
-    "textarea",
-    '[contenteditable="true"]'
-  ];
+  const PLATFORMS = {
+    chatgpt: {
+      id: "chatgpt",
+      label: "ChatGPT",
+      urlPattern: /^(chatgpt\.com|chat\.openai\.com)$/i,
+      composerSelectors: [
+        "#prompt-textarea",
+        '[data-testid="composer-textarea"]',
+        "textarea",
+        '[contenteditable="true"]'
+      ],
+      insertStrategy: "standard"
+    },
+    claude: {
+      id: "claude",
+      label: "Claude",
+      urlPattern: /^claude\.ai$/i,
+      composerSelectors: [
+        'div.ProseMirror[contenteditable="true"]',
+        '.ProseMirror[contenteditable="true"]',
+        '[data-testid="chat-input"] [contenteditable="true"]',
+        '[aria-label*="Message Claude"]',
+        '[aria-label*="Talk to Claude"]',
+        '[contenteditable="true"]'
+      ],
+      insertStrategy: "contenteditable"
+    },
+    gemini: {
+      id: "gemini",
+      label: "Gemini",
+      urlPattern: /^gemini\.google\.com$/i,
+      composerSelectors: [
+        'rich-textarea [contenteditable="true"]',
+        'rich-textarea textarea',
+        '[aria-label*="Enter a prompt"]',
+        '[aria-label*="Message Gemini"]',
+        '[aria-label*="Gemini"]',
+        '[contenteditable="true"]',
+        "textarea"
+      ],
+      insertStrategy: "contenteditable"
+    }
+  };
 
   const state = {
     enabled: true,
@@ -247,9 +284,14 @@
   }
 
   function findComposer() {
+    const platform = getCurrentPlatform();
+    if (!platform) {
+      return null;
+    }
+
     const candidates = [];
 
-    COMPOSER_SELECTORS.forEach((selector) => {
+    platform.composerSelectors.forEach((selector) => {
       document.querySelectorAll(selector).forEach((element) => {
         if (!candidates.includes(element) && isUsableComposerCandidate(element)) {
           candidates.push(element);
@@ -260,7 +302,7 @@
     return candidates
       .map((element) => ({
         element,
-        score: scoreComposerCandidate(element)
+        score: scoreComposerCandidate(element, platform)
       }))
       .sort((left, right) => right.score - left.score)[0]?.element || null;
   }
@@ -290,15 +332,53 @@
     );
   }
 
-  function scoreComposerCandidate(element) {
+  function scoreComposerCandidate(element, platform) {
     const rect = element.getBoundingClientRect();
     const bottomDistance = Math.abs(window.innerHeight - rect.bottom);
     const nearBottomBonus = rect.top > window.innerHeight * 0.35 ? 1000 : 0;
     const idBonus = element.id === "prompt-textarea" ? 500 : 0;
-    const testIdBonus = element.getAttribute("data-testid") === "composer-textarea" ? 400 : 0;
+    const testId = element.getAttribute("data-testid") || "";
+    const testIdBonus = /composer|chat-input|input/i.test(testId) ? 400 : 0;
     const textAreaBonus = element instanceof HTMLTextAreaElement ? 100 : 0;
+    const editableBonus = element.isContentEditable ? 90 : 0;
+    const platformBonus = scorePlatformComposerCandidate(element, platform);
 
-    return nearBottomBonus + idBonus + testIdBonus + textAreaBonus - bottomDistance;
+    return nearBottomBonus + idBonus + testIdBonus + textAreaBonus + editableBonus + platformBonus - bottomDistance;
+  }
+
+  function scorePlatformComposerCandidate(element, platform) {
+    if (!platform) {
+      return 0;
+    }
+
+    const ariaLabel = element.getAttribute("aria-label") || "";
+    const role = element.getAttribute("role") || "";
+    const className = element.className || "";
+
+    if (platform.id === "claude") {
+      return [
+        /ProseMirror/.test(className) ? 650 : 0,
+        /Message Claude|Talk to Claude/i.test(ariaLabel) ? 350 : 0,
+        role === "textbox" ? 150 : 0
+      ].reduce((sum, value) => sum + value, 0);
+    }
+
+    if (platform.id === "gemini") {
+      return [
+        element.closest && element.closest("rich-textarea") ? 650 : 0,
+        /Gemini|prompt|message/i.test(ariaLabel) ? 300 : 0,
+        role === "textbox" ? 150 : 0
+      ].reduce((sum, value) => sum + value, 0);
+    }
+
+    return 0;
+  }
+
+  function getCurrentPlatform() {
+    const hostname = (window.location && window.location.hostname ? window.location.hostname : "").replace(/^www\./i, "");
+    return Object.keys(PLATFORMS)
+      .map((key) => PLATFORMS[key])
+      .find((platform) => platform.urlPattern.test(hostname)) || null;
   }
 
   function getComposerText(element) {
@@ -1181,6 +1261,8 @@
     dispatchInputEvents,
     parsePromptForPreview,
     renderPromptPreview,
-    triggerClarifyFromShortcut
+    triggerClarifyFromShortcut,
+    getCurrentPlatform,
+    PLATFORMS
   };
 })();

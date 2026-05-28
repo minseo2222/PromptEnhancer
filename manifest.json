@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Clarify Before Send Prototype",
+  "name": "Clarify Before Send",
   "version": "0.0.1",
-  "description": "Local-first intent clarifier for ChatGPT prompts.",
+  "description": "Local-only prompt clarifier for ChatGPT, Claude, and Gemini drafts.",
   "permissions": ["storage"],
   "icons": {
     "16": "icons/icon16.png",
@@ -12,7 +12,9 @@
   },
   "host_permissions": [
     "https://chatgpt.com/*",
-    "https://chat.openai.com/*"
+    "https://chat.openai.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*"
   ],
   "action": {
     "default_title": "Clarify Before Send",
@@ -33,14 +35,16 @@
         "default": "Ctrl+Shift+Y",
         "mac": "Command+Shift+Y"
       },
-      "description": "Open Clarify Before Send for the current ChatGPT draft"
+      "description": "Open Clarify Before Send for the current supported AI draft"
     }
   },
   "content_scripts": [
     {
       "matches": [
         "https://chatgpt.com/*",
-        "https://chat.openai.com/*"
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*"
       ],
       "js": [
         "src/core/templates.js",
