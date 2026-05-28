@@ -14,17 +14,17 @@
 
 | Metric | Baseline | Current | Delta |
 | --- | --- | --- | --- |
-| PASS | 29 | 36 | 7 |
-| FIX | 14 | 12 | -2 |
+| PASS | 36 | 36 | 0 |
+| FIX | 12 | 12 | 0 |
 | KILL | 0 | 0 | 0 |
 | P0 | 0 | 0 | 0 |
-| average userWouldInsert | 3.88 | 3.79 | -0.09 |
+| average userWouldInsert | 3.79 | 3.79 | 0.00 |
 
 Gate results:
 
 - PASS: core KILL must be 0 (current=0)
 - PASS: core P0 must be 0 (current=0)
-- PASS: core average drop <= maxAverageDrop (drop=0.09)
+- PASS: core average drop <= maxAverageDrop (drop=0)
 - PASS: core PASS count did not decrease
 
 ## Candidate Pack Results

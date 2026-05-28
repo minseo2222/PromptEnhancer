@@ -8,9 +8,12 @@ const baselinesDir = path.join(root, "docs", "baselines");
 const judgeReportPath = path.join(root, "docs", "PREVIEW_JUDGE_REPORT.json");
 const coreCasesPath = path.join(root, "tests", "fixtures", "coreRegressionCases.cjs");
 const candidateCasesPath = path.join(root, "tests", "fixtures", "candidateExpansionCases.cjs");
-const backlogPath = path.join(root, "tests", "fixtures", "domainPacks", "sales_bd_backlog.cjs");
+const backlogPath = process.env.BASELINE_BACKLOG_PATH
+  ? path.resolve(root, process.env.BASELINE_BACKLOG_PATH)
+  : path.join(root, "tests", "fixtures", "domainPacks", "customer_support_backlog.cjs");
 
-const NEW_BASELINE_NAME = "core-v0.3-sales-bd-partial";
+const NEW_BASELINE_NAME = process.env.BASELINE_NAME || "core-v0.4-customer-support-partial";
+const ADDED_FROM = process.env.BASELINE_ADDED_FROM || "customer_support_candidate_v1";
 const GATES = {
   maxCoreKill: 0,
   maxCoreP0: 0,
@@ -120,7 +123,7 @@ const newBaseline = {
   promotionSummary: {
     previousCaseCount: previousBaseline.caseCount,
     addedCases: coreCases.length - previousBaseline.caseCount,
-    addedFrom: "sales_bd_candidate_v1",
+    addedFrom: ADDED_FROM,
     backlogCases: backlogCases.length
   },
   judge: {
