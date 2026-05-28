@@ -83,8 +83,8 @@ No P0 fixes reported.
 | 61. churn save paraphrase | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
 | 62. customer success check-in paraphrase | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
 | 63. support faq paraphrase | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 64. proposal for customer A | candidate | context_line_backlog | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 65. outage notice paraphrase | candidate | context_line_backlog | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 64. proposal for customer A | core | context_line_backlog | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 65. outage notice paraphrase | core | context_line_backlog | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
 
 ## Patch Plan
 | Priority | Target File | Issue | Suggested Change | Affected Cases |

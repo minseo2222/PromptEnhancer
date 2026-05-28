@@ -9,8 +9,8 @@
 ## Summary
 
 - total cases: 65
-- core cases: 63
-- candidate cases: 2
+- core cases: 65
+- candidate cases: 0
 - clarify true count: 53
 - clarify false count: 12
 - generic domain count: 45
@@ -61,8 +61,7 @@
 
 ### Case Source Distribution
 
-- `candidate`: 2
-- `core`: 63
+- `core`: 65
 
 ### ArtifactType Distribution
 
@@ -5083,7 +5082,7 @@ Draft:
 A 고객에게 제안서 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_line_backlog`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -5159,7 +5158,7 @@ Draft:
 점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_line_backlog`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`

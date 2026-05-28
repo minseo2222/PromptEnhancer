@@ -1,12 +1,12 @@
 # Domain Expansion Report
 
 ## Summary
-- core cases: 63
-- candidate cases: 2
-- candidate status: active
-- judge source: freshly generated
+- core cases: 65
+- candidate cases: 0
+- candidate status: none
+- judge source: reused existing report
 - total cases: 65
-- decision: PROMOTE
+- decision: READY_FOR_CANDIDATE
 - partial promotion status: NOT_READY
 - needs_context risk: none
 
@@ -14,32 +14,32 @@
 
 | Metric | Baseline | Current | Delta |
 | --- | --- | --- | --- |
-| PASS | 57 | 53 | -4 |
-| FIX | 6 | 10 | 4 |
+| PASS | 55 | 55 | 0 |
+| FIX | 10 | 10 | 0 |
 | KILL | 0 | 0 | 0 |
 | P0 | 0 | 0 | 0 |
-| average userWouldInsert | 4.24 | 4.21 | -0.03 |
+| average userWouldInsert | 4.23 | 4.23 | 0.00 |
 
 Gate results:
 
 - PASS: core KILL must be 0 (current=0)
 - PASS: core P0 must be 0 (current=0)
-- PASS: core average drop <= maxAverageDrop (drop=0.03)
-- WARN: core PASS count decreased by 4
+- PASS: core average drop <= maxAverageDrop (drop=0)
+- PASS: core PASS count did not decrease
 
 ## Candidate Pack Results
 
 | Metric | Value |
 | --- | --- |
-| cases | 2 |
-| PASS | 2 |
+| cases | 0 |
+| PASS | 0 |
 | FIX | 0 |
 | KILL | 0 |
 | P0 | 0 |
-| average userWouldInsert | 5 |
+| average userWouldInsert | 0 |
 | multiple_choice average | 0 |
 | promotion_ready average | 0 |
-| needs_patch average | 5 |
+| needs_patch average | 0 |
 | needs_context average | 0 |
 | suppress_regression average | 0 |
 | needs_context ratio | 0 |
@@ -47,10 +47,7 @@ Gate results:
 
 Candidate gates:
 
-- PASS: candidate multiple_choice KILL must be 0 (multiple_choice=0)
-- PASS: candidate P0 must be 0 (current=0)
-- PASS: candidate average >= minCandidateAverage (avg=5)
-- PASS: multiple_choice average >= minMultipleChoiceAverage (avg=0)
+- SKIPPED: candidate gates (no candidate cases)
 
 KILL/P0 list:
 
@@ -60,26 +57,28 @@ Lowest 10 cases:
 
 | Case | Domain Pack | Verdict | Insert Score | Priority | Draft |
 | --- | --- | --- | --- | --- | --- |
-| 64. proposal for customer A | context_line_backlog | PASS | 5 | P2 | A 고객에게 제안서 써줘 |
-| 65. outage notice paraphrase | context_line_backlog | PASS | 5 | P2 | 점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘 |
+| 3. new feature prd | product_pm | FIX | 2 | P1 | 새 기능 PRD 써줘 |
+| 7. investor update email | sales_bd | FIX | 2 | P1 | 투자자에게 업데이트 메일 써줘 |
+| 8. customer price increase email | customer_support | FIX | 2 | P1 | 고객에게 가격 인상 안내 메일 써줘 |
+| 15. service name ideas | generic | FIX | 2 | P1 | 서비스 이름 아이디어 줘 |
+| 4. competitor analysis | founder_strategy | FIX | 3 | P1 | 경쟁사 분석해줘 |
+| 11. personal prioritization | internal_ops | FIX | 3 | P1 | 뭐부터 해야 할지 모르겠어. 정리 좀 해줘. |
+| 12. weekly priority | internal_ops | FIX | 3 | P1 | 이번 주 우선순위 정해줘 |
+| 22. organize means decide | generic | FIX | 3 | P1 | 뭐부터 해야 할지 모르겠어. 정리 좀 해줘. |
+| 29. generic lecture curriculum | content_education | FIX | 3 | P1 | 강의 커리큘럼 만들어줘 |
+| 33. generic blog outline | content_education | FIX | 3 | P1 | 블로그 글 목차 짜줘 |
 
 ## Domain Pack Breakdown
 
-| domainPack | cases | PASS | FIX | KILL | avg insert | decision |
-| --- | --- | --- | --- | --- | --- | --- |
-| context_line_backlog | 2 | 2 | 0 | 0 | 5 | OK |
+No candidate domain packs.
 
 ## Clarification Mode Breakdown
 
-| clarificationMode | cases | PASS | FIX | KILL | avg insert |
-| --- | --- | --- | --- | --- | --- |
-| context_line | 2 | 2 | 0 | 0 | 5 |
+No candidate clarification modes.
 
 ## Promotion Group Breakdown
 
-| promotionGroup | cases | PASS | FIX | KILL | P0 | avg insert | decision |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| needs_patch | 2 | 2 | 0 | 0 | 0 | 5 | PATCH_LIGHT |
+No candidate promotion groups.
 
 ## Manual Promotion Candidates
 
@@ -91,10 +90,7 @@ No context-required backlog items.
 
 ## Needs Patch Cases
 
-| Case | Draft | Verdict | Insert Score | Recommended Fix |
-| --- | --- | --- | --- | --- |
-| 64. proposal for customer A | A 고객에게 제안서 써줘 | PASS | 5 |  |
-| 65. outage notice paraphrase | 점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘 | PASS | 5 |  |
+No needs_patch cases.
 
 ## Recurring Problems
 - Several high-context drafts still use multiple-choice when the missing fact is a concrete product, topic, policy, update, or task list.
@@ -103,7 +99,7 @@ No context-required backlog items.
 - Context-line cases are substantially stronger and should be expanded to similar high-context write/create/plan cases.
 
 ## Recommended Next Action
-- Patch candidate cases that fall below gates, then rerun the expansion cycle.
+- Add a small candidate pack, then rerun the expansion cycle.
 
 ## Promotion Notes
 - Promote candidates only when core regression gates pass.
