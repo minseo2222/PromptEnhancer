@@ -1,0 +1,1028 @@
+(function () {
+  "use strict";
+
+  const MIN_DRAFT_LENGTH = 12;
+  const MIN_HIGH_INTENT_LENGTH = 6;
+  const RECOMMEND_OPTION = "추천해줘";
+
+  const HIGH_INTENT_TERMS = [
+    "prd",
+    "전략",
+    "분석",
+    "기획",
+    "보고",
+    "메일",
+    "경쟁사",
+    "마케팅",
+    "우선순위",
+    "계획",
+    "개선",
+    "공고",
+    "아젠다",
+    "커리큘럼",
+    "매뉴얼",
+    "온보딩",
+    "제안서",
+    "세일즈",
+    "영업",
+    "콜드메일",
+    "콜 스크립트",
+    "데모",
+    "objection",
+    "협상",
+    "후속 메일"
+  ];
+
+  const TASK_TYPE_KEYWORDS = {
+    "brief.plan": [
+      "전략",
+      "계획",
+      "로드맵",
+      "실행안",
+      "런칭",
+      "gtm",
+      "기획",
+      "prd",
+      "아젠다",
+      "커리큘럼",
+      "온보딩",
+      "구조",
+      "기획안",
+      "발표",
+      "매뉴얼"
+    ],
+    "brief.analyze": ["분석", "비교", "진단", "왜", "원인", "장단점", "경쟁사", "낮은지", "실패", "objection", "objections", "반박", "우려", "망설임"],
+    "brief.write": [
+      "메일",
+      "이메일",
+      "답장",
+      "메시지",
+      "dm",
+      "카피",
+      "문서 작성",
+      "작성해줘",
+      "제안서",
+      "공고",
+      "답변",
+      "인수인계",
+      "목차",
+      "블로그 글",
+      "콜드메일",
+      "콜드 메일",
+      "후속 메일",
+      "대응 문구",
+      "콜 스크립트"
+    ],
+    "brief.research": ["조사", "리서치", "시장", "트렌드", "자료 찾아", "근거", "인터뷰", "설문조사", "문항", "질문"],
+    "brief.decide": ["뭐부터", "우선순위", "선택", "결정", "고를까", "판단", "중 뭐", "뭐가 나을까"],
+    "brief.create": ["아이디어", "브레인스토밍", "이름", "네이밍", "슬로건", "캠페인", "뽑아"],
+    "brief.extract": ["요약", "정리", "표로", "변환", "핵심만"]
+  };
+
+  const TASK_TIE_ORDER = [
+    "brief.decide",
+    "brief.analyze",
+    "brief.plan",
+    "brief.write",
+    "brief.research",
+    "brief.create",
+    "brief.extract",
+    "brief.generic"
+  ];
+
+  function normalizeDraft(draft) {
+    return String(draft || "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function includesAny(text, keywords) {
+    return keywords.some((keyword) => text.includes(String(keyword).toLowerCase()));
+  }
+
+  function unique(values) {
+    return values.filter((value, index) => value && values.indexOf(value) === index);
+  }
+
+  function hasTableFormatSignal(text) {
+    return /(^|\s)(표|table)(로|로\s|로$|\s|$)/i.test(text) || text.includes("표로") || text.includes("표 형식");
+  }
+
+  function isSimpleRequest(draft) {
+    const text = normalizeDraft(draft).toLowerCase();
+    if (!text) {
+      return true;
+    }
+
+    if (window.CBSTemplates.SIMPLE_PATTERNS.some((pattern) => pattern.test(text))) {
+      return true;
+    }
+
+    const compact = text.replace(/\s+/g, "");
+    const simpleShortcuts = [
+      "번역해줘",
+      "번역해주세요",
+      "요약해줘",
+      "요약해주세요",
+      "짧게요약해줘",
+      "맞춤법고쳐줘",
+      "맞춤법검사해줘",
+      "오탈자고쳐줘",
+      "문법고쳐줘"
+    ];
+
+    if (compact.length <= 24 && compact.includes("문장") && includesAny(compact, ["바꿔줘", "고쳐줘", "다듬어줘"])) {
+      return true;
+    }
+
+    return compact.length <= 18 && simpleShortcuts.some((shortcut) => compact.includes(shortcut));
+  }
+
+  function hasClearGoalAndOutputFormat(draft) {
+    const text = normalizeDraft(draft).toLowerCase();
+    const hasGoal = /(목표|목적|goal|objective)\s*[:：]/i.test(text);
+    const hasFormat = /(형식|결과물|출력|output|format)\s*[:：]/i.test(text);
+
+    return hasGoal && hasFormat;
+  }
+
+  function hasPersonalPrioritizationSignal(text) {
+    const strongSignals = [
+      "뭐부터",
+      "우선순위",
+      "할 게 많",
+      "할 일이 많",
+      "오늘 할 일",
+      "이번 주 우선순위",
+      "모르겠어",
+      "정신없"
+    ];
+    const organizeSignals = ["뭐부터", "할 게", "할 일이", "우선순위", "모르겠어"];
+
+    return includesAny(text, strongSignals) || (text.includes("정리 좀 해줘") && includesAny(text, organizeSignals));
+  }
+
+  function hasBareMissingObject(text) {
+    const compact = text.replace(/\s+/g, "");
+    const isBareAB =
+      compact.includes("a안b안") ||
+      compact.includes("a랑b") ||
+      compact.includes("a와b") ||
+      compact.includes("a와b중") ||
+      compact.includes("a랑b중");
+    const isBareIdeaAnalysis = text.includes("내 아이디어") && text.includes("장단점") && text.length <= 24;
+
+    return isBareAB || isBareIdeaAnalysis;
+  }
+
+  function classifyArtifactType(draft) {
+    const text = normalizeDraft(draft).toLowerCase();
+
+    if (includesAny(text, ["세일즈 콜 스크립트", "영업 콜 스크립트", "콜 스크립트"])) {
+      return "sales_script";
+    }
+
+    if (includesAny(text, ["콜드메일", "콜드 메일", "cold email"])) {
+      return "cold_email";
+    }
+
+    if (includesAny(text, ["영업 후속 메일", "후속 메일", "follow-up"])) {
+      return "follow_up_email";
+    }
+
+    if (includesAny(text, ["데모 미팅 아젠다", "데모 아젠다", "데모 미팅"])) {
+      return "demo_agenda";
+    }
+
+    if (includesAny(text, ["objections", "objection", "잠재 고객 objections", "고객 반박", "고객 우려", "구매 망설임", "objection 정리"])) {
+      return "objections_analysis";
+    }
+
+    if (includesAny(text, ["세일즈 자료", "영업 자료", "sales deck", "세일즈 덱"])) {
+      return "sales_collateral";
+    }
+
+    if (includesAny(text, ["가격 협상 대응", "가격 협상 문구", "협상 대응", "할인 요청 대응"])) {
+      return "negotiation_reply";
+    }
+
+    if (includesAny(text, ["채용 공고", "채용공고", "구인 공고"])) {
+      return "job_posting";
+    }
+
+    if (includesAny(text, ["회의 아젠다", "미팅 아젠다", "회의 agenda"])) {
+      return "meeting_agenda";
+    }
+
+    if (includesAny(text, ["설문조사 문항", "설문 문항", "설문 질문"])) {
+      return "survey_questions";
+    }
+
+    if (includesAny(text, ["회고 질문", "팀 회고 질문"])) {
+      return "retrospective_questions";
+    }
+
+    if (includesAny(text, ["인터뷰 질문", "질문 뽑아줘", "질문 만들어줘", "질문 리스트"])) {
+      return "question_set";
+    }
+
+    if (includesAny(text, ["발표 구조", "발표 목차", "발표 흐름"])) {
+      return "presentation_outline";
+    }
+
+    if (includesAny(text, ["커리큘럼", "강의 커리큘럼", "수업 커리큘럼"])) {
+      return "curriculum";
+    }
+
+    if (includesAny(text, ["응대 매뉴얼", "매뉴얼", "플레이북", "가이드라인"])) {
+      return "manual_or_playbook";
+    }
+
+    if (includesAny(text, ["온보딩 문서", "온보딩 가이드", "온보딩 체크리스트"])) {
+      return "onboarding_doc";
+    }
+
+    if (includesAny(text, ["유튜브 영상 기획안", "영상 기획안", "콘텐츠 기획안"])) {
+      return "content_plan";
+    }
+
+    if (includesAny(text, ["블로그 글 목차", "글 목차", "아티클 목차"])) {
+      return "blog_outline";
+    }
+
+    if (includesAny(text, ["인수인계 문서", "업무 인수인계"])) {
+      return "handoff_doc";
+    }
+
+    if (includesAny(text, ["고객 불만 답변", "불만 답변", "항의 답변", "컴플레인 답변"])) {
+      return "complaint_reply";
+    }
+
+    if (includesAny(text, ["제휴 제안서 목차", "제안서 목차", "제안서 구조", "제안서 구성"])) {
+      return "proposal_outline";
+    }
+
+    if (text.includes("제안서") && includesAny(text, ["써줘", "작성해줘"])) {
+      return "proposal_outline";
+    }
+
+    if (includesAny(text, ["구조 잡아줘", "목차 짜줘", "흐름 잡아줘"])) {
+      return "generic_outline";
+    }
+
+    if (includesAny(text, ["문서 작성", "문서 만들어줘", "초안 써줘"])) {
+      return "generic_document";
+    }
+
+    return "none";
+  }
+
+  function classifyTaskType(draft) {
+    const text = normalizeDraft(draft).toLowerCase();
+    const artifactType = classifyArtifactType(text);
+    const artifactTaskType = window.CBSTemplates.ARTIFACT_TASK_TYPES && window.CBSTemplates.ARTIFACT_TASK_TYPES[artifactType];
+
+    if (artifactTaskType) {
+      return artifactTaskType;
+    }
+
+    if (hasPersonalPrioritizationSignal(text)) {
+      return "brief.decide";
+    }
+
+    if (includesAny(text, ["요약", "핵심만", "표로", "변환"]) && !includesAny(text, ["전략", "계획", "분석"])) {
+      return "brief.extract";
+    }
+
+    if (includesAny(text, ["전략", "계획", "prd", "로드맵", "기획"]) && text.includes("정리")) {
+      return "brief.plan";
+    }
+
+    const scores = Object.entries(TASK_TYPE_KEYWORDS).reduce((result, [taskType, keywords]) => {
+      result[taskType] = keywords.reduce((score, keyword) => score + (text.includes(keyword.toLowerCase()) ? 1 : 0), 0);
+      return result;
+    }, {});
+
+    const best = Object.entries(scores)
+      .sort((left, right) => {
+        if (right[1] !== left[1]) {
+          return right[1] - left[1];
+        }
+
+        return TASK_TIE_ORDER.indexOf(left[0]) - TASK_TIE_ORDER.indexOf(right[0]);
+      })
+      .find((entry) => entry[1] > 0);
+
+    return best ? best[0] : "brief.generic";
+  }
+
+  function scoreDomainSignals(text, domain, signals, taskType) {
+    const strongScore = (signals.strong || []).reduce((score, keyword) => {
+      return score + (text.includes(String(keyword).toLowerCase()) ? 3 : 0);
+    }, 0);
+    const weakScore = (signals.weak || []).reduce((score, keyword) => {
+      return score + (text.includes(String(keyword).toLowerCase()) ? 1 : 0);
+    }, 0);
+
+    if (domain === "personal_prioritization" && !hasPersonalPrioritizationSignal(text)) {
+      return 0;
+    }
+
+    return strongScore > 0 ? strongScore + weakScore : 0;
+  }
+
+  function getDomainAnalysis(draft, taskTypeOverride) {
+    const text = normalizeDraft(draft).toLowerCase();
+    const taskType = taskTypeOverride || classifyTaskType(draft);
+    const domainSignals = window.CBSTemplates.DOMAIN_KEYWORD_SIGNALS || {};
+    const scores = {};
+
+    Object.entries(domainSignals).forEach(([domain, signals]) => {
+      scores[domain] = scoreDomainSignals(text, domain, signals, taskType);
+    });
+
+    const best = Object.entries(scores)
+      .sort((left, right) => right[1] - left[1])
+      .find((entry) => entry[1] > 0);
+
+    if (!best) {
+      return {
+        domain: "generic",
+        domainConfidence: 0,
+        domainScores: scores
+      };
+    }
+
+    return {
+      domain: best[0],
+      domainConfidence: Math.min(0.95, best[1] >= 3 ? 0.8 + best[1] * 0.03 : 0.45 + best[1] * 0.1),
+      domainScores: scores
+    };
+  }
+
+  function classifyDomain(draft) {
+    return getDomainAnalysis(draft).domain;
+  }
+
+  function matchAll(text, regex) {
+    return Array.from(text.matchAll(regex)).map((match) => match[0]);
+  }
+
+  function extractSignals(draft) {
+    const normalized = normalizeDraft(draft);
+    const text = normalized.toLowerCase();
+    const quantities = unique(matchAll(normalized, /\d+\s*(?:개|가지|명|분|주|개월|페이지)/g));
+    const timeframe = unique(["오늘", "이번 주", "다음 달", "4주", "한 달", "분기", "최근"].filter((term) => text.includes(term)));
+    const outputHints = unique([
+      hasTableFormatSignal(text) ? "표" : "",
+      ...["1페이지", "체크리스트", "메일", "아젠다", "목차", "공고", "매뉴얼", "문서"].filter((term) => text.includes(term))
+    ]);
+    const audienceHints = unique(["고객", "투자자", "팀", "대표", "임원", "사용자", "지원자", "신입", "리더십"].filter((term) => text.includes(term)));
+    const toneHints = unique(["정중하게", "친근하게", "단호하게", "전문적으로", "간결하게"].filter((term) => text.includes(term)));
+    const comparisonHints = unique(["a랑 b", "a와 b", "a안 b안", "비교", "뭐가 나을까", "중 뭐"].filter((term) => text.includes(term)));
+    const analysisHints = unique(["왜", "원인", "실패", "낮은지", "장단점"].filter((term) => text.includes(term)));
+    const createHints = unique(["아이디어", "이름", "네이밍", "슬로건", "브레인스토밍", "문항", "질문"].filter((term) => text.includes(term)));
+    const writeHints = unique(["메일", "답장", "문서", "공고", "제안서", "dm", "답변", "블로그", "글"].filter((term) => text.includes(term)));
+    const planningHints = unique(["전략", "계획", "로드맵", "아젠다", "커리큘럼", "온보딩", "기획안", "구조", "매뉴얼"].filter((term) => text.includes(term)));
+
+    return {
+      quantities,
+      timeframe,
+      outputHints,
+      audienceHints,
+      toneHints,
+      comparisonHints,
+      analysisHints,
+      createHints,
+      writeHints,
+      planningHints
+    };
+  }
+
+  function inferGoal(draft, taskType, artifactType, signals) {
+    const text = normalizeDraft(draft).toLowerCase();
+
+    if (artifactType && artifactType !== "none") {
+      return window.CBSTemplates.ARTIFACT_DEFAULT_OUTPUT_FORMATS[artifactType] || "";
+    }
+
+    if (text.includes("prd")) return "PRD 작성";
+    if (text.includes("런칭") && text.includes("계획")) return "런칭 계획 수립";
+    if (text.includes("경쟁사") && text.includes("분석")) return "경쟁사 분석";
+    if (includesAny(text, ["왜", "원인", "낮은지"]) && text.includes("분석")) return "원인 진단";
+    if (signals.comparisonHints.length || includesAny(text, ["a안 b안", "장단점 비교"])) return "선택지/장단점 비교";
+    if (text.includes("캠페인") && text.includes("아이디어")) return "캠페인 아이디어 생성";
+    if (includesAny(text, ["이름", "네이밍", "슬로건"]) && text.includes("아이디어")) return "네이밍 아이디어 생성";
+
+    if (taskType === "brief.write" && includesAny(text, ["메일", "답변", "공고"])) return "초안 작성";
+    return "";
+  }
+
+  function getIntentQuestionKey(draft, taskType, domain, artifactType, signals) {
+    const text = normalizeDraft(draft).toLowerCase();
+
+    if (text.includes("prd")) return "prd_feature";
+    if (text.includes("런칭") && text.includes("계획")) return "launch_plan";
+    if (text.includes("경쟁사") && text.includes("분석")) return "competitor_analysis";
+    if (text.includes("전환율") && includesAny(text, ["왜", "원인", "낮은지", "분석"])) return "conversion_diagnosis";
+    if (taskType === "brief.research" && includesAny(text, ["최근", "트렌드"])) return "trend_research";
+    if (taskType === "brief.research" && includesAny(text, ["시장 조사", "시장"])) return "market_research";
+    if (text.includes("아이디어") && text.includes("장단점") && text.includes("분석")) return "idea_pros_cons";
+    if (signals.comparisonHints.length && includesAny(text, ["장단점", "뭐가 나을까", "비교"])) return "ab_comparison";
+    if (includesAny(text, ["이름", "네이밍", "슬로건"]) && text.includes("아이디어")) return "naming_ideas";
+    if (text.includes("캠페인") && text.includes("아이디어")) return "campaign_ideas";
+
+    return "";
+  }
+
+  function deriveFilledSlots(draft, signals, taskType, artifactType) {
+    const text = normalizeDraft(draft).toLowerCase();
+    const filled = {};
+
+    if (signals.quantities.length) {
+      filled.quantity = signals.quantities[0];
+    }
+
+    if (signals.timeframe.length) {
+      filled.timeframe = signals.timeframe[0];
+    }
+
+    if (signals.audienceHints.length) {
+      filled.audience = signals.audienceHints[0];
+    }
+
+    if (signals.toneHints.length) {
+      const toneMap = {
+        "정중하게": "정중하고 간결하게",
+        "친근하게": "친근하게",
+        "단호하게": "단호하지만 부드럽게",
+        "전문적으로": "전문적으로",
+        "간결하게": "정중하고 간결하게"
+      };
+      filled.tone = toneMap[signals.toneHints[0]] || signals.toneHints[0];
+    }
+
+    if (hasTableFormatSignal(text)) {
+      filled.output_format = "표로 정리";
+    } else if (text.includes("1페이지")) {
+      filled.output_format = "1페이지 전략 문서";
+    } else if (text.includes("체크리스트")) {
+      filled.output_format = "체크리스트";
+    } else if (text.includes("아젠다")) {
+      filled.output_format = "회의 아젠다";
+    } else if (text.includes("목차")) {
+      filled.output_format = "목차";
+    } else if (text.includes("공고")) {
+      filled.output_format = "공고 초안";
+    } else if (text.includes("메일")) {
+      filled.output_format = "메일 초안";
+    }
+
+    if (taskType === "brief.create") {
+      if (includesAny(text, ["이름", "네이밍", "슬로건"])) {
+        filled.goal = "이름/슬로건";
+      } else if (text.includes("캠페인")) {
+        filled.goal = "캠페인 아이디어";
+      }
+    }
+
+    if (taskType === "brief.analyze") {
+      if (signals.comparisonHints.length || text.includes("장단점")) {
+        filled.goal = "장단점 비교";
+        filled.analysis_target = "장단점";
+        if (signals.comparisonHints.length) {
+          filled.decision_options = "A와 B 비교";
+        }
+      } else if (includesAny(text, ["왜", "원인", "낮은지", "실패"])) {
+        filled.goal = "문제 원인 진단";
+        filled.analysis_target = "문제 원인";
+      } else if (text.includes("경쟁사")) {
+        filled.goal = "경쟁 구도 파악";
+        filled.analysis_target = "경쟁 구도";
+      } else if (text.includes("장단점")) {
+        filled.analysis_target = "장단점";
+      }
+    }
+
+    if (taskType === "brief.decide" && signals.comparisonHints.length) {
+      filled.goal = "선택지 비교";
+      filled.decision_options = "A와 B 비교";
+    }
+
+    if (taskType === "brief.write" && (!artifactType || artifactType === "none")) {
+      if (includesAny(text, ["가격 인상 안내", "업데이트", "공고"])) {
+        filled.goal = "안내/공유";
+      } else if (text.includes("불만")) {
+        filled.goal = "거절/조율";
+      }
+    }
+
+    if (taskType === "brief.plan" && text.includes("prd")) {
+      filled.goal = "PRD 작성";
+    }
+
+    if (text.includes("다음 달") || text.includes("한 달") || text.includes("4주")) {
+      filled.scope = "4주 실행 계획";
+    }
+
+    if (text.includes("아래 내용") || text.includes("이 내용")) {
+      filled.input_source = "아래 내용";
+    }
+
+    if (artifactType && artifactType !== "none") {
+      const artifactOutput = window.CBSTemplates.ARTIFACT_DEFAULT_OUTPUT_FORMATS[artifactType];
+      if (artifactOutput) {
+        filled.output_format = artifactOutput;
+      }
+    }
+
+    if (!filled.goal && signals.inferredGoal) {
+      filled.goal = signals.inferredGoal;
+    }
+
+    return filled;
+  }
+
+  function detectMissingSlots(draft, domain) {
+    return analyzeIntent(draft).missingSlots;
+  }
+
+  function determineShouldClarify(normalized, taskType, domain) {
+    const text = normalized.toLowerCase();
+
+    if (!normalized) {
+      return false;
+    }
+
+    if (isSimpleRequest(normalized)) {
+      return false;
+    }
+
+    if (hasClearGoalAndOutputFormat(normalized)) {
+      return false;
+    }
+
+    if (taskType === "brief.extract") {
+      return false;
+    }
+
+    if (hasBareMissingObject(text)) {
+      return false;
+    }
+
+    if (normalized.length >= MIN_HIGH_INTENT_LENGTH && taskType !== "brief.generic") {
+      return true;
+    }
+
+    if (normalized.length >= MIN_HIGH_INTENT_LENGTH && includesAny(text, HIGH_INTENT_TERMS)) {
+      return true;
+    }
+
+    if (normalized.length < MIN_DRAFT_LENGTH) {
+      return false;
+    }
+
+    if (domain !== "generic") {
+      return true;
+    }
+
+    return includesAny(text, window.CBSTemplates.BROAD_TERMS);
+  }
+
+  function getMissingSlots(taskType, filledSlots) {
+    const priorities = window.CBSTemplates.TASK_SLOT_PRIORITIES[taskType] || window.CBSTemplates.TASK_SLOT_PRIORITIES["brief.generic"];
+    return priorities.filter((slot) => !filledSlots[slot]);
+  }
+
+  function getSuggestedSlots(taskType, domain, artifactType, intentQuestionKey, filledSlots, missingSlots) {
+    const intentQuestions = window.CBSTemplates.INTENT_QUESTION_TEMPLATES && window.CBSTemplates.INTENT_QUESTION_TEMPLATES[intentQuestionKey];
+    if (intentQuestions && intentQuestions.length) {
+      return intentQuestions.map((question) => question.slot).slice(0, 2);
+    }
+
+    const artifactQuestions = window.CBSTemplates.ARTIFACT_QUESTION_TEMPLATES && window.CBSTemplates.ARTIFACT_QUESTION_TEMPLATES[artifactType];
+    if (artifactQuestions && artifactQuestions.length) {
+      return artifactQuestions.map((question) => question.slot).slice(0, 2);
+    }
+
+    const comboKey = `${taskType}:${domain}`;
+    const combo = window.CBSTemplates.COMBO_QUESTION_TEMPLATES[comboKey];
+
+    if (combo) {
+      const comboSlots = combo.map((question) => question.slot).filter((slot) => !filledSlots[slot]);
+      if (comboSlots.length) {
+        return comboSlots.slice(0, 2);
+      }
+    }
+
+    return missingSlots.slice(0, 2);
+  }
+
+  function analyzeIntent(draft) {
+    const normalized = normalizeDraft(draft);
+    const artifactType = classifyArtifactType(normalized);
+    const taskType = classifyTaskType(normalized);
+    const domainAnalysis = getDomainAnalysis(normalized, taskType);
+    const signals = extractSignals(normalized);
+    signals.inferredGoal = inferGoal(normalized, taskType, artifactType, signals);
+    const filledSlots = deriveFilledSlots(normalized, signals, taskType, artifactType);
+    const missingSlots = getMissingSlots(taskType, filledSlots);
+    const intentQuestionKey = getIntentQuestionKey(normalized, taskType, domainAnalysis.domain, artifactType, signals);
+    const suggestedSlots = getSuggestedSlots(taskType, domainAnalysis.domain, artifactType, intentQuestionKey, filledSlots, missingSlots);
+    const shouldClarify = determineShouldClarify(normalized, taskType, domainAnalysis.domain);
+
+    return {
+      draft: normalized,
+      taskType,
+      domain: domainAnalysis.domain,
+      domainConfidence: domainAnalysis.domainConfidence,
+      artifactType,
+      intentQuestionKey,
+      domainScores: domainAnalysis.domainScores,
+      signals,
+      filledSlots,
+      missingSlots,
+      suggestedSlots,
+      shouldClarify
+    };
+  }
+
+  function findMatchingOption(options, candidates) {
+    return candidates.reduce((match, candidate) => {
+      return match || options.find((option) => option.includes(candidate));
+    }, "");
+  }
+
+  function getQuestionTemplateForSlot(slot, intent) {
+    const intentQuestion = ((window.CBSTemplates.INTENT_QUESTION_TEMPLATES || {})[intent.intentQuestionKey] || []).find(
+      (question) => question.slot === slot
+    );
+    const artifactQuestion = ((window.CBSTemplates.ARTIFACT_QUESTION_TEMPLATES || {})[intent.artifactType] || []).find(
+      (question) => question.slot === slot
+    );
+    const comboKey = `${intent.taskType}:${intent.domain}`;
+    const comboQuestion = (window.CBSTemplates.COMBO_QUESTION_TEMPLATES[comboKey] || []).find((question) => question.slot === slot);
+    const taskQuestion = (window.CBSTemplates.TASK_QUESTION_TEMPLATES[intent.taskType] || []).find((question) => question.slot === slot);
+    const domainQuestion = (window.CBSTemplates.QUESTION_TEMPLATES[intent.domain] || []).find((question) => question.slot === slot);
+    const slotDefinition = window.CBSTemplates.SLOT_ONTOLOGY[slot];
+
+    if (intentQuestion) {
+      return intentQuestion;
+    }
+
+    if (artifactQuestion) {
+      return artifactQuestion;
+    }
+
+    if (comboQuestion) {
+      return comboQuestion;
+    }
+
+    if (taskQuestion) {
+      return taskQuestion;
+    }
+
+    if (domainQuestion) {
+      return domainQuestion;
+    }
+
+    if (slotDefinition) {
+      return {
+        slot,
+        label: slotDefinition.genericQuestion,
+        options: slotDefinition.options
+      };
+    }
+
+    return {
+      slot,
+      label: "무엇을 더 정하면 좋을까요?",
+      options: ["목표", "대상", "형식", "범위", window.CBSTemplates.RECOMMEND_OPTION]
+    };
+  }
+
+  function ensureQuestionOptions(options) {
+    const normalized = options.slice(0, 5);
+    const recommend = window.CBSTemplates.RECOMMEND_OPTION || RECOMMEND_OPTION;
+    while (normalized.length < 4) {
+      normalized.push(["실행 계획", "짧은 요약", "체크리스트", "표로 정리"][normalized.length] || "구체적으로");
+    }
+
+    if (!normalized.includes(recommend) && !normalized.includes(RECOMMEND_OPTION)) {
+      normalized.push(recommend);
+    }
+
+    return normalized.slice(0, 5);
+  }
+
+  function rankOptionsForQuestion(question, intent) {
+    const options = ensureQuestionOptions(question.options || []);
+    const slotValue = intent.filledSlots && intent.filledSlots[question.slot];
+    const candidates = [];
+    const draftText = intent.draft.toLowerCase();
+    const artifactType = intent.artifactType && intent.artifactType !== "none" ? intent.artifactType : "";
+
+    if (slotValue) {
+      candidates.push(slotValue);
+    }
+
+    if (artifactType) {
+      if (question.slot === "question_purpose") {
+        if (artifactType === "retrospective_questions") {
+          candidates.push("회고/학습 도출");
+        } else if (artifactType === "survey_questions") {
+          candidates.push("만족도/불만 파악");
+        } else if (draftText.includes("인터뷰")) {
+          candidates.push("문제 검증", "사용성 피드백");
+        }
+      }
+
+      if (question.slot === "role_type") {
+        if (draftText.includes("마케터")) candidates.push("마케터");
+        if (draftText.includes("디자이너")) candidates.push("디자이너");
+        if (draftText.includes("개발")) candidates.push("개발자");
+        if (includesAny(draftText, ["운영", "cs"])) candidates.push("운영/CS");
+      }
+
+      if (question.slot === "presentation_purpose" && !includesAny(draftText, ["설득", "의사결정", "교육"])) {
+        candidates.push("정보 공유");
+      }
+
+      if (question.slot === "content_purpose" && draftText.includes("유튜브")) {
+        candidates.push("조회수/관심 유도", "교육/정보 전달");
+      }
+
+      if (question.slot === "blog_purpose" && !includesAny(draftText, ["seo", "설득"])) {
+        candidates.push("정보 전달");
+      }
+
+      if (question.slot === "target_customer") {
+        if (includesAny(draftText, ["잠재", "리드", "문의", "고객"])) candidates.push("기존 리드/문의 고객");
+        if (includesAny(draftText, ["엔터프라이즈", "대기업"])) candidates.push("엔터프라이즈 담당자");
+        if (includesAny(draftText, ["smb", "소규모", "스타트업"])) candidates.push("SMB 의사결정자", "초기 스타트업/소규모 팀");
+      }
+
+      if (question.slot === "sales_stage") {
+        if (includesAny(draftText, ["데모", "미팅"])) candidates.push("데모/미팅 전");
+        if (includesAny(draftText, ["제안서", "자료"])) candidates.push("제안서 전달");
+        if (includesAny(draftText, ["협상", "가격", "할인"])) candidates.push("협상/클로징");
+        if (includesAny(draftText, ["콜드", "첫 접촉"])) candidates.push("첫 접촉");
+      }
+
+      if (question.slot === "sales_cta") {
+        if (includesAny(draftText, ["콜드", "후속", "메일"])) candidates.push("답장 유도");
+        if (includesAny(draftText, ["데모", "미팅"])) candidates.push("데모 미팅 예약");
+        if (includesAny(draftText, ["제안서", "자료"])) candidates.push("제안서/자료 확인");
+      }
+
+      if (question.slot === "sales_context") {
+        if (includesAny(draftText, ["제휴", "협업"])) candidates.push("제휴/협업 제안");
+        if (includesAny(draftText, ["자료", "세일즈", "영업"])) candidates.push("핵심 문제와 해결");
+        if (includesAny(draftText, ["콜드", "메일"])) candidates.push("문제 해결 제안");
+        if (includesAny(draftText, ["사례", "성과"])) candidates.push("고객 사례/성과");
+      }
+
+      if (question.slot === "previous_touchpoint") {
+        if (draftText.includes("후속")) candidates.push("이전 미팅/콜 이후");
+        if (draftText.includes("데모")) candidates.push("데모 이후");
+        if (draftText.includes("제안서")) candidates.push("제안서 전달 이후");
+        if (draftText.includes("자료")) candidates.push("자료 공유 이후");
+      }
+
+      if (question.slot === "negotiation_boundary") {
+        if (includesAny(draftText, ["가격", "협상"])) candidates.push("할인 없이 가치 설명");
+        if (draftText.includes("할인")) candidates.push("조건부 할인 가능");
+      }
+
+      if (question.slot === "objection_type") {
+        if (includesAny(draftText, ["가격", "협상", "할인"])) candidates.push("가격이 비싸다");
+        if (includesAny(draftText, ["필요", "망설임"])) candidates.push("필요성을 못 느낀다");
+        if (includesAny(draftText, ["기존 솔루션"])) candidates.push("기존 솔루션이 있다");
+        if (includesAny(draftText, ["리스크", "우려"])) candidates.push("도입 리스크가 걱정된다");
+        if (artifactType === "objections_analysis" && !candidates.length) candidates.push("주요 objections 전체");
+      }
+
+      if (question.slot === "meeting_goal") {
+        if (draftText.includes("데모")) candidates.push("제품 가치 설명", "다음 단계 합의");
+        if (includesAny(draftText, ["콜", "스크립트"])) candidates.push("니즈 파악", "다음 단계 합의");
+      }
+
+      if (question.slot === "proposal_goal") {
+        if (draftText.includes("제휴")) candidates.push("제휴 구조 제안");
+        if (draftText.includes("고객")) candidates.push("문제 해결안 제시");
+        if (includesAny(draftText, ["계약", "영업", "세일즈"])) candidates.push("신규 계약 설득");
+        if (draftText.includes("내부")) candidates.push("내부 승인 지원");
+        if (!includesAny(draftText, ["제휴", "계약", "영업", "세일즈", "내부"])) candidates.push("문제 해결안 제시");
+      }
+
+      if (question.slot === "proposal_context") {
+        if (draftText.includes("제휴")) candidates.push("제휴/협업 구조");
+        if (draftText.includes("고객")) candidates.push("고객 문제 해결안");
+        if (includesAny(draftText, ["가격", "계약"])) candidates.push("가격/계약 조건");
+      }
+    }
+
+    if (question.slot === "goal") {
+      if (intent.filledSlots.goal) {
+        candidates.push(intent.filledSlots.goal);
+      }
+      if (intent.taskType === "brief.create" && includesAny(intent.draft.toLowerCase(), ["이름", "네이밍", "슬로건"])) {
+        candidates.push("이름/슬로건", "이름", "슬로건");
+      }
+      if (intent.taskType === "brief.create" && intent.draft.toLowerCase().includes("캠페인")) {
+        candidates.push("캠페인 아이디어", "캠페인");
+      }
+      if (intent.taskType === "brief.decide" && intent.signals.comparisonHints.length) {
+        candidates.push("선택지 비교");
+      }
+      if (intent.taskType === "brief.analyze" && (intent.signals.comparisonHints.length || draftText.includes("장단점"))) {
+        candidates.push("장단점 비교", "선택지 비교");
+      } else if (intent.taskType === "brief.analyze" && intent.signals.analysisHints.length) {
+        candidates.push("문제 원인 진단", "경쟁 구도 파악");
+      }
+      if (intent.taskType === "brief.write" && intent.filledSlots.goal) {
+        candidates.push(intent.filledSlots.goal);
+      }
+      if (intent.domain === "marketing_strategy" && draftText.includes("정리")) {
+        candidates.push("보고용 전략 정리");
+      }
+    }
+
+    if (question.slot === "output_format") {
+      candidates.push(...intent.signals.outputHints);
+      candidates.push(intent.filledSlots.output_format);
+      if (draftText.includes("표")) {
+        candidates.push("표로 정리", "표");
+      }
+      if (draftText.includes("1페이지")) {
+        candidates.push("1페이지 전략 문서", "1페이지");
+      }
+    }
+
+    if (question.slot === "scope") {
+      candidates.push(intent.filledSlots.scope);
+      if (includesAny(draftText, ["다음 달", "한 달", "4주"])) {
+        candidates.push("4주 실행 계획", "4주");
+      }
+      if (draftText.includes("1페이지")) {
+        candidates.push("1페이지 전략 문서", "1페이지");
+      }
+    }
+
+    if (question.slot === "launch_plan_focus" && draftText.includes("다음 달")) {
+      candidates.push("일정과 마일스톤");
+    }
+
+    if (question.slot === "feature_problem") {
+      if (draftText.includes("새 기능")) candidates.push("새 기능 아이디어 구체화");
+      if (draftText.includes("개선")) candidates.push("기존 기능 개선");
+    }
+
+    if (question.slot === "prd_scope") {
+      candidates.push(intent.filledSlots.prd_scope);
+    }
+
+    if (question.slot === "competitor_scope" && draftText.includes("경쟁사")) {
+      candidates.push("같은 카테고리의 주요 서비스", "특정 경쟁사 2~3곳");
+    }
+
+    if (question.slot === "comparison_dimensions") {
+      if (draftText.includes("가격")) candidates.push("가격/수익모델");
+      if (draftText.includes("마케팅")) candidates.push("마케팅/채널");
+      if (draftText.includes("기능")) candidates.push("기능/제품");
+    }
+
+    if (question.slot === "diagnosis_method" && includesAny(draftText, ["왜", "원인", "낮은지"])) {
+      candidates.push("원인 가설 트리");
+    }
+
+    if (question.slot === "option_details") {
+      if (draftText.includes("마케팅")) candidates.push("마케팅/채널 선택");
+      if (draftText.includes("가격")) candidates.push("가격/비즈니스 모델 선택");
+      if (draftText.includes("기능")) candidates.push("제품/기능 선택");
+    }
+
+    if (question.slot === "naming_context") {
+      if (includesAny(draftText, ["b2b", "saas"])) candidates.push("B2B SaaS");
+      if (includesAny(draftText, ["앱", "소비자"])) candidates.push("소비자 앱");
+      if (includesAny(draftText, ["커뮤니티", "콘텐츠"])) candidates.push("커뮤니티/콘텐츠");
+      if (draftText.includes("내부")) candidates.push("내부 도구/프로젝트");
+    }
+
+    if (question.slot === "campaign_audience") {
+      if (draftText.includes("기존")) candidates.push("기존 고객");
+      if (includesAny(draftText, ["리드", "잠재"])) candidates.push("잠재 리드");
+      if (includesAny(draftText, ["커뮤니티", "팔로워"])) candidates.push("커뮤니티/팔로워");
+    }
+
+    if (question.slot === "campaign_objective") {
+      if (includesAny(draftText, ["전환", "구매"])) candidates.push("구매/전환 유도");
+      if (includesAny(draftText, ["재방문", "리텐션"])) candidates.push("재방문/리텐션");
+      if (includesAny(draftText, ["가입", "참여"])) candidates.push("가입/참여 유도");
+    }
+
+    if (question.slot === "audience") {
+      candidates.push(...intent.signals.audienceHints);
+    }
+
+    if (question.slot === "tone") {
+      candidates.push(intent.filledSlots.tone);
+    }
+
+    if (question.slot === "quantity") {
+      candidates.push(intent.filledSlots.quantity);
+    }
+
+    if (question.slot === "criteria" || question.slot === "decision_criteria") {
+      candidates.push("효과", "속도", "리스크");
+    }
+
+    if (question.slot === "analysis_target") {
+      candidates.push(intent.filledSlots.analysis_target, ...intent.signals.analysisHints);
+    }
+
+    if (question.slot === "decision_options") {
+      candidates.push(intent.filledSlots.decision_options);
+    }
+
+    const preferred = findMatchingOption(options, unique(candidates.filter(Boolean)));
+
+    if (!preferred) {
+      return options;
+    }
+
+    return [preferred].concat(options.filter((option) => option !== preferred));
+  }
+
+  function normalizeQuestion(question, intent) {
+    return {
+      slot: question.slot,
+      label: question.label || question.genericQuestion || "무엇을 정하면 좋을까요?",
+      options: rankOptionsForQuestion(question, intent).map((option) => {
+        return option === window.CBSTemplates.RECOMMEND_OPTION ? RECOMMEND_OPTION : option;
+      })
+    };
+  }
+
+  function planQuestions(intent) {
+    return intent.suggestedSlots
+      .map((slot) => getQuestionTemplateForSlot(slot, intent))
+      .slice(0, 2)
+      .map((question) => normalizeQuestion(question, intent));
+  }
+
+  function selectDefaultAnswer(question, intent, sampleAnswers) {
+    if (sampleAnswers && sampleAnswers[question.slot]) {
+      return sampleAnswers[question.slot];
+    }
+
+    const rankedOptions = rankOptionsForQuestion(question, intent);
+    return rankedOptions.find((option) => option !== window.CBSTemplates.RECOMMEND_OPTION && option !== RECOMMEND_OPTION) || rankedOptions[0] || "";
+  }
+
+  function rankQuestionOptions(question, draftOrIntent, taskType, domain) {
+    const intent =
+      draftOrIntent && typeof draftOrIntent === "object" && draftOrIntent.filledSlots
+        ? draftOrIntent
+        : {
+            ...analyzeIntent(draftOrIntent),
+            taskType: taskType || classifyTaskType(draftOrIntent),
+            domain: domain || classifyDomain(draftOrIntent)
+          };
+    return rankOptionsForQuestion(question, intent);
+  }
+
+  function selectAssumedAnswer(question, draft, taskType, domain, sampleAnswers) {
+    const intent = {
+      ...analyzeIntent(draft),
+      taskType: taskType || classifyTaskType(draft),
+      domain: domain || classifyDomain(draft)
+    };
+    return selectDefaultAnswer(question, intent, sampleAnswers);
+  }
+
+  function shouldShowClarify(draft) {
+    return analyzeIntent(draft).shouldClarify;
+  }
+
+  function getQuestionsForDraft(draft) {
+    return planQuestions(analyzeIntent(draft));
+  }
+
+  window.CBSRuleEngine = {
+    MIN_DRAFT_LENGTH,
+    MIN_HIGH_INTENT_LENGTH,
+    normalizeDraft,
+    shouldShowClarify,
+    classifyDomain,
+    classifyTaskType,
+    detectMissingSlots,
+    getQuestionsForDraft,
+    analyzeIntent,
+    planQuestions,
+    rankQuestionOptions,
+    rankOptionsForQuestion,
+    selectAssumedAnswer,
+    selectDefaultAnswer
+  };
+})();

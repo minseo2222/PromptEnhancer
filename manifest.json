@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Clarify Before Send Prototype",
+  "version": "0.0.1",
+  "description": "Local-first intent clarifier for ChatGPT prompts.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*"
+  ],
+  "action": {
+    "default_title": "Clarify Before Send",
+    "default_popup": "src/popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "src/core/templates.js",
+        "src/core/promptPatterns.js",
+        "src/core/ruleEngine.js",
+        "src/core/briefCompiler.js",
+        "src/core/storage.js",
+        "src/core/localAiAdapter.stub.js",
+        "src/content/content.js"
+      ],
+      "css": ["src/content/content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

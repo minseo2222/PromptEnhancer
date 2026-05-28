@@ -1,0 +1,31 @@
+{
+  "name": "core-v0.3-sales-bd-partial",
+  "createdAt": "2026-05-28T17:36:07.207Z",
+  "caseCount": 43,
+  "source": {
+    "judgeReport": "docs/PREVIEW_JUDGE_REPORT.json",
+    "coreRegressionCases": "tests/fixtures/coreRegressionCases.cjs",
+    "candidateExpansionCases": "tests/fixtures/candidateExpansionCases.cjs"
+  },
+  "promotionSummary": {
+    "previousCaseCount": 39,
+    "addedCases": 4,
+    "addedFrom": "sales_bd_candidate_v1",
+    "backlogCases": 6
+  },
+  "judge": {
+    "passCount": 29,
+    "fixCount": 14,
+    "killCount": 0,
+    "p0Count": 0,
+    "averageUserWouldInsertScore": 3.88
+  },
+  "gates": {
+    "maxCoreKill": 0,
+    "maxCoreP0": 0,
+    "maxAverageDrop": 0.1,
+    "minCandidateAverage": 3.6,
+    "minMultipleChoiceAverage": 3.8,
+    "maxCandidateKill": 0
+  }
+}

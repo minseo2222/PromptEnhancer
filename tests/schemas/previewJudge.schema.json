@@ -1,0 +1,190 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Preview Judge Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary", "cases", "patchPlan"],
+  "properties": {
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "totalCases",
+        "passCount",
+        "fixCount",
+        "killCount",
+        "averageUserWouldInsertScore",
+        "topProblems",
+        "recommendedNextAction"
+      ],
+      "properties": {
+        "totalCases": {
+          "type": "number",
+          "minimum": 0
+        },
+        "passCount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fixCount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "killCount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "averageUserWouldInsertScore": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "topProblems": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recommendedNextAction": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "caseNumber",
+          "caseName",
+          "draft",
+          "verdict",
+          "scores",
+          "problems",
+          "recommendedFix",
+          "priority"
+        ],
+        "properties": {
+          "caseNumber": {
+            "type": "number",
+            "minimum": 1
+          },
+          "caseName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "draft": {
+            "type": "string"
+          },
+          "verdict": {
+            "type": "string",
+            "enum": ["PASS", "FIX", "KILL"]
+          },
+          "scores": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "clarity",
+              "intentFit",
+              "questionUsefulness",
+              "optionSpecificity",
+              "promptUsefulness",
+              "compactness",
+              "userWouldInsert"
+            ],
+            "properties": {
+              "clarity": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "intentFit": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "questionUsefulness": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "optionSpecificity": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "promptUsefulness": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "compactness": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "userWouldInsert": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 5
+              }
+            }
+          },
+          "problems": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recommendedFix": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["P0", "P1", "P2"]
+          }
+        }
+      }
+    },
+    "patchPlan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "priority",
+          "targetFile",
+          "issue",
+          "suggestedChange",
+          "affectedCases"
+        ],
+        "properties": {
+          "priority": {
+            "type": "string",
+            "enum": ["P0", "P1", "P2"]
+          },
+          "targetFile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "issue": {
+            "type": "string",
+            "minLength": 1
+          },
+          "suggestedChange": {
+            "type": "string",
+            "minLength": 1
+          },
+          "affectedCases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

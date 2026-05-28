@@ -1,0 +1,908 @@
+{
+  "summary": {
+    "totalCases": 43,
+    "passCount": 29,
+    "fixCount": 14,
+    "killCount": 0,
+    "averageUserWouldInsertScore": 3.88,
+    "topProblems": [
+      "Several write/artifact flows ask for tone or a broad category before essential source facts.",
+      "Generic artifact defaults are often too coarse, producing template-like prompts instead of draft-specific briefs.",
+      "Decision/prioritization flows miss the user's actual task list or current context before asking for criteria.",
+      "Some analysis/research flows do not capture the actual company, service, category, or comparison object.",
+      "Compiled prompts repeat generic safety and quality instructions, which can dilute selected answers."
+    ],
+    "recommendedNextAction": "Fix critical slot ordering for underspecified write, artifact, analysis, and prioritization cases, then regenerate the preview review."
+  },
+  "cases": [
+    {
+      "caseNumber": 1,
+      "caseName": "marketing strategy plan",
+      "draft": "우리 서비스 마케팅 전략 짜줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 2,
+      "caseName": "launch plan",
+      "draft": "다음 달 런칭 계획 세워줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 3,
+      "caseName": "new feature prd",
+      "draft": "새 기능 PRD 써줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 3,
+        "questionUsefulness": 3,
+        "optionSpecificity": 4,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "Clarify never captures the actual feature or customer problem; \"새 기능 아이디어 구체화\" is not enough for a PRD.",
+        "The compiled prompt asks ChatGPT to ask more questions after Clarify, so the preview feels less insert-ready."
+      ],
+      "recommendedFix": "Make the first PRD slot capture the actual feature/problem as required, or explicitly compile a context-first prompt that asks for that missing detail before drafting.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 4,
+      "caseName": "competitor analysis",
+      "draft": "경쟁사 분석해줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 2,
+        "questionUsefulness": 3,
+        "optionSpecificity": 3,
+        "promptUsefulness": 2,
+        "compactness": 4,
+        "userWouldInsert": 2
+      },
+      "problems": [
+        "The flow does not ask what company, service, market, or category should be analyzed.",
+        "The default \"같은 카테고리의 주요 서비스\" is unusable without knowing the category."
+      ],
+      "recommendedFix": "Prioritize a required analysis target/category question before scope and dimension questions; if absent, compile a prompt that first asks for the target.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 5,
+      "caseName": "conversion rate diagnosis",
+      "draft": "우리 전환율이 왜 낮은지 분석해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 6,
+      "caseName": "option pros cons comparison",
+      "draft": "A안 B안 장단점 비교해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 7,
+      "caseName": "investor update email",
+      "draft": "투자자에게 업데이트 메일 써줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 2,
+        "optionSpecificity": 2,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "Only asking tone misses the important content: reporting period, metrics, asks, risks, and next plans.",
+        "The compiled prompt may produce a generic investor update template rather than a useful email."
+      ],
+      "recommendedFix": "Ask for update focus or included content before tone; compile missing metrics and asks as explicit placeholders or confirmation questions.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 8,
+      "caseName": "customer price increase email",
+      "draft": "고객에게 가격 인상 안내 메일 써줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 2,
+        "optionSpecificity": 2,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "Tone is less important than effective date, price change, affected customers, reason, and customer benefit.",
+        "The prompt is likely to generate a generic notice without the facts needed for a trusted customer email."
+      ],
+      "recommendedFix": "Replace or precede the tone question with price-increase-specific slots for effective date/change scope/reason or compile those as required confirmation points.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 9,
+      "caseName": "ai productivity market research",
+      "draft": "AI 생산성 툴 시장 조사해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 10,
+      "caseName": "chrome extension trend research",
+      "draft": "최근 크롬 익스텐션 트렌드 조사해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 11,
+      "caseName": "personal prioritization",
+      "draft": "뭐부터 해야 할지 모르겠어. 정리 좀 해줘.",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 3,
+        "optionSpecificity": 3,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "The flow does not ask for the actual tasks, commitments, or current situation to prioritize.",
+        "The selected criterion is diluted because the prompt later tells the model to use multiple other criteria too."
+      ],
+      "recommendedFix": "Ask for the task/context source first or compile a first-response prompt that requests the list of things to sort before prioritizing.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 12,
+      "caseName": "weekly priority",
+      "draft": "이번 주 우선순위 정해줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 3,
+        "optionSpecificity": 3,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "The preview asks generic prioritization questions but not what work is on the user's plate this week.",
+        "The output instruction includes \"오늘 할 다음 액션\", which is not well aligned with a weekly priority request."
+      ],
+      "recommendedFix": "Add a current-work/context slot before decision criteria and keep weekly wording consistent in the compiled output.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 13,
+      "caseName": "choose between a and b",
+      "draft": "A랑 B 중 뭐가 나을까?",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 14,
+      "caseName": "campaign ideas",
+      "draft": "캠페인 아이디어 10개 줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 5,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 5,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 15,
+      "caseName": "service name ideas",
+      "draft": "서비스 이름 아이디어 줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 2,
+        "questionUsefulness": 2,
+        "optionSpecificity": 3,
+        "promptUsefulness": 2,
+        "compactness": 5,
+        "userWouldInsert": 2
+      },
+      "problems": [
+        "The questions never capture what the service actually does or what value it promises.",
+        "A broad default like \"소비자 앱\" would produce generic names and reduce trust."
+      ],
+      "recommendedFix": "Ask for service description/value proposition first; keep style as the second question.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 16,
+      "caseName": "summarize key points",
+      "draft": "이 내용 핵심만 요약해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 17,
+      "caseName": "organize as table",
+      "draft": "아래 내용을 표로 정리해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 18,
+      "caseName": "hello",
+      "draft": "안녕",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 19,
+      "caseName": "translate sentence",
+      "draft": "이 문장 번역해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 20,
+      "caseName": "fix spelling",
+      "draft": "맞춤법 고쳐줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 21,
+      "caseName": "short summary",
+      "draft": "짧게 요약해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 22,
+      "caseName": "organize means decide",
+      "draft": "뭐부터 해야 할지 모르겠어. 정리 좀 해줘.",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 3,
+        "optionSpecificity": 3,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "The decide classification is right, but the questions still miss the actual items or situation to organize.",
+        "The compiled prompt can only produce generic coaching because the task list is absent."
+      ],
+      "recommendedFix": "Prioritize a context/task-list capture slot for personal prioritization before asking for criteria.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 23,
+      "caseName": "organize means extract",
+      "draft": "이 내용 핵심만 요약해서 정리해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 24,
+      "caseName": "organize means plan",
+      "draft": "마케팅 전략을 1페이지로 정리해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 25,
+      "caseName": "generic job posting",
+      "draft": "채용 공고 써줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 3,
+        "optionSpecificity": 4,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "Role type and emphasis help, but the prompt lacks seniority, company/team context, location, employment type, and core requirements.",
+        "The output is likely to be a generic developer posting."
+      ],
+      "recommendedFix": "Ask for concrete role details or compile them as required placeholders before drafting the job posting.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 26,
+      "caseName": "generic meeting agenda",
+      "draft": "회의 아젠다 만들어줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 27,
+      "caseName": "generic customer interview questions",
+      "draft": "고객 인터뷰 질문 뽑아줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 28,
+      "caseName": "generic presentation structure",
+      "draft": "발표 구조 잡아줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 29,
+      "caseName": "generic lecture curriculum",
+      "draft": "강의 커리큘럼 만들어줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 3,
+        "optionSpecificity": 3,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "The selected topic \"업무/실무 교육\" is too broad to generate a useful curriculum.",
+        "The flow does not ask for the actual subject, learning outcome, duration, or course depth."
+      ],
+      "recommendedFix": "Ask for the concrete course topic or target outcome first, then ask audience/level.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 30,
+      "caseName": "generic cs response manual",
+      "draft": "CS 응대 매뉴얼 만들어줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 3,
+        "optionSpecificity": 4,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "Purpose and scope are useful, but product/channel/escalation ownership and common issue types are missing.",
+        "The compiled prompt will likely produce a generic support manual rather than a team-ready playbook."
+      ],
+      "recommendedFix": "Add CS-specific context slots for support channel, product/service context, common issue categories, and escalation owner/threshold.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 31,
+      "caseName": "generic onboarding document",
+      "draft": "온보딩 문서 만들어줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 32,
+      "caseName": "generic youtube planning doc",
+      "draft": "유튜브 영상 기획안 써줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 3,
+        "optionSpecificity": 3,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "The topic option \"제품/서비스 소개\" does not capture the actual product, audience, or video goal.",
+        "The resulting prompt is more of a planning template than a draft-specific video brief."
+      ],
+      "recommendedFix": "Ask for concrete video subject/audience first; use output type as the second question.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 33,
+      "caseName": "generic blog outline",
+      "draft": "블로그 글 목차 짜줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 3,
+        "optionSpecificity": 3,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "The selected topic \"제품/서비스 설명\" is too broad for a useful blog outline.",
+        "The flow does not ask for the actual topic, reader, or SEO/education goal."
+      ],
+      "recommendedFix": "Ask for the concrete blog subject or reader problem first; keep outline depth as a secondary slot.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 34,
+      "caseName": "generic survey questions",
+      "draft": "설문조사 문항 만들어줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 35,
+      "caseName": "generic idea pros cons analysis",
+      "draft": "내 아이디어 장단점 분석해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 36,
+      "caseName": "generic team retrospective questions",
+      "draft": "팀 회고 질문 만들어줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 37,
+      "caseName": "generic handoff document",
+      "draft": "업무 인수인계 문서 작성해줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 38,
+      "caseName": "generic customer complaint reply",
+      "draft": "고객 불만 답변 써줘",
+      "verdict": "FIX",
+      "scores": {
+        "clarity": 3,
+        "intentFit": 3,
+        "questionUsefulness": 3,
+        "optionSpecificity": 4,
+        "promptUsefulness": 3,
+        "compactness": 4,
+        "userWouldInsert": 3
+      },
+      "problems": [
+        "Complaint category and tone help, but the actual customer issue, facts, resolution, and policy constraints are missing.",
+        "A generic apology can be risky in customer support because factual accuracy matters."
+      ],
+      "recommendedFix": "Ask for what happened and the available resolution before tone, or compile a context-first reply prompt that requests those facts.",
+      "priority": "P1"
+    },
+    {
+      "caseNumber": 39,
+      "caseName": "generic proposal structure",
+      "draft": "제안서 구조 잡아줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 4,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 40,
+      "caseName": "partnership proposal outline",
+      "draft": "제휴 제안서 목차 짜줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 5,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 41,
+      "caseName": "demo meeting agenda",
+      "draft": "데모 미팅 아젠다 만들어줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 5,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 42,
+      "caseName": "salesy rewrite suppression",
+      "draft": "이 문장 영업스럽게 바꿔줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 43,
+      "caseName": "price negotiation reply",
+      "draft": "가격 협상 대응 문구 써줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 4,
+        "intentFit": 4,
+        "questionUsefulness": 4,
+        "optionSpecificity": 5,
+        "promptUsefulness": 4,
+        "compactness": 4,
+        "userWouldInsert": 4
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    }
+  ],
+  "patchPlan": [
+    {
+      "priority": "P1",
+      "targetFile": "src/core/templates.js",
+      "issue": "Artifact question templates often ask broad category or tone before the essential object/content facts.",
+      "suggestedChange": "For PRD, naming, job posting, curriculum, YouTube, blog, customer reply, and email artifacts, add first-slot questions for concrete subject, source facts, or required context before style/tone/output questions.",
+      "affectedCases": [
+        "3",
+        "7",
+        "8",
+        "15",
+        "25",
+        "29",
+        "32",
+        "33",
+        "38"
+      ]
+    },
+    {
+      "priority": "P1",
+      "targetFile": "src/core/ruleEngine.js",
+      "issue": "Suggested slot selection prioritizes available template slots even when the draft lacks the core object to operate on.",
+      "suggestedChange": "Detect underspecified targets such as competitor/category, service description, task list, role details, and customer complaint facts; rank those slots ahead of tone, format, scope, or criteria.",
+      "affectedCases": [
+        "4",
+        "11",
+        "12",
+        "15",
+        "22",
+        "25",
+        "29",
+        "32",
+        "33",
+        "38"
+      ]
+    },
+    {
+      "priority": "P1",
+      "targetFile": "src/core/briefCompiler.js",
+      "issue": "The compiler treats coarse multiple-choice answers as sufficient and can produce generic drafts from missing facts.",
+      "suggestedChange": "When selected answers are broad placeholders, switch to a context-first compiled prompt that asks for the missing concrete facts and clearly marks them as required before drafting.",
+      "affectedCases": [
+        "3",
+        "4",
+        "7",
+        "8",
+        "15",
+        "25",
+        "29",
+        "30",
+        "32",
+        "33",
+        "38"
+      ]
+    },
+    {
+      "priority": "P2",
+      "targetFile": "src/core/briefCompiler.js",
+      "issue": "Full prompts repeat generic constraints, domain focus, and quality bars, reducing compactness and sometimes diluting the selected answer.",
+      "suggestedChange": "Shorten repeated safety/quality sections and avoid adding secondary criteria that conflict with the user's selected answer.",
+      "affectedCases": [
+        "1",
+        "2",
+        "5",
+        "9",
+        "10",
+        "11",
+        "12",
+        "22",
+        "24"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clarify Before Send</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="popup">
+      <header class="header">
+        <h1>Clarify Before Send</h1>
+        <span class="badge">Local Only Mode</span>
+      </header>
+
+      <section class="section">
+        <ul class="privacy-list">
+          <li>현재 입력 중인 draft만 분석합니다.</li>
+          <li>프롬프트 본문을 서버로 보내지 않습니다.</li>
+          <li>채팅 히스토리를 읽지 않습니다.</li>
+          <li>프롬프트 본문을 저장하지 않습니다.</li>
+          <li>자동 전송하지 않습니다.</li>
+        </ul>
+      </section>
+
+      <section class="section settings" aria-label="Settings">
+        <label class="toggle-row">
+          <input id="enabled" type="checkbox">
+          <span>Enable extension on ChatGPT</span>
+        </label>
+
+        <label class="toggle-row">
+          <input id="showLocalBadge" type="checkbox">
+          <span>Show Local Only badge</span>
+        </label>
+      </section>
+
+      <p id="status" class="status" aria-live="polite"></p>
+    </main>
+
+    <script src="../core/storage.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

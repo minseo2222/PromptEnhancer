@@ -1,0 +1,20 @@
+{
+  "name": "core-v0.2",
+  "createdAt": "2026-05-28",
+  "caseCount": 39,
+  "judge": {
+    "passCount": 24,
+    "fixCount": 15,
+    "killCount": 0,
+    "p0Count": 0,
+    "averageUserWouldInsertScore": 3.69
+  },
+  "gates": {
+    "maxCoreKill": 0,
+    "maxCoreP0": 0,
+    "maxAverageDrop": 0.1,
+    "minCandidateAverage": 3.6,
+    "minMultipleChoiceAverage": 3.8,
+    "maxCandidateKill": 0
+  }
+}
