@@ -834,7 +834,7 @@
       { slot: "resolution_policy", label: "답변에서 가장 중요한 기준은?", options: ["정책 근거 명확화", "고객 상황 공감", "대안 제시", "내부 확인 후 안내", RECOMMEND_OPTION] }
     ],
     outage_notice: [
-      { slot: "outage_status", label: "장애의 현재 상태는?", options: ["조사 중", "복구 중", "복구 완료", "우회 방법 있음", RECOMMEND_OPTION] },
+      { slot: "outage_status", label: "장애/점검의 현재 상태는?", options: ["예정된 점검/중단", "조사 중", "복구 중", "우회 방법 있음", RECOMMEND_OPTION] },
       { slot: "outage_impact", label: "영향 범위는 어디까지인가요?", options: ["전체 서비스 영향", "일부 기능 영향", "특정 고객/지역 영향", "영향 범위 확인 중", RECOMMEND_OPTION] }
     ],
     churn_save_reply: [
@@ -850,8 +850,8 @@
       { slot: "customer_stage", label: "고객 상태는 어디에 가깝나요?", options: ["온보딩 직후", "활성 사용 중", "이탈 위험", "갱신 전", RECOMMEND_OPTION] }
     ],
     support_faq: [
-      { slot: "faq_topic", label: "FAQ에서 다룰 범위는 무엇인가요?", options: ["고객 지원 전반", "제품 사용법", "결제/환불", "문제 해결/장애", RECOMMEND_OPTION] },
-      { slot: "faq_format", label: "FAQ 형식은 어떻게 구성할까요?", options: ["질문-답변 목록", "카테고리별 FAQ", "짧은 답변 중심", "관련 링크/다음 액션 포함", RECOMMEND_OPTION] }
+      { slot: "faq_topic", label: "FAQ에 사용할 문의 범위는?", options: ["기존 문의 목록 기반", "제품 사용법/온보딩", "결제/환불", "문제 해결/장애", RECOMMEND_OPTION] },
+      { slot: "faq_format", label: "Q&A를 어떤 형태로 정리할까요?", options: ["카테고리별 Q&A", "질문-짧은 답변 목록", "답변 + 추가 안내", "고객용 도움말 문서", RECOMMEND_OPTION] }
     ],
     refund_policy_manual: [
       { slot: "refund_policy_scope", label: "환불 정책 매뉴얼에서 가장 중요한 범위는?", options: ["환불 가능/불가 기준", "예외/승인 절차", "상황별 응대 스크립트", "escalation 기준", RECOMMEND_OPTION] },
@@ -1236,8 +1236,8 @@
     },
     outage_status: {
       label: "장애 상태",
-      genericQuestion: "장애의 현재 상태는?",
-      options: ["조사 중", "복구 중", "복구 완료", "우회 방법 있음", RECOMMEND_OPTION],
+      genericQuestion: "장애/점검의 현재 상태는?",
+      options: ["예정된 점검/중단", "조사 중", "복구 중", "우회 방법 있음", RECOMMEND_OPTION],
       priority: {
         "brief.write": 1
       }
@@ -1300,16 +1300,16 @@
     },
     faq_topic: {
       label: "FAQ 범위",
-      genericQuestion: "FAQ에서 다룰 범위는 무엇인가요?",
-      options: ["고객 지원 전반", "제품 사용법", "결제/환불", "문제 해결/장애", RECOMMEND_OPTION],
+      genericQuestion: "FAQ에 사용할 문의 범위는?",
+      options: ["기존 문의 목록 기반", "제품 사용법/온보딩", "결제/환불", "문제 해결/장애", RECOMMEND_OPTION],
       priority: {
         "brief.write": 1
       }
     },
     faq_format: {
       label: "FAQ 형식",
-      genericQuestion: "FAQ 형식은 어떻게 구성할까요?",
-      options: ["질문-답변 목록", "카테고리별 FAQ", "짧은 답변 중심", "관련 링크/다음 액션 포함", RECOMMEND_OPTION],
+      genericQuestion: "Q&A를 어떤 형태로 정리할까요?",
+      options: ["카테고리별 Q&A", "질문-짧은 답변 목록", "답변 + 추가 안내", "고객용 도움말 문서", RECOMMEND_OPTION],
       priority: {
         "brief.write": 1
       }

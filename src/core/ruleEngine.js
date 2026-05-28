@@ -177,36 +177,47 @@
 
   function classifyArtifactType(draft) {
     const text = normalizeDraft(draft).toLowerCase();
+    const hasCustomerContext = includesAny(text, ["고객", "사용자", "유저", "cs", "상담", "지원", "문의", "vip", "중요 고객"]);
+    const hasResponseIntent = includesAny(text, ["답변", "응대", "대응", "메일", "문구", "초안", "작성", "써줘", "안내", "안내문", "공지", "메시지"]);
+    const hasManualIntent = includesAny(text, ["매뉴얼", "플레이북", "가이드", "가이드라인", "절차", "스크립트"]);
+    const hasRefundSignal = includesAny(text, ["환불", "돈을 돌려", "돌려달", "결제 취소", "refund", "reembolso"]);
+    const hasOutageSignal = includesAny(text, ["장애", "점검", "중단", "접속 불가", "접속불가", "오류", "에러", "다운", "서비스 불가"]);
+    const hasChurnSignal = includesAny(text, ["해지", "취소", "구독 취소", "탈퇴", "이탈", "마음 돌리", "붙잡", "리텐션", "retention", "churn"]);
+    const hasEscalationSignal = includesAny(text, ["vip", "중요 고객", "주요 고객", "항의", "컴플레인", "클레임", "긴급 대응", "에스컬레이션", "escalation"]);
+    const hasCheckinSignal = includesAny(text, ["체크인", "점검 메일", "사용 현황 확인", "사용 현황", "고객 성공", "customer success", "check-in"]);
+    const hasFaqSignal = includesAny(text, ["faq", "q&a", "q & a", "자주 받는", "자주 묻는", "자주묻는", "자주 나오는", "도움말"]);
+    const hasDelayComplaintSignal = includesAny(text, ["배송 지연", "일정 지연", "배달 지연", "출고 지연", "delivery delay", "delay"]);
+    const hasComplaintSignal = includesAny(text, ["불만", "항의", "컴플레인", "클레임"]) || hasDelayComplaintSignal;
 
-    if (includesAny(text, ["환불 요청", "환불 답변", "환불 문의", "환불 고객 답변", "환불 요청 고객"])) {
-      return "refund_reply";
-    }
-
-    if (includesAny(text, ["서비스 장애 공지", "장애 공지", "장애 안내", "장애 발생 공지", "오류 공지"])) {
-      return "outage_notice";
-    }
-
-    if (includesAny(text, ["해지하려는 고객", "해지 고객", "해지 방어", "해지 만류", "붙잡는 답변"])) {
-      return "churn_save_reply";
-    }
-
-    if (includesAny(text, ["vip 고객 클레임", "vip 클레임", "고객 클레임 대응", "클레임 대응", "에스컬레이션", "escalation"])) {
-      return "vip_complaint_reply";
-    }
-
-    if (includesAny(text, ["고객 성공 체크인", "고객 체크인 메일", "체크인 메일", "customer success check-in"])) {
-      return "customer_success_checkin";
-    }
-
-    if (includesAny(text, ["고객 지원 faq", "지원 faq", "faq 초안", "자주 묻는 질문", "faq"])) {
-      return "support_faq";
-    }
-
-    if (includesAny(text, ["환불 정책 cs 응대 매뉴얼", "환불 정책 응대 매뉴얼", "환불 cs 매뉴얼", "환불 정책 매뉴얼"])) {
+    if (hasRefundSignal && (hasManualIntent || includesAny(text, ["정책", "승인 기준", "예외", "cs"]))) {
       return "refund_policy_manual";
     }
 
-    if (includesAny(text, ["배송 지연", "일정 지연", "delivery delay"])) {
+    if (hasRefundSignal && (hasCustomerContext || hasResponseIntent || includesAny(text, ["요청", "원하", "문의", "거절", "승인", "불가", "검토"]))) {
+      return "refund_reply";
+    }
+
+    if (hasCheckinSignal && (hasCustomerContext || hasResponseIntent || includesAny(text, ["현황", "성과", "목표", "갱신"]))) {
+      return "customer_success_checkin";
+    }
+
+    if (hasOutageSignal && (hasCustomerContext || hasResponseIntent || includesAny(text, ["영향", "복구", "우회", "상태"]))) {
+      return "outage_notice";
+    }
+
+    if (hasChurnSignal && (hasCustomerContext || hasResponseIntent || includesAny(text, ["사유", "대안", "플랜", "혜택"]))) {
+      return "churn_save_reply";
+    }
+
+    if (hasEscalationSignal && (hasCustomerContext || hasResponseIntent || includesAny(text, ["긴급", "중요", "심각", "오너십", "관리자"]))) {
+      return "vip_complaint_reply";
+    }
+
+    if (hasFaqSignal && (hasCustomerContext || hasResponseIntent || includesAny(text, ["지원", "문의", "질문", "답변"]))) {
+      return "support_faq";
+    }
+
+    if (hasComplaintSignal && (hasCustomerContext || hasResponseIntent)) {
       return "complaint_reply";
     }
 
@@ -593,7 +604,7 @@
     return analyzeIntent(draft).missingSlots;
   }
 
-  function determineShouldClarify(normalized, taskType, domain) {
+  function determineShouldClarify(normalized, taskType, domain, artifactType) {
     const text = normalized.toLowerCase();
 
     if (!normalized) {
@@ -677,7 +688,7 @@
     const missingSlots = getMissingSlots(taskType, filledSlots);
     const intentQuestionKey = getIntentQuestionKey(normalized, taskType, domainAnalysis.domain, artifactType, signals);
     const suggestedSlots = getSuggestedSlots(taskType, domainAnalysis.domain, artifactType, intentQuestionKey, filledSlots, missingSlots);
-    const shouldClarify = determineShouldClarify(normalized, taskType, domainAnalysis.domain);
+    const shouldClarify = determineShouldClarify(normalized, taskType, domainAnalysis.domain, artifactType);
 
     return {
       draft: normalized,
@@ -871,10 +882,10 @@
 
       if (question.slot === "artifact_topic") {
         if (artifactType === "complaint_reply") {
-          if (includesAny(draftText, ["배송 지연", "일정 지연", "delivery delay"])) candidates.push("배송/일정 지연");
-          if (includesAny(draftText, ["장애", "오류"])) candidates.push("서비스 장애/오류");
+          if (includesAny(draftText, ["배송 지연", "일정 지연", "배달 지연", "출고 지연", "delivery delay", "delay"])) candidates.push("배송/일정 지연");
+          if (includesAny(draftText, ["장애", "점검", "중단", "접속 불가", "접속불가", "오류", "에러", "다운"])) candidates.push("서비스 장애/오류");
           if (includesAny(draftText, ["가격", "정책", "환불"])) candidates.push("가격/정책 불만");
-          if (draftText.includes("응대")) candidates.push("응대 경험 불만");
+          if (includesAny(draftText, ["응대", "상담", "지원 경험"])) candidates.push("응대 경험 불만");
         }
       }
 
@@ -888,44 +899,45 @@
         if (draftText.includes("승인")) candidates.push("환불 가능/승인");
         if (includesAny(draftText, ["거부", "불가", "어려"])) candidates.push("정책상 어려움");
         if (includesAny(draftText, ["대안", "크레딧"])) candidates.push("대안/크레딧 제안");
-        if (draftText.includes("환불")) candidates.push("검토 후 안내");
+        if (includesAny(draftText, ["환불", "돈을 돌려", "돌려달", "결제 취소", "refund", "reembolso"])) candidates.push("검토 후 안내");
       }
 
       if (question.slot === "resolution_policy") {
-        if (draftText.includes("환불")) candidates.push("정책 근거 명확화", "고객 상황 공감");
+        if (includesAny(draftText, ["환불", "돈을 돌려", "돌려달", "결제 취소", "refund", "reembolso"])) candidates.push("정책 근거 명확화", "고객 상황 공감");
         if (includesAny(draftText, ["불만", "클레임", "해지"])) candidates.push("신뢰 회복 우선");
-        if (includesAny(draftText, ["장애", "지연"])) candidates.push("사실 확인과 다음 액션");
+        if (includesAny(draftText, ["장애", "점검", "중단", "접속 불가", "오류", "지연"])) candidates.push("사실 확인과 다음 액션");
       }
 
       if (question.slot === "outage_status") {
         if (draftText.includes("복구 완료")) candidates.push("복구 완료");
         if (draftText.includes("복구")) candidates.push("복구 중");
         if (draftText.includes("우회")) candidates.push("우회 방법 있음");
-        if (draftText.includes("장애")) candidates.push("조사 중");
+        if (includesAny(draftText, ["점검", "중단"])) candidates.push("예정된 점검/중단");
+        if (includesAny(draftText, ["장애", "접속 불가", "접속불가", "오류", "에러", "다운"])) candidates.push("조사 중");
       }
 
       if (question.slot === "outage_impact") {
         if (draftText.includes("전체")) candidates.push("전체 서비스 영향");
         if (includesAny(draftText, ["일부", "기능"])) candidates.push("일부 기능 영향");
-        if (includesAny(draftText, ["특정", "지역", "고객"])) candidates.push("특정 고객/지역 영향");
-        if (draftText.includes("장애")) candidates.push("영향 범위 확인 중");
+        if (includesAny(draftText, ["특정 고객", "일부 고객", "특정 지역", "지역"])) candidates.push("특정 고객/지역 영향");
+        if (includesAny(draftText, ["장애", "점검", "중단", "접속 불가", "접속불가", "오류", "에러", "다운"])) candidates.push("영향 범위 확인 중");
       }
 
       if (question.slot === "churn_reason") {
         if (includesAny(draftText, ["가격", "비용"])) candidates.push("가격/비용 부담");
         if (draftText.includes("기능")) candidates.push("기능 부족");
         if (includesAny(draftText, ["성과", "효과"])) candidates.push("성과 미흡");
-        if (draftText.includes("해지")) candidates.push("해지 사유 확인");
+        if (includesAny(draftText, ["해지", "취소", "구독 취소", "탈퇴", "이탈", "마음 돌리", "리텐션"])) candidates.push("해지 사유 확인");
       }
 
       if (question.slot === "retention_boundary") {
-        if (draftText.includes("해지")) candidates.push("공감 후 사유 확인");
+        if (includesAny(draftText, ["해지", "취소", "구독 취소", "탈퇴", "이탈", "마음 돌리", "리텐션"])) candidates.push("공감 후 사유 확인");
         if (includesAny(draftText, ["혜택", "할인", "대안"])) candidates.push("대안/플랜 제안");
       }
 
       if (question.slot === "escalation_level") {
-        if (includesAny(draftText, ["vip", "클레임"])) candidates.push("반복 불만/중요 고객");
-        if (includesAny(draftText, ["장애", "업무 영향"])) candidates.push("긴급 장애/업무 영향");
+        if (includesAny(draftText, ["장애", "점검", "중단", "업무 영향", "긴급"])) candidates.push("긴급 장애/업무 영향");
+        if (includesAny(draftText, ["vip", "중요 고객", "주요 고객", "클레임", "항의", "컴플레인"])) candidates.push("반복 불만/중요 고객");
         if (includesAny(draftText, ["보상", "계약"])) candidates.push("계약/보상 이슈");
       }
 
@@ -936,7 +948,7 @@
       }
 
       if (question.slot === "checkin_purpose") {
-        if (draftText.includes("체크인")) candidates.push("사용 현황 확인");
+        if (includesAny(draftText, ["체크인", "점검 메일", "사용 현황", "사용 현황 확인", "고객 성공"])) candidates.push("사용 현황 확인");
         if (includesAny(draftText, ["성과", "목표"])) candidates.push("성과/목표 점검");
         if (includesAny(draftText, ["문제", "불만"])) candidates.push("문제 조기 발견");
       }
@@ -948,18 +960,19 @@
       }
 
       if (question.slot === "faq_topic") {
-        if (includesAny(draftText, ["고객 지원", "지원"])) candidates.push("고객 지원 전반");
+        if (includesAny(draftText, ["문의", "자주 받는", "자주 묻는", "자주묻는", "faq", "q&a"])) candidates.push("기존 문의 목록 기반");
         if (includesAny(draftText, ["환불", "결제"])) candidates.push("결제/환불");
-        if (includesAny(draftText, ["장애", "오류", "문제"])) candidates.push("문제 해결/장애");
-        if (includesAny(draftText, ["사용법", "온보딩"])) candidates.push("제품 사용법");
+        if (includesAny(draftText, ["장애", "오류", "문제", "접속 불가"])) candidates.push("문제 해결/장애");
+        if (includesAny(draftText, ["사용법", "온보딩", "지원"])) candidates.push("제품 사용법/온보딩");
       }
 
       if (question.slot === "faq_format") {
-        if (draftText.includes("faq")) candidates.push("질문-답변 목록");
+        if (includesAny(draftText, ["q&a", "자주 받는", "자주 묻는", "자주묻는"])) candidates.push("카테고리별 Q&A");
+        if (draftText.includes("faq")) candidates.push("카테고리별 Q&A");
       }
 
       if (question.slot === "refund_policy_scope") {
-        if (draftText.includes("환불")) candidates.push("환불 가능/불가 기준");
+        if (includesAny(draftText, ["환불", "돈을 돌려", "돌려달", "결제 취소", "refund", "reembolso"])) candidates.push("환불 가능/불가 기준");
         if (includesAny(draftText, ["정책", "예외"])) candidates.push("예외/승인 절차");
         if (includesAny(draftText, ["응대", "cs"])) candidates.push("상황별 응대 스크립트");
       }
