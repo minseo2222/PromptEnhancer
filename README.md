@@ -163,7 +163,7 @@ Baseline refresh:
 
 ```powershell
 node tests\validateReportArtifacts.cjs
-$env:ALLOW_BASELINE_REFRESH="1"; node tests\baseline\refreshQualityBaseline.cjs; Remove-Item Env:\ALLOW_BASELINE_REFRESH
+$env:ALLOW_BASELINE_REFRESH="1"; node tests\baseline\refreshQualityBaseline.cjs --name core-v0.5-context-line --added-from context_candidate_v1 --backlog tests\fixtures\domainPacks\context_line_backlog.cjs; Remove-Item Env:\ALLOW_BASELINE_REFRESH
 ```
 
 Prompt Quality Harness:

@@ -38,6 +38,11 @@ Do not add new domain cases directly to `promptCases.cjs`. Add candidate cases t
 - `founder_strategy`
 - `generic`
 
+## Consumed Packs
+
+- `context_candidate_v1.cjs` is a consumed dynamic loader. It previously combined Sales/BD and Customer Support backlogs into `context_line` candidates, but those source backlogs are now empty after the accepted cases moved into core and the remaining cases moved to `context_line_backlog.cjs`.
+- Do not reactivate a consumed pack directly. Copy backlog cases into `candidateExpansionCases.cjs` or create a new candidate pack for the next cycle.
+
 ## Clarification Modes
 
 - `multiple_choice`: Clarify should ask one or two useful multiple-choice questions.

@@ -8,12 +8,14 @@ const baselinesDir = path.join(root, "docs", "baselines");
 const judgeReportPath = path.join(root, "docs", "PREVIEW_JUDGE_REPORT.json");
 const coreCasesPath = path.join(root, "tests", "fixtures", "coreRegressionCases.cjs");
 const candidateCasesPath = path.join(root, "tests", "fixtures", "candidateExpansionCases.cjs");
-const backlogPath = process.env.BASELINE_BACKLOG_PATH
-  ? path.resolve(root, process.env.BASELINE_BACKLOG_PATH)
-  : path.join(root, "tests", "fixtures", "domainPacks", "customer_support_backlog.cjs");
+const args = parseArgs(process.argv.slice(2));
+const baselineName = args.name || process.env.BASELINE_NAME || "core-manual-refresh";
+const addedFrom = args.addedFrom || process.env.BASELINE_ADDED_FROM || "manual_candidate_cycle";
+const backlogPath = path.resolve(
+  root,
+  args.backlog || process.env.BASELINE_BACKLOG_PATH || path.join("tests", "fixtures", "domainPacks", "context_line_backlog.cjs")
+);
 
-const NEW_BASELINE_NAME = process.env.BASELINE_NAME || "core-v0.4-customer-support-partial";
-const ADDED_FROM = process.env.BASELINE_ADDED_FROM || "customer_support_candidate_v1";
 const GATES = {
   maxCoreKill: 0,
   maxCoreP0: 0,
@@ -26,6 +28,26 @@ const GATES = {
 function fail(message) {
   process.stderr.write(`${message}\n`);
   process.exit(1);
+}
+
+function parseArgs(rawArgs) {
+  const result = {};
+
+  for (let index = 0; index < rawArgs.length; index += 1) {
+    const arg = rawArgs[index];
+    if (arg === "--name") {
+      result.name = rawArgs[index + 1];
+      index += 1;
+    } else if (arg === "--added-from") {
+      result.addedFrom = rawArgs[index + 1];
+      index += 1;
+    } else if (arg === "--backlog") {
+      result.backlog = rawArgs[index + 1];
+      index += 1;
+    }
+  }
+
+  return result;
 }
 
 function runNode(script) {
@@ -112,7 +134,7 @@ if (metrics.killCount > 0 || metrics.p0Count > 0) {
 }
 
 const newBaseline = {
-  name: NEW_BASELINE_NAME,
+  name: baselineName,
   createdAt: new Date().toISOString(),
   caseCount: coreCases.length,
   source: {
@@ -123,7 +145,7 @@ const newBaseline = {
   promotionSummary: {
     previousCaseCount: previousBaseline.caseCount,
     addedCases: coreCases.length - previousBaseline.caseCount,
-    addedFrom: ADDED_FROM,
+    addedFrom,
     backlogCases: backlogCases.length
   },
   judge: {

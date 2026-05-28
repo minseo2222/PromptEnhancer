@@ -210,7 +210,7 @@ Run only after manual promotion is complete:
 
 ```powershell
 node tests\validateReportArtifacts.cjs
-$env:ALLOW_BASELINE_REFRESH="1"; node tests\baseline\refreshQualityBaseline.cjs; Remove-Item Env:\ALLOW_BASELINE_REFRESH
+$env:ALLOW_BASELINE_REFRESH="1"; node tests\baseline\refreshQualityBaseline.cjs --name core-v0.5-context-line --added-from context_candidate_v1 --backlog tests\fixtures\domainPacks\context_line_backlog.cjs; Remove-Item Env:\ALLOW_BASELINE_REFRESH
 ```
 
 Pass:
@@ -220,7 +220,7 @@ Pass:
 - Current judge P0 count is 0.
 - Report artifact sync validation passes.
 - Refresh without `ALLOW_BASELINE_REFRESH=1` fails.
-- After refresh, `docs/QUALITY_BASELINE.json` `caseCount` is 43.
+- After refresh, `docs/QUALITY_BASELINE.json` `caseCount` matches the current core regression count.
 - Previous baseline backup remains in `docs/baselines/`.
 
 ## 11. Privacy / Permissions
