@@ -149,6 +149,28 @@
   font-weight: 650;
 }
 
+.cbs-context-line-wrap {
+  min-width: 0;
+}
+
+.cbs-context-line-input {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  font: inherit;
+  line-height: 1.35;
+}
+
+.cbs-context-line-input:focus {
+  border-color: #0f766e;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+}
+
 .cbs-preview-section {
   display: grid;
   flex: 1 1 auto;

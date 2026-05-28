@@ -31,6 +31,7 @@
     taskType: "brief.generic",
     questions: [],
     answers: {},
+    contextLine: "",
     isProgrammaticInput: false
   };
 
@@ -423,6 +424,7 @@
     state.taskType = window.CBSRuleEngine.classifyTaskType(draft);
     state.questions = window.CBSRuleEngine.getQuestionsForDraft(draft).slice(0, 2);
     state.answers = {};
+    state.contextLine = "";
     state.uiState = "questions_open";
 
     ensurePopover();
@@ -461,12 +463,7 @@
 
     if (areAllQuestionsAnswered()) {
       state.uiState = "preview_open";
-      state.generatedPrompt = window.CBSBriefCompiler.compileBrief({
-        draft: state.activeDraft,
-        domain: state.domain,
-        taskType: state.taskType,
-        answers: state.answers
-      });
+      state.generatedPrompt = compileCurrentBrief();
       state.popover.appendChild(renderPreview());
     }
 
@@ -492,6 +489,11 @@
     const group = createElement("div", "cbs-question");
     group.appendChild(createElement("div", "cbs-question-label", `Q${questionIndex + 1}. ${question.label}`));
 
+    if (question.inputType === "context_line") {
+      group.appendChild(renderContextLineInput(question));
+      return group;
+    }
+
     const options = createElement("div", "cbs-options");
     question.options.forEach((option) => {
       const button = createElement("button", "cbs-option", option);
@@ -513,6 +515,50 @@
 
     group.appendChild(options);
     return group;
+  }
+
+  function renderContextLineInput(question) {
+    const wrap = createElement("div", "cbs-context-line-wrap");
+    const input = document.createElement("input");
+    input.className = "cbs-context-line-input";
+    input.type = "text";
+    input.inputMode = "text";
+    input.autocomplete = "off";
+    input.spellcheck = true;
+    input.value = state.contextLine;
+    input.placeholder = question.placeholder || question.label || "Add one line of context";
+    input.setAttribute("aria-label", question.label || "One-line context");
+    input.addEventListener("input", (event) => {
+      state.contextLine = event.target.value || "";
+      updatePreviewFromCurrentAnswers();
+    });
+    wrap.appendChild(input);
+
+    return wrap;
+  }
+
+  function compileCurrentBrief() {
+    return window.CBSBriefCompiler.compileBrief({
+      draft: state.activeDraft,
+      domain: state.domain,
+      taskType: state.taskType,
+      answers: state.answers,
+      contextLine: state.contextLine
+    });
+  }
+
+  function updatePreviewFromCurrentAnswers() {
+    if (!state.popover || !areAllQuestionsAnswered()) {
+      return;
+    }
+
+    state.uiState = "preview_open";
+    state.generatedPrompt = compileCurrentBrief();
+    const preview = state.popover.querySelector(".cbs-preview-text");
+    if (preview) {
+      preview.textContent = state.generatedPrompt;
+    }
+    positionUi();
   }
 
   function renderPreview() {
@@ -686,7 +732,10 @@
   }
 
   function areAllQuestionsAnswered() {
-    return state.questions.length > 0 && state.questions.every((question) => Boolean(state.answers[question.slot]));
+    return (
+      state.questions.length > 0 &&
+      state.questions.every((question) => question.inputType === "context_line" || Boolean(state.answers[question.slot]))
+    );
   }
 
   function cancelFlow() {
@@ -696,6 +745,7 @@
     state.generatedPrompt = "";
     state.questions = [];
     state.answers = {};
+    state.contextLine = "";
     state.originalDraft = null;
     state.popoverPlacement = null;
     state.popoverAnchorRect = null;
@@ -710,6 +760,7 @@
     state.generatedPrompt = "";
     state.questions = [];
     state.answers = {};
+    state.contextLine = "";
     state.originalDraft = null;
     state.popoverPlacement = null;
     state.popoverAnchorRect = null;
@@ -728,6 +779,7 @@
     state.generatedPrompt = "";
     state.questions = [];
     state.answers = {};
+    state.contextLine = "";
     state.dismissedDraftFingerprint = "";
     state.popoverPlacement = null;
     state.popoverAnchorRect = null;
