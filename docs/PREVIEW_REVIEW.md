@@ -8,14 +8,14 @@
 
 ## Summary
 
-- total cases: 65
-- core cases: 48
-- candidate cases: 17
-- clarify true count: 53
+- total cases: 63
+- core cases: 63
+- candidate cases: 0
+- clarify true count: 51
 - clarify false count: 12
-- generic domain count: 45
-- context line count: 17
-- average questions per clarify case: 1.60
+- generic domain count: 43
+- context line count: 15
+- average questions per clarify case: 1.63
 - prompts over 1200 chars count: 0
 - prompts over 1600 chars count: 0
 
@@ -26,13 +26,13 @@
 - `brief.decide`: 4
 - `brief.extract`: 4
 - `brief.generic`: 5
-- `brief.plan`: 17
+- `brief.plan`: 16
 - `brief.research`: 2
-- `brief.write`: 23
+- `brief.write`: 22
 
 ### Domain Distribution
 
-- `generic`: 45
+- `generic`: 43
 - `marketing_strategy`: 4
 - `personal_prioritization`: 3
 - `product_planning`: 1
@@ -42,7 +42,7 @@
 ### Domain Pack Distribution
 
 - `content_education`: 6
-- `context_candidate`: 17
+- `context_candidate`: 15
 - `customer_support`: 8
 - `founder_strategy`: 3
 - `generic`: 13
@@ -54,14 +54,13 @@
 
 ### Clarification Mode Distribution
 
-- `context_line`: 17
+- `context_line`: 15
 - `multiple_choice`: 36
 - `suppress`: 12
 
 ### Case Source Distribution
 
-- `candidate`: 17
-- `core`: 48
+- `core`: 63
 
 ### ArtifactType Distribution
 
@@ -82,9 +81,9 @@
 - `none`: 27
 - `objections_analysis`: 1
 - `onboarding_doc`: 2
-- `outage_notice`: 2
+- `outage_notice`: 1
 - `presentation_outline`: 1
-- `proposal_outline`: 3
+- `proposal_outline`: 2
 - `question_set`: 1
 - `refund_policy_manual`: 1
 - `refund_reply`: 2
@@ -3962,7 +3961,7 @@ Draft:
 세일즈 콜 스크립트 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4035,7 +4034,7 @@ Draft:
 콜드메일 작성해줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4108,7 +4107,7 @@ Draft:
 잠재 고객 objections 정리해줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4183,7 +4182,7 @@ Draft:
 영업 후속 메일 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4256,7 +4255,7 @@ Draft:
 우리 제품 세일즈 자료 만들어줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4323,88 +4322,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 54. proposal for customer A
-Draft:
-```text
-A 고객에게 제안서 써줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `context_candidate`
-- clarificationMode: `context_line`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write or brief.plan`
-- expectedDomain: `not specified`
-- expectedArtifactType: `proposal_outline`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.plan`
-- domain: `generic`
-- domainConfidence: `0.00`
-- artifactType: `proposal_outline`
-- needsContextLine: `true`
-Filled Slots:
-- audience: 고객
-- output_format: 제안서 구조
-- goal: 제안서 구조
-Missing Slots:
-- scope
-- timeframe
-- success_criteria
-- constraints
-Suggested Slots:
-- context_line
-Questions:
-### Q1. 고객 상황과 제안할 내용을 한 줄로 알려주세요.
-
-- inputType: `context_line`
-- placeholder: 예: A 고객의 지원 비용 절감을 위한 CS 자동화 도입 제안
-Assumed Answers:
-_No assumed answers._
-Context Line:
-```text
-A 고객은 CS 비용 증가가 문제이고, 지원 자동화 도입을 제안하려 함
-```
-Compiled Prompt:
-```text
-# 작업
-제안서 구조를 잡는다. 원문 요청 "A 고객에게 제안서 써줘"의 의도를 보존한다. 목표는 "제안서 구조"이다.
-
-# 확인된 정보
-- 원문 요청: "A 고객에게 제안서 써줘"
-- 목표: 제안서 구조
-- 대상: 고객
-- 1줄 맥락: A 고객은 CS 비용 증가가 문제이고, 지원 자동화 도입을 제안하려 함
-- 출력 형식: 제안서 구조
-
-# 출력 형식
-선택된 출력 형식: 제안서 구조
-- 문제 정의, 제안 내용, 기대 효과, 비용/리스크, 다음 단계를 구분한다.
-- 제안서 구조를 바로 확장할 수 있게 작성한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 55. refund request response
+## Case 54. refund request response
 Draft:
 ```text
 환불 요청 고객 답변 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4474,13 +4398,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 56. service outage notice
+## Case 55. service outage notice
 Draft:
 ```text
 서비스 장애 공지 초안 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4548,13 +4472,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 57. support faq draft
+## Case 56. support faq draft
 Draft:
 ```text
 고객 지원 FAQ 초안 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4623,13 +4547,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 58. new customer onboarding guide
+## Case 57. new customer onboarding guide
 Draft:
 ```text
 신규 고객 온보딩 문서 만들어줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4700,13 +4624,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 59. churn save reply
+## Case 58. churn save reply
 Draft:
 ```text
 해지하려는 고객에게 붙잡는 답변 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4776,13 +4700,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 60. customer success check-in email
+## Case 59. customer success check-in email
 Draft:
 ```text
 고객 성공 체크인 메일 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4851,13 +4775,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 61. refund reply paraphrase
+## Case 60. refund reply paraphrase
 Draft:
 ```text
 고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -4926,88 +4850,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 62. outage notice paraphrase
-Draft:
-```text
-점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `context_candidate`
-- clarificationMode: `context_line`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `outage_notice`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `generic`
-- domainConfidence: `0.00`
-- artifactType: `outage_notice`
-- needsContextLine: `true`
-Filled Slots:
-- audience: 고객
-- output_format: 서비스 장애 공지
-- goal: 서비스 장애 공지
-Missing Slots:
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- context_line
-Questions:
-### Q1. 영향 범위, 현재 상태, 다음 업데이트 시점을 한 줄로 알려주세요.
-
-- inputType: `context_line`
-- placeholder: 예: 로그인 장애가 30분째 지속, 일부 계정 영향, 1시간 뒤 업데이트
-Assumed Answers:
-_No assumed answers._
-Context Line:
-```text
-예정 점검으로 23시부터 30분간 접속 불가, 완료 후 공지 예정
-```
-Compiled Prompt:
-```text
-# 작업
-서비스 장애 공지 초안을 작성한다. 원문 요청 "점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘"의 의도를 보존한다. 목표는 "서비스 장애 공지"이다.
-
-# 확인된 정보
-- 원문 요청: "점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘"
-- 목표: 서비스 장애 공지
-- 대상: 고객
-- 1줄 맥락: 예정 점검으로 23시부터 30분간 접속 불가, 완료 후 공지 예정
-- 출력 형식: 서비스 장애 공지
-
-# 출력 형식
-선택된 출력 형식: 서비스 장애 공지
-- 장애 요약, 영향 범위, 현재 상태, 우회책, 다음 업데이트 시점을 구분한다.
-- 책임 회피보다 사과, 사실 확인, 고객이 할 수 있는 다음 행동을 우선한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 63. churn save paraphrase
+## Case 61. churn save paraphrase
 Draft:
 ```text
 구독 취소하려는 고객 마음 돌리는 메일 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -5076,13 +4925,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 64. customer success check-in paraphrase
+## Case 62. customer success check-in paraphrase
 Draft:
 ```text
 사용 현황 확인용 고객 점검 메일 작성해줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -5151,13 +5000,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 65. support faq paraphrase
+## Case 63. support faq paraphrase
 Draft:
 ```text
 자주 받는 고객 문의 Q&A 만들어줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `context_candidate`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`

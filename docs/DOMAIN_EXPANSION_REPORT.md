@@ -1,12 +1,12 @@
 # Domain Expansion Report
 
 ## Summary
-- core cases: 48
-- candidate cases: 17
-- candidate status: active
-- judge source: freshly generated
-- total cases: 65
-- decision: PROMOTE
+- core cases: 63
+- candidate cases: 0
+- candidate status: none
+- judge source: reused existing report
+- total cases: 63
+- decision: READY_FOR_CANDIDATE
 - partial promotion status: NOT_READY
 - needs_context risk: none
 
@@ -14,43 +14,40 @@
 
 | Metric | Baseline | Current | Delta |
 | --- | --- | --- | --- |
-| PASS | 36 | 42 | 6 |
+| PASS | 36 | 57 | 21 |
 | FIX | 12 | 6 | -6 |
 | KILL | 0 | 0 | 0 |
 | P0 | 0 | 0 | 0 |
-| average userWouldInsert | 3.79 | 4.04 | 0.25 |
+| average userWouldInsert | 3.79 | 4.24 | 0.45 |
 
 Gate results:
 
 - PASS: core KILL must be 0 (current=0)
 - PASS: core P0 must be 0 (current=0)
-- PASS: core average drop <= maxAverageDrop (drop=-0.25)
+- PASS: core average drop <= maxAverageDrop (drop=-0.45)
 - PASS: core PASS count did not decrease
 
 ## Candidate Pack Results
 
 | Metric | Value |
 | --- | --- |
-| cases | 17 |
-| PASS | 15 |
-| FIX | 2 |
+| cases | 0 |
+| PASS | 0 |
+| FIX | 0 |
 | KILL | 0 |
 | P0 | 0 |
-| average userWouldInsert | 4.65 |
+| average userWouldInsert | 0 |
 | multiple_choice average | 0 |
 | promotion_ready average | 0 |
 | needs_patch average | 0 |
-| needs_context average | 4.65 |
+| needs_context average | 0 |
 | suppress_regression average | 0 |
-| needs_context ratio | 1 |
-| UX_GAP | YES |
+| needs_context ratio | 0 |
+| UX_GAP | NO |
 
 Candidate gates:
 
-- PASS: candidate multiple_choice KILL must be 0 (multiple_choice=0)
-- PASS: candidate P0 must be 0 (current=0)
-- PASS: candidate average >= minCandidateAverage (avg=4.65)
-- PASS: multiple_choice average >= minMultipleChoiceAverage (avg=0)
+- SKIPPED: candidate gates (no candidate cases)
 
 KILL/P0 list:
 
@@ -60,34 +57,28 @@ Lowest 10 cases:
 
 | Case | Domain Pack | Verdict | Insert Score | Priority | Draft |
 | --- | --- | --- | --- | --- | --- |
-| 54. proposal for customer A | context_candidate | FIX | 3 | P1 | A 고객에게 제안서 써줘 |
-| 62. outage notice paraphrase | context_candidate | FIX | 3 | P1 | 점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘 |
-| 51. prospect objections analysis | context_candidate | PASS | 4 | P2 | 잠재 고객 objections 정리해줘 |
-| 53. sales collateral for our product | context_candidate | PASS | 4 | P2 | 우리 제품 세일즈 자료 만들어줘 |
-| 49. sales call script | context_candidate | PASS | 5 | P2 | 세일즈 콜 스크립트 써줘 |
-| 50. cold email draft | context_candidate | PASS | 5 | P2 | 콜드메일 작성해줘 |
-| 52. sales follow-up email | context_candidate | PASS | 5 | P2 | 영업 후속 메일 써줘 |
-| 55. refund request response | context_candidate | PASS | 5 | P2 | 환불 요청 고객 답변 써줘 |
-| 56. service outage notice | context_candidate | PASS | 5 | P2 | 서비스 장애 공지 초안 써줘 |
-| 57. support faq draft | context_candidate | PASS | 5 | P2 | 고객 지원 FAQ 초안 써줘 |
+| 11. personal prioritization | internal_ops | FIX | 2 | P1 | 뭐부터 해야 할지 모르겠어. 정리 좀 해줘. |
+| 12. weekly priority | internal_ops | FIX | 2 | P1 | 이번 주 우선순위 정해줘 |
+| 15. service name ideas | generic | FIX | 2 | P1 | 서비스 이름 아이디어 줘 |
+| 22. organize means decide | generic | FIX | 2 | P1 | 뭐부터 해야 할지 모르겠어. 정리 좀 해줘. |
+| 3. new feature prd | product_pm | FIX | 3 | P1 | 새 기능 PRD 써줘 |
+| 48. vip escalation paraphrase | customer_support | FIX | 3 | P1 | 중요 고객 항의에 긴급 대응 메일 초안 써줘 |
+| 1. marketing strategy plan | gtm_marketing | PASS | 4 | P2 | 우리 서비스 마케팅 전략 짜줘 |
+| 2. launch plan | generic | PASS | 4 | P2 | 다음 달 런칭 계획 세워줘 |
+| 4. competitor analysis | founder_strategy | PASS | 4 | P2 | 경쟁사 분석해줘 |
+| 5. conversion rate diagnosis | gtm_marketing | PASS | 4 | P2 | 우리 전환율이 왜 낮은지 분석해줘 |
 
 ## Domain Pack Breakdown
 
-| domainPack | cases | PASS | FIX | KILL | avg insert | decision |
-| --- | --- | --- | --- | --- | --- | --- |
-| context_candidate | 17 | 15 | 2 | 0 | 4.65 | OK |
+No candidate domain packs.
 
 ## Clarification Mode Breakdown
 
-| clarificationMode | cases | PASS | FIX | KILL | avg insert |
-| --- | --- | --- | --- | --- | --- |
-| context_line | 17 | 15 | 2 | 0 | 4.65 |
+No candidate clarification modes.
 
 ## Promotion Group Breakdown
 
-| promotionGroup | cases | PASS | FIX | KILL | P0 | avg insert | decision |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| needs_context | 17 | 15 | 2 | 0 | 0 | 4.65 | DOCUMENT_LIMITATION |
+No candidate promotion groups.
 
 ## Manual Promotion Candidates
 
@@ -95,25 +86,7 @@ No manual promotion candidates.
 
 ## Context-required Backlog
 
-| Case | Draft | Reason | Suggested Future UX |
-| --- | --- | --- | --- |
-| 49. sales call script | 세일즈 콜 스크립트 써줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 50. cold email draft | 콜드메일 작성해줘 | 제품/오퍼/대상 고객이 없으면 품질 제한 | optional one-line offer/context field |
-| 51. prospect objections analysis | 잠재 고객 objections 정리해줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 52. sales follow-up email | 영업 후속 메일 써줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 53. sales collateral for our product | 우리 제품 세일즈 자료 만들어줘 | 제품/대상 고객/오퍼 정보가 필요 | one-line product/context input |
-| 54. proposal for customer A | A 고객에게 제안서 써줘 | 고객 상황/제안 내용이 필요 | one-line customer/context input |
-| 55. refund request response | 환불 요청 고객 답변 써줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 56. service outage notice | 서비스 장애 공지 초안 써줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 57. support faq draft | 고객 지원 FAQ 초안 써줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 58. new customer onboarding guide | 신규 고객 온보딩 문서 만들어줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 59. churn save reply | 해지하려는 고객에게 붙잡는 답변 써줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 60. customer success check-in email | 고객 성공 체크인 메일 써줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 61. refund reply paraphrase | 고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 62. outage notice paraphrase | 점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 63. churn save paraphrase | 구독 취소하려는 고객 마음 돌리는 메일 써줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 64. customer success check-in paraphrase | 사용 현황 확인용 고객 점검 메일 작성해줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
-| 65. support faq paraphrase | 자주 받는 고객 문의 Q&A 만들어줘 | 짧은 요청만으로는 핵심 맥락을 확정하기 어려움 | optional one-line context field |
+No context-required backlog items.
 
 ## Needs Patch Cases
 
@@ -125,7 +98,7 @@ No needs_patch cases.
 - Planned maintenance is routed through outage wording, which can distort a scheduled customer notice.
 
 ## Recommended Next Action
-- Patch candidate cases that fall below gates, then rerun the expansion cycle.
+- Add a small candidate pack, then rerun the expansion cycle.
 
 ## Promotion Notes
 - Promote candidates only when core regression gates pass.

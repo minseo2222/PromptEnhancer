@@ -1,16 +1,16 @@
 {
   "summary": {
-    "totalCases": 65,
+    "totalCases": 63,
     "passCount": 57,
-    "fixCount": 8,
+    "fixCount": 6,
     "killCount": 0,
-    "averageUserWouldInsertScore": 4.2,
+    "averageUserWouldInsertScore": 4.24,
     "topProblems": [
       "High-context tasks sometimes ask categorical multiple-choice questions instead of collecting the actual feature, service, or task list needed for a useful result.",
       "Some artifact compilers lose explicit output intent, especially email draft vs generic response and proposal draft vs outline.",
       "Planned maintenance is routed through outage wording, which can distort a scheduled customer notice."
     ],
-    "recommendedNextAction": "Patch the recurring high-context and artifact-format issues, regenerate docs/PREVIEW_REVIEW.md, then rerun schema and encoding validation."
+    "recommendedNextAction": "Context-line candidate cycle closed: 15 PASS cases promoted to core and 2 FIX cases moved to context_line_backlog. Ready for the next candidate pack after validation."
   },
   "cases": [
     {
@@ -987,27 +987,6 @@
     },
     {
       "caseNumber": 54,
-      "caseName": "proposal for customer A",
-      "draft": "A 고객에게 제안서 써줘",
-      "verdict": "FIX",
-      "scores": {
-        "clarity": 4,
-        "intentFit": 3,
-        "questionUsefulness": 5,
-        "optionSpecificity": 5,
-        "promptUsefulness": 3,
-        "compactness": 5,
-        "userWouldInsert": 3
-      },
-      "problems": [
-        "The context-line question is useful and the context is included, but the compiler downgrades 제안서 써줘 to 제안서 구조.",
-        "A real user asking for a proposal draft may not want to insert a prompt that only asks for structure."
-      ],
-      "recommendedFix": "Distinguish proposal draft requests from outline/structure requests; when context is available, compile a first proposal draft or draft-plus-outline contract.",
-      "priority": "P1"
-    },
-    {
-      "caseNumber": 55,
       "caseName": "refund request response",
       "draft": "환불 요청 고객 답변 써줘",
       "verdict": "PASS",
@@ -1025,7 +1004,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 56,
+      "caseNumber": 55,
       "caseName": "service outage notice",
       "draft": "서비스 장애 공지 초안 써줘",
       "verdict": "PASS",
@@ -1043,7 +1022,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 57,
+      "caseNumber": 56,
       "caseName": "support faq draft",
       "draft": "고객 지원 FAQ 초안 써줘",
       "verdict": "PASS",
@@ -1061,7 +1040,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 58,
+      "caseNumber": 57,
       "caseName": "new customer onboarding guide",
       "draft": "신규 고객 온보딩 문서 만들어줘",
       "verdict": "PASS",
@@ -1079,7 +1058,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 59,
+      "caseNumber": 58,
       "caseName": "churn save reply",
       "draft": "해지하려는 고객에게 붙잡는 답변 써줘",
       "verdict": "PASS",
@@ -1097,7 +1076,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 60,
+      "caseNumber": 59,
       "caseName": "customer success check-in email",
       "draft": "고객 성공 체크인 메일 써줘",
       "verdict": "PASS",
@@ -1115,7 +1094,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 61,
+      "caseNumber": 60,
       "caseName": "refund reply paraphrase",
       "draft": "고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘",
       "verdict": "PASS",
@@ -1133,28 +1112,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 62,
-      "caseName": "outage notice paraphrase",
-      "draft": "점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘",
-      "verdict": "FIX",
-      "scores": {
-        "clarity": 4,
-        "intentFit": 3,
-        "questionUsefulness": 5,
-        "optionSpecificity": 5,
-        "promptUsefulness": 2,
-        "compactness": 5,
-        "userWouldInsert": 3
-      },
-      "problems": [
-        "The context line clearly says this is scheduled maintenance, but the compiled task and output format label it as a service outage.",
-        "The output contract asks for 장애 요약 and apology framing, which can misrepresent a planned maintenance notice."
-      ],
-      "recommendedFix": "Add planned-maintenance notice handling or branch the outage artifact contract when 예정 점검/점검 signals are present.",
-      "priority": "P1"
-    },
-    {
-      "caseNumber": 63,
+      "caseNumber": 61,
       "caseName": "churn save paraphrase",
       "draft": "구독 취소하려는 고객 마음 돌리는 메일 써줘",
       "verdict": "PASS",
@@ -1172,7 +1130,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 64,
+      "caseNumber": 62,
       "caseName": "customer success check-in paraphrase",
       "draft": "사용 현황 확인용 고객 점검 메일 작성해줘",
       "verdict": "PASS",
@@ -1190,7 +1148,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 65,
+      "caseNumber": 63,
       "caseName": "support faq paraphrase",
       "draft": "자주 받는 고객 문의 Q&A 만들어줘",
       "verdict": "PASS",
@@ -1229,24 +1187,6 @@
       "suggestedChange": "When the draft includes 메일, 이메일, or 답장, add an email-specific output contract such as subject, opening, body, and CTA while keeping the artifact safety constraints.",
       "affectedCases": [
         "Case 48. vip escalation paraphrase"
-      ]
-    },
-    {
-      "priority": "P1",
-      "targetFile": "src/core/ruleEngine.js, src/core/briefCompiler.js",
-      "issue": "Proposal draft requests are compiled as outline-only prompts.",
-      "suggestedChange": "Distinguish 제안서 써줘 from 제안서 구조/목차 requests and compile a proposal draft or draft-plus-structure output when context is available.",
-      "affectedCases": [
-        "Case 54. proposal for customer A"
-      ]
-    },
-    {
-      "priority": "P1",
-      "targetFile": "src/core/ruleEngine.js, src/core/briefCompiler.js",
-      "issue": "Scheduled maintenance is contaminated by outage wording.",
-      "suggestedChange": "Add a maintenance_notice artifact or branch outage_notice contracts when 예정 점검/점검 signals are present so the prompt uses 안내문 and planned-maintenance framing instead of 장애 공지.",
-      "affectedCases": [
-        "Case 62. outage notice paraphrase"
       ]
     }
   ]

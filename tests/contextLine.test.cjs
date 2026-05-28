@@ -3,7 +3,11 @@ const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 
-const contextCases = require("./fixtures/domainPacks/context_candidate_v1.cjs");
+const coreCases = require("./fixtures/coreRegressionCases.cjs");
+const contextLineBacklogCases = require("./fixtures/domainPacks/context_line_backlog.cjs");
+const contextCases = coreCases
+  .filter((caseItem) => caseItem.clarificationMode === "context_line")
+  .concat(contextLineBacklogCases);
 
 global.window = global;
 
@@ -16,7 +20,7 @@ for (const file of [
   vm.runInThisContext(fs.readFileSync(path.join(__dirname, "..", file), "utf8"), { filename: file });
 }
 
-assert.strictEqual(contextCases.length, 17, "context candidate pack should contain Sales/BD 6 + CS 11 cases");
+assert.strictEqual(contextCases.length, 17, "context line coverage should include promoted core 15 + backlog 2 cases");
 
 for (const caseItem of contextCases) {
   assert.strictEqual(caseItem.clarificationMode, "context_line", `${caseItem.name}: clarificationMode`);

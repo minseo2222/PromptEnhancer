@@ -1,12 +1,12 @@
 # Preview Judge Report
 
 ## Summary
-- total cases: 65
+- total cases: 63
 - PASS count: 57
-- FIX count: 8
+- FIX count: 6
 - KILL count: 0
-- average userWouldInsert score: 4.2
-- recommended next action: Patch the recurring high-context and artifact-format issues, regenerate docs/PREVIEW_REVIEW.md, then rerun schema and encoding validation.
+- average userWouldInsert score: 4.24
+- recommended next action: Context-line candidate cycle closed: 15 PASS cases promoted to core and 2 FIX cases moved to context_line_backlog. Ready for the next candidate pack after validation.
 
 ## Top Problems
 - High-context tasks sometimes ask categorical multiple-choice questions instead of collecting the actual feature, service, or task list needed for a useful result.
@@ -67,31 +67,27 @@ No P0 fixes reported.
 | 46. refund policy support manual | core | customer_support | multiple_choice | PASS | 4 | 5 | 5 | 5 | 4 | 5 | 4 | P2 |
 | 47. vip escalation response plan | core | customer_support | multiple_choice | PASS | 4 | 5 | 5 | 5 | 4 | 5 | 4 | P2 |
 | 48. vip escalation paraphrase | core | customer_support | multiple_choice | FIX | 4 | 3 | 4 | 4 | 3 | 5 | 3 | P1 |
-| 49. sales call script | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 50. cold email draft | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 51. prospect objections analysis | candidate | context_candidate | context_line | PASS | 5 | 4 | 5 | 5 | 4 | 5 | 4 | P2 |
-| 52. sales follow-up email | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 53. sales collateral for our product | candidate | context_candidate | context_line | PASS | 5 | 4 | 5 | 5 | 4 | 5 | 4 | P2 |
-| 54. proposal for customer A | candidate | context_candidate | context_line | FIX | 4 | 3 | 5 | 5 | 3 | 5 | 3 | P1 |
-| 55. refund request response | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 56. service outage notice | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 57. support faq draft | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 58. new customer onboarding guide | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 59. churn save reply | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 60. customer success check-in email | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 61. refund reply paraphrase | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 62. outage notice paraphrase | candidate | context_candidate | context_line | FIX | 4 | 3 | 5 | 5 | 2 | 5 | 3 | P1 |
-| 63. churn save paraphrase | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 64. customer success check-in paraphrase | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 65. support faq paraphrase | candidate | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 49. sales call script | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 50. cold email draft | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 51. prospect objections analysis | core | context_candidate | context_line | PASS | 5 | 4 | 5 | 5 | 4 | 5 | 4 | P2 |
+| 52. sales follow-up email | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 53. sales collateral for our product | core | context_candidate | context_line | PASS | 5 | 4 | 5 | 5 | 4 | 5 | 4 | P2 |
+| 54. refund request response | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 55. service outage notice | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 56. support faq draft | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 57. new customer onboarding guide | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 58. churn save reply | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 59. customer success check-in email | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 60. refund reply paraphrase | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 61. churn save paraphrase | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 62. customer success check-in paraphrase | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 63. support faq paraphrase | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
 
 ## Patch Plan
 | Priority | Target File | Issue | Suggested Change | Affected Cases |
 | --- | --- | --- | --- | --- |
 | P1 | src/core/ruleEngine.js, src/core/templates.js | High-context tasks need the actual subject or task list, not only categorical multiple-choice answers. | Route PRD, naming, and personal prioritization drafts to a context-line question or a context-first prompt that asks for the actual feature/problem, service description, or current task list. | Case 3. new feature prd, Case 11. personal prioritization, Case 12. weekly priority, Case 15. service name ideas, Case 22. organize means decide |
 | P1 | src/core/briefCompiler.js | Email intent is lost for support escalation artifacts. | When the draft includes 메일, 이메일, or 답장, add an email-specific output contract such as subject, opening, body, and CTA while keeping the artifact safety constraints. | Case 48. vip escalation paraphrase |
-| P1 | src/core/ruleEngine.js, src/core/briefCompiler.js | Proposal draft requests are compiled as outline-only prompts. | Distinguish 제안서 써줘 from 제안서 구조/목차 requests and compile a proposal draft or draft-plus-structure output when context is available. | Case 54. proposal for customer A |
-| P1 | src/core/ruleEngine.js, src/core/briefCompiler.js | Scheduled maintenance is contaminated by outage wording. | Add a maintenance_notice artifact or branch outage_notice contracts when 예정 점검/점검 signals are present so the prompt uses 안내문 and planned-maintenance framing instead of 장애 공지. | Case 62. outage notice paraphrase |
 
 ## Review Policy
 This report is an automated judge result. Final product decisions must still be validated through external user testing.

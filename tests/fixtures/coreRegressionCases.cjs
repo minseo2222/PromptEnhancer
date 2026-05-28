@@ -423,5 +423,389 @@ module.exports = [
     promotedFrom: "customer_support_candidate_v1",
     promotionReason: "manual_promotion_after_candidate_cycle_overfit_guard",
     promotedAt: "2026-05-29"
+  },
+  {
+    "name": "sales call script",
+    "draft": "세일즈 콜 스크립트 써줘",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedTaskTypes": [
+      "brief.write",
+      "brief.plan"
+    ],
+    "expectedArtifactType": "sales_script",
+    "expectedIncludes": [
+      "세일즈",
+      "콜",
+      "스크립트"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD"
+    ],
+    "notes": "세일즈 콜 목적, 대상, 콜 구조를 묻는 질문이 나오면 좋다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "제품/고객/콜 목적 맥락이 없으면 스크립트 품질이 제한됨.",
+    "originalDomainPack": "sales_bd",
+    "sampleContextLine": "재고관리 SaaS를 SMB 대표에게 소개하고 데모 미팅을 잡는 첫 콜"
+  },
+  {
+    "name": "cold email draft",
+    "draft": "콜드메일 작성해줘",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedTaskType": "brief.write",
+    "expectedArtifactType": "cold_email",
+    "expectedIncludes": [
+      "콜드메일",
+      "메일",
+      "제목",
+      "본문"
+    ],
+    "expectedExcludes": [
+      "PRD",
+      "회의 아젠다"
+    ],
+    "backlogReason": "제품/오퍼/대상 고객 맥락이 없으면 품질이 제한됨. optional one-line offer/context field 후보.",
+    "originalDomainPack": "sales_bd",
+    "sampleContextLine": "HR팀장에게 채용 자동화 SaaS 무료 데모를 제안하는 첫 콜드메일",
+    "notes": "context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다."
+  },
+  {
+    "name": "prospect objections analysis",
+    "draft": "잠재 고객 objections 정리해줘",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedTaskTypes": [
+      "brief.analyze",
+      "brief.extract"
+    ],
+    "expectedArtifactType": "objections_analysis",
+    "expectedIncludes": [
+      "objection",
+      "반박",
+      "우려",
+      "망설임",
+      "대응",
+      "정리"
+    ],
+    "expectedExcludes": [
+      "시장 흐름",
+      "PRD"
+    ],
+    "notes": "objection은 고객 반박/우려/망설임으로 해석하면 된다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "후보는 좋지만 objection 유형과 고객 맥락 질문 보강 후 재검증 필요.",
+    "originalDomainPack": "sales_bd",
+    "sampleContextLine": "보안과 도입 리스크를 우려하는 엔터프라이즈 IT 담당자 대상"
+  },
+  {
+    "name": "sales follow-up email",
+    "draft": "영업 후속 메일 써줘",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedTaskType": "brief.write",
+    "expectedArtifactType": "follow_up_email",
+    "expectedIncludes": [
+      "영업",
+      "후속",
+      "메일"
+    ],
+    "expectedExcludes": [
+      "PRD",
+      "회의 아젠다"
+    ],
+    "backlogReason": "이전 접점과 다음 액션 정보가 필요함.",
+    "originalDomainPack": "sales_bd",
+    "sampleContextLine": "어제 제품 데모 후 가격표를 보낸 리드에게 다음 미팅을 요청",
+    "notes": "context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다."
+  },
+  {
+    "name": "sales collateral for our product",
+    "draft": "우리 제품 세일즈 자료 만들어줘",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "allowedShouldShowClarify": [
+      false,
+      true
+    ],
+    "expectedTaskTypes": [
+      "brief.plan",
+      "brief.write"
+    ],
+    "expectedIncludes": [
+      "세일즈",
+      "자료"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD"
+    ],
+    "notes": "어떤 제품인지 없어서 v0 객관식만으로는 완성도 높은 결과를 만들기 어렵다. Clarify가 뜬다면 제품 유형/대상 고객/자료 목적을 물어야 한다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "제품 설명과 대상 고객 정보가 필요함. one-line product/context input 후보.",
+    "originalDomainPack": "sales_bd",
+    "expectedArtifactType": "sales_collateral",
+    "sampleContextLine": "B2B 회계 자동화 제품, CFO 대상, 도입 검토용 1페이지 자료"
+  },
+  {
+    "name": "refund request response",
+    "draft": "환불 요청 고객 답변 써줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "refund_reply",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedIncludes": [
+      "환불",
+      "요청",
+      "고객",
+      "답변"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "채용 공고"
+    ],
+    "notes": "환불 정책, 결제 상태, 예외 처리 권한이 없으면 free-text 맥락이 필요하다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "one-line context UX 필요",
+    "originalDomainPack": "customer_support",
+    "sampleContextLine": "7일 환불 기간은 지났지만 첫 결제 고객이라 내부 검토 후 안내해야 함"
+  },
+  {
+    "name": "service outage notice",
+    "draft": "서비스 장애 공지 초안 써줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "outage_notice",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedIncludes": [
+      "서비스",
+      "장애",
+      "공지"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "가격 협상"
+    ],
+    "notes": "장애 범위, 발생 시간, 영향 고객, 복구 상태가 없으면 안전한 공지가 어렵다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "one-line context UX 필요",
+    "originalDomainPack": "customer_support",
+    "sampleContextLine": "로그인 장애가 30분째 지속, 일부 계정 영향, 1시간 뒤 상태 업데이트 예정"
+  },
+  {
+    "name": "support faq draft",
+    "draft": "고객 지원 FAQ 초안 써줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "support_faq",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedIncludes": [
+      "고객",
+      "지원",
+      "FAQ"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "세일즈"
+    ],
+    "notes": "FAQ 범위와 형식을 묻되, source 문의 목록이 없으면 확인 필요로 남겨야 한다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "원본 문의 목록 입력 필요",
+    "originalDomainPack": "customer_support",
+    "sampleContextLine": "반복 문의는 로그인 오류, 환불 절차, 결제수단 변경, 비밀번호 재설정"
+  },
+  {
+    "name": "new customer onboarding guide",
+    "draft": "신규 고객 온보딩 문서 만들어줘",
+    "expectedTaskType": "brief.plan",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "onboarding_doc",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedIncludes": [
+      "신규 고객",
+      "온보딩",
+      "문서"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "채용 공고"
+    ],
+    "notes": "고객 성공 관점의 온보딩 대상과 단계가 잘 반영되는지 확인한다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "제품/서비스 맥락 입력 필요",
+    "originalDomainPack": "customer_support",
+    "sampleContextLine": "신규 고객이 첫 주 안에 결제 연동과 팀 초대를 완료하게 하는 SaaS 온보딩"
+  },
+  {
+    "name": "churn save reply",
+    "draft": "해지하려는 고객에게 붙잡는 답변 써줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "churn_save_reply",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedIncludes": [
+      "해지",
+      "고객",
+      "답변"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "세일즈 콜"
+    ],
+    "notes": "해지 사유, 고객 플랜, 제안 가능한 대안이 없으면 억지 객관식화하지 않는다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "one-line context UX 필요",
+    "originalDomainPack": "customer_support",
+    "sampleContextLine": "가격 부담으로 해지를 고민하지만 사용량은 높고 월간 할인은 불가"
+  },
+  {
+    "name": "customer success check-in email",
+    "draft": "고객 성공 체크인 메일 써줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "customer_success_checkin",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedIncludes": [
+      "고객 성공",
+      "체크인",
+      "메일"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "채용 공고"
+    ],
+    "notes": "고객 상태, 사용 맥락, 체크인 목적이 없으면 free-text 맥락이 필요하다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "one-line context UX 필요",
+    "originalDomainPack": "customer_support",
+    "sampleContextLine": "도입 2주차 고객, 핵심 기능 사용률이 낮아 활성화 지원 목적"
+  },
+  {
+    "name": "refund reply paraphrase",
+    "draft": "고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "refund_reply",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedIncludes": [
+      "고객",
+      "결제",
+      "돌려",
+      "답장"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "채용 공고"
+    ],
+    "notes": "환불이라는 고정 단어 없이 결제 취소/돈을 돌려달라는 의도로 refund_reply를 잡는 paraphrase 케이스. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "one-line context UX 필요",
+    "originalDomainPack": "customer_support",
+    "sampleContextLine": "결제 후 3일 내 요청이라 환불 가능성이 높지만 결제수단 확인 필요"
+  },
+  {
+    "name": "churn save paraphrase",
+    "draft": "구독 취소하려는 고객 마음 돌리는 메일 써줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "churn_save_reply",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedIncludes": [
+      "구독 취소",
+      "고객",
+      "마음",
+      "메일"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "세일즈 콜"
+    ],
+    "notes": "해지라는 고정 단어 없이 구독 취소/마음 돌리기 표현을 churn_save_reply로 분류하는 케이스. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "one-line context UX 필요",
+    "originalDomainPack": "customer_support",
+    "sampleContextLine": "구독 취소 이유는 팀 사용률 저하, 교육 세션 제안 가능"
+  },
+  {
+    "name": "customer success check-in paraphrase",
+    "draft": "사용 현황 확인용 고객 점검 메일 작성해줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "customer_success_checkin",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedIncludes": [
+      "사용 현황",
+      "고객",
+      "점검 메일"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "채용 공고"
+    ],
+    "notes": "체크인이라는 고정 단어 없이 사용 현황 확인/점검 메일 신호로 customer_success_checkin을 잡는다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "one-line context UX 필요",
+    "originalDomainPack": "customer_support",
+    "sampleContextLine": "월간 리포트 확인 전 사용 현황과 막힌 지점을 묻는 고객 성공 메일"
+  },
+  {
+    "name": "support faq paraphrase",
+    "draft": "자주 받는 고객 문의 Q&A 만들어줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "support_faq",
+    "domainPack": "context_candidate",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "expectedIncludes": [
+      "자주 받는",
+      "고객 문의",
+      "Q&A"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "세일즈"
+    ],
+    "notes": "FAQ라는 고정 문구 없이 자주 받는/Q&A 표현으로 support_faq를 잡고, 문의 범위/형식 질문으로 일반화한다. context_line candidate: 1줄 맥락이 compiled prompt의 #맥락에 반영되는지 검증한다.",
+    "backlogReason": "one-line context UX 필요",
+    "originalDomainPack": "customer_support",
+    "sampleContextLine": "자주 받는 문의는 배송 지연, 환불 가능 여부, 계정 로그인 문제"
   }
 ];

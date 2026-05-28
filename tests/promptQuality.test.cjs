@@ -80,6 +80,11 @@ function assertQuestionQuality(draft, questions) {
   for (const question of questions) {
     assert.ok(question.label, `${draft}: question label is required`);
     assert.ok(Array.isArray(question.options), `${draft}: options must be an array`);
+    if (question.inputType === "context_line") {
+      assert.strictEqual(question.slot, "context_line", `${draft}: context line question must use context_line slot`);
+      assert.ok(question.placeholder, `${draft}: context line question should provide a placeholder`);
+      continue;
+    }
     assert.ok(question.options.length >= 4, `${draft}: options must have at least 4 values`);
     assert.ok(question.options.includes("추천해줘"), `${draft}: options must include 추천해줘`);
   }
@@ -126,7 +131,8 @@ function assertCompiledPrompt(caseItem, taskType, domain) {
     draft: caseItem.draft,
     domain,
     taskType,
-    answers
+    answers,
+    contextLine: caseItem.sampleContextLine || ""
   });
 
   assert.strictEqual(typeof prompt, "string", `${caseItem.name}: compiled prompt must be a string`);
@@ -145,8 +151,15 @@ function assertCompiledPrompt(caseItem, taskType, domain) {
     assert.ok(prompt.includes(value), `${caseItem.name}: selected answer not reflected: ${value}`);
   }
 
-  for (const expected of caseItem.expectedIncludes || []) {
-    assert.ok(prompt.includes(expected), `${caseItem.name}: expected compiled prompt to include ${expected}`);
+  if (caseItem.clarificationMode === "context_line" && (caseItem.expectedIncludes || []).length) {
+    assert.ok(
+      caseItem.expectedIncludes.some((expected) => prompt.includes(expected)),
+      `${caseItem.name}: expected compiled prompt to include one of ${caseItem.expectedIncludes.join(", ")}`
+    );
+  } else {
+    for (const expected of caseItem.expectedIncludes || []) {
+      assert.ok(prompt.includes(expected), `${caseItem.name}: expected compiled prompt to include ${expected}`);
+    }
   }
 
   return prompt;
@@ -172,7 +185,7 @@ for (const caseItem of promptCases) {
     );
   }
 
-  if (caseItem.expectedDomain) {
+  if (caseItem.expectedDomain && caseItem.clarificationMode !== "context_line") {
     assert.strictEqual(domain, caseItem.expectedDomain, `${caseItem.name}: domain mismatch`);
   }
 
