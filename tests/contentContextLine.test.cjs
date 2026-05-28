@@ -8,6 +8,7 @@ class FakeEvent {
     this.type = type;
     this.bubbles = Boolean(options.bubbles);
     this.cancelable = Boolean(options.cancelable);
+    this.key = options.key || "";
     this.target = null;
     this.defaultPrevented = false;
     this.propagationStopped = false;
@@ -119,7 +120,11 @@ class FakeElement {
     return !event.defaultPrevented;
   }
 
-  focus() {}
+  focus() {
+    if (global.document) {
+      global.document.activeElement = this;
+    }
+  }
 
   querySelector(selector) {
     return queryAll(this, selector)[0] || null;
@@ -166,6 +171,7 @@ class FakeDocument {
   constructor() {
     this.body = new FakeElement("body");
     this.eventListeners = {};
+    this.activeElement = null;
   }
 
   createElement(tagName) {
@@ -191,6 +197,12 @@ class FakeDocument {
   addEventListener(type, handler) {
     this.eventListeners[type] = this.eventListeners[type] || [];
     this.eventListeners[type].push(handler);
+  }
+
+  dispatchEvent(event) {
+    event.target = event.target || this;
+    (this.eventListeners[event.type] || []).forEach((handler) => handler.call(this, event));
+    return !event.defaultPrevented;
   }
 
   querySelector(selector) {
@@ -303,21 +315,59 @@ async function main() {
   const contextInput = document.querySelector(".cbs-context-line-input");
   assert.ok(contextInput, "context_line input should render");
   assert.ok(!document.querySelector(".cbs-option"), "context_line case should not render multiple-choice chips");
+  assert.strictEqual(document.activeElement, contextInput, "popover should focus the first interactive control");
 
-  const initialPreview = document.querySelector(".cbs-preview-text");
+  const initialPreview = document.querySelector(".cbs-preview-rendered");
   assert.ok(initialPreview, "empty context should still render a graceful preview");
-  assert.ok(initialPreview.textContent.includes("확인 필요"), "empty context preview should keep missing context explicit");
+  assert.ok(
+    initialPreview.getAttribute("data-cbs-raw-prompt").includes("확인 필요"),
+    "empty context preview should keep missing context explicit"
+  );
 
   const contextLine = "HR팀장에게 채용 자동화 SaaS 무료 데모를 제안하는 첫 콜드메일";
   contextInput.value = contextLine;
   contextInput.dispatchEvent(new FakeEvent("input", { bubbles: true }));
 
-  const preview = document.querySelector(".cbs-preview-text");
-  assert.ok(preview.textContent.includes(contextLine), "preview should include the one-line context");
+  const preview = document.querySelector(".cbs-preview-rendered");
+  const rawPrompt = preview.getAttribute("data-cbs-raw-prompt");
+  assert.ok(rawPrompt.includes(contextLine), "preview raw prompt should include the one-line context");
+  assert.ok(document.querySelector(".cbs-section-chip-row"), "section chip row should render for structured prompt");
   assert.ok(compileCalls.some((call) => call.contextLine === contextLine), "compileBrief should receive contextLine");
 
   assert.strictEqual(window.CBSContent.getComposerText(composer), "콜드메일 작성해줘", "draft should remain unchanged before insert");
   assert.ok(!compileCalls.some((call) => String(call.contextLine || "").includes("undefined")), "contextLine should be explicit");
+
+  const fallbackPreview = window.CBSContent.renderPromptPreview("plain prompt without markdown");
+  assert.strictEqual(fallbackPreview.tagName, "PRE", "headerless prompt should use pre fallback");
+  assert.strictEqual(
+    fallbackPreview.getAttribute("data-cbs-raw-prompt"),
+    "plain prompt without markdown",
+    "fallback preview should preserve raw prompt"
+  );
+
+  document.dispatchEvent(new FakeEvent("keydown", { bubbles: true, cancelable: true, key: "Escape" }));
+  assert.ok(!document.querySelector("#cbs-clarify-popover"), "Escape should close the popover");
+  assert.ok(document.querySelector("#cbs-clarify-chip"), "dismiss should leave the existing chip quietly in place");
+
+  await new Promise((resolve) => setTimeout(resolve, 900));
+  assert.strictEqual(document.querySelectorAll("#cbs-clarify-popover").length, 0, "dismissed draft should not auto-reopen popover");
+
+  chip.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
+  const reopenedInput = document.querySelector(".cbs-context-line-input");
+  reopenedInput.value = contextLine;
+  reopenedInput.dispatchEvent(new FakeEvent("input", { bubbles: true }));
+  const reopenedPrompt = document.querySelector(".cbs-preview-rendered").getAttribute("data-cbs-raw-prompt");
+  assert.strictEqual(reopenedPrompt, rawPrompt, "reopened preview should preserve the same raw prompt");
+
+  const insertButton = document.querySelectorAll(".cbs-primary-button").find((button) => button.textContent === "입력창에 넣기");
+  assert.ok(insertButton, "insert button should render");
+  insertButton.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
+  assert.strictEqual(window.CBSContent.getComposerText(composer), rawPrompt, "inserted composer text must equal raw compiled prompt");
+
+  const undoButton = document.querySelectorAll(".cbs-primary-button").find((button) => button.textContent === "Undo");
+  assert.ok(undoButton, "undo button should render");
+  undoButton.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
+  assert.strictEqual(window.CBSContent.getComposerText(composer), "콜드메일 작성해줘", "undo should restore original draft");
   process.stdout.write("content context_line DOM test ok\n");
 }
 

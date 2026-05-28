@@ -59,6 +59,24 @@ h1 {
   border-top: 1px solid #eaecf0;
 }
 
+.feedback {
+  padding-top: 12px;
+  border-top: 1px solid #eaecf0;
+}
+
+.feedback-link {
+  width: fit-content;
+  color: #0f766e;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.feedback-link:hover,
+.feedback-link:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
 .toggle-row {
   display: flex;
   align-items: center;
@@ -79,4 +97,32 @@ h1 {
   color: #0f766e;
   font-size: 12px;
   font-weight: 650;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #171717;
+    color: #f3f4f6;
+  }
+
+  .badge {
+    border-color: rgba(45, 212, 191, 0.32);
+    background: rgba(20, 184, 166, 0.12);
+    color: #5eead4;
+  }
+
+  .privacy-list,
+  .toggle-row {
+    color: #d4d4d8;
+  }
+
+  .settings,
+  .feedback {
+    border-top-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .feedback-link,
+  .status {
+    color: #5eead4;
+  }
 }

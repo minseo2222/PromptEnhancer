@@ -44,6 +44,7 @@
 
     document.addEventListener("input", onDocumentInput, true);
     document.addEventListener("focusin", onDocumentFocus, true);
+    document.addEventListener("keydown", onDocumentKeydown, true);
     window.addEventListener("resize", positionUi, { passive: true });
     window.addEventListener("scroll", positionUi, { passive: true });
     if (window.visualViewport) {
@@ -141,6 +142,22 @@
       state.composer = composer;
       scheduleComposerCheck(DEBOUNCE_MS);
     }
+  }
+
+  function onDocumentKeydown(event) {
+    if (event.key !== "Escape" || !state.popover) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (state.uiState === "inserted" || state.uiState === "error") {
+      closeFlow();
+      return;
+    }
+
+    cancelFlow();
   }
 
   function scheduleComposerCheck(delay) {
@@ -429,6 +446,7 @@
 
     ensurePopover();
     refreshPopover();
+    focusFirstPopoverControl();
     positionUi();
   }
 
@@ -475,7 +493,7 @@
     const header = createElement("div", "cbs-popover-header");
     const textWrap = createElement("div", "cbs-popover-heading");
     textWrap.appendChild(createElement("strong", "cbs-title", "Clarify Before Send"));
-    textWrap.appendChild(createElement("span", "cbs-subtitle", "질문 2개 이하로 의도를 정리합니다."));
+    textWrap.appendChild(createElement("span", "cbs-subtitle", "답변 품질을 좌우하는 맥락만 먼저 정리합니다."));
     header.appendChild(textWrap);
 
     if (state.showLocalBadge) {
@@ -554,22 +572,129 @@
 
     state.uiState = "preview_open";
     state.generatedPrompt = compileCurrentBrief();
-    const preview = state.popover.querySelector(".cbs-preview-text");
-    if (preview) {
-      preview.textContent = state.generatedPrompt;
+    const previewSection = state.popover.querySelector(".cbs-preview-section");
+    if (previewSection) {
+      populatePreviewSection(previewSection, { small: false });
     }
     positionUi();
   }
 
   function renderPreview() {
     const section = createElement("div", "cbs-preview-section");
-    section.appendChild(createElement("div", "cbs-section-title", "Preview"));
-
-    const preview = createElement("pre", "cbs-preview-text");
-    preview.textContent = state.generatedPrompt;
-    section.appendChild(preview);
-
+    populatePreviewSection(section, { small: false });
     return section;
+  }
+
+  function populatePreviewSection(section, options = {}) {
+    section.replaceChildren();
+    section.appendChild(renderOriginalDraftSummary());
+    section.appendChild(createElement("div", "cbs-section-title", "정리된 프롬프트"));
+    section.appendChild(renderSectionChips(state.generatedPrompt));
+    section.appendChild(renderPromptPreview(state.generatedPrompt, options));
+  }
+
+  function renderOriginalDraftSummary() {
+    const draft = state.activeDraft || "";
+    const maxInlineLength = 96;
+
+    if (draft.length > maxInlineLength) {
+      const details = document.createElement("details");
+      details.className = "cbs-original-draft cbs-original-draft-details";
+      details.appendChild(createElement("summary", "", `원문: ${draft.slice(0, maxInlineLength)}...`));
+      details.appendChild(createElement("p", "", draft));
+      return details;
+    }
+
+    return createElement("div", "cbs-original-draft", `원문: ${draft}`);
+  }
+
+  function renderSectionChips(prompt) {
+    const parsed = parsePromptForPreview(prompt);
+    const wrap = createElement("div", "cbs-section-chip-row");
+
+    if (!parsed.sectionTitles.length) {
+      return wrap;
+    }
+
+    wrap.appendChild(createElement("span", "cbs-section-chip-label", "정리됨"));
+    parsed.sectionTitles.forEach((title) => {
+      wrap.appendChild(createElement("span", "cbs-section-chip", title));
+    });
+    return wrap;
+  }
+
+  function renderPromptPreview(prompt, options = {}) {
+    const parsed = parsePromptForPreview(prompt);
+
+    if (!parsed.hasHeaders) {
+      const fallback = createElement("pre", options.small ? "cbs-preview-text cbs-preview-text-small" : "cbs-preview-text");
+      fallback.textContent = prompt || "";
+      fallback.setAttribute("data-cbs-raw-prompt", prompt || "");
+      return fallback;
+    }
+
+    const wrap = createElement(
+      "div",
+      options.small ? "cbs-preview-rendered cbs-preview-rendered-small" : "cbs-preview-rendered"
+    );
+    wrap.setAttribute("data-cbs-raw-prompt", prompt || "");
+
+    parsed.blocks.forEach((block) => {
+      if (block.type === "heading") {
+        wrap.appendChild(createElement("h3", "cbs-preview-heading", block.text));
+      } else if (block.type === "list") {
+        const list = createElement("ul", "cbs-preview-list");
+        block.items.forEach((item) => {
+          list.appendChild(createElement("li", "", item));
+        });
+        wrap.appendChild(list);
+      } else if (block.type === "paragraph") {
+        wrap.appendChild(createElement("p", "cbs-preview-paragraph", block.text));
+      } else if (block.type === "space") {
+        wrap.appendChild(createElement("div", "cbs-preview-space", ""));
+      }
+    });
+
+    return wrap;
+  }
+
+  function parsePromptForPreview(prompt) {
+    const lines = String(prompt || "").split(/\r?\n/);
+    const blocks = [];
+    const sectionTitles = [];
+    let currentList = null;
+    let hasHeaders = false;
+
+    lines.forEach((line) => {
+      const headingMatch = line.match(/^#\s(.+)/);
+      if (headingMatch) {
+        currentList = null;
+        hasHeaders = true;
+        sectionTitles.push(headingMatch[1]);
+        blocks.push({ type: "heading", text: headingMatch[1] });
+        return;
+      }
+
+      if (line.startsWith("- ")) {
+        if (!currentList) {
+          currentList = { type: "list", items: [] };
+          blocks.push(currentList);
+        }
+        currentList.items.push(line.slice(2));
+        return;
+      }
+
+      currentList = null;
+
+      if (!line.trim()) {
+        blocks.push({ type: "space", text: "" });
+        return;
+      }
+
+      blocks.push({ type: "paragraph", text: line });
+    });
+
+    return { hasHeaders, sectionTitles, blocks };
   }
 
   function renderFooter(canInsert) {
@@ -619,11 +744,9 @@
     ensurePopover();
     state.popover.replaceChildren();
     state.popover.appendChild(renderPopoverHeader());
-    state.popover.appendChild(createElement("p", "cbs-success", "입력창에 넣었습니다. 자동 전송은 하지 않았습니다."));
+    state.popover.appendChild(createElement("p", "cbs-success", "입력창에 넣었습니다. 자동 전송하지 않았고, 원문은 Undo로 복원할 수 있습니다."));
 
-    const preview = createElement("pre", "cbs-preview-text cbs-preview-text-small");
-    preview.textContent = state.generatedPrompt;
-    state.popover.appendChild(preview);
+    state.popover.appendChild(renderPromptPreview(state.generatedPrompt, { small: true }));
 
     const footer = createElement("div", "cbs-footer");
     const undo = createElement("button", "cbs-primary-button", "Undo");
@@ -739,6 +862,7 @@
   }
 
   function cancelFlow() {
+    rememberDismissedDraft();
     removePopover();
     state.uiState = state.chip ? "chip_visible" : "idle";
     state.activeDraft = "";
@@ -753,6 +877,7 @@
   }
 
   function closeFlow(options = {}) {
+    rememberDismissedDraft();
     removePopover();
     removeChip();
     state.uiState = "idle";
@@ -786,6 +911,13 @@
     state.taskType = "brief.generic";
   }
 
+  function rememberDismissedDraft() {
+    const draft = state.activeDraft || (state.composer ? getComposerText(state.composer) : "");
+    if (draft) {
+      state.dismissedDraftFingerprint = fingerprintDraft(draft);
+    }
+  }
+
   function removeChip() {
     if (state.chip) {
       state.chip.remove();
@@ -801,6 +933,17 @@
     if (state.popover) {
       state.popover.remove();
       state.popover = null;
+    }
+  }
+
+  function focusFirstPopoverControl() {
+    if (!state.popover) {
+      return;
+    }
+
+    const control = state.popover.querySelector("input") || state.popover.querySelector("button");
+    if (control && typeof control.focus === "function") {
+      control.focus();
     }
   }
 
@@ -991,6 +1134,8 @@
     findComposer,
     getComposerText,
     setComposerText,
-    dispatchInputEvents
+    dispatchInputEvents,
+    parsePromptForPreview,
+    renderPromptPreview
   };
 })();
