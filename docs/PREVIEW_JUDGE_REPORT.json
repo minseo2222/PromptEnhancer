@@ -1,10 +1,10 @@
 {
   "summary": {
-    "totalCases": 59,
-    "passCount": 43,
-    "fixCount": 16,
+    "totalCases": 48,
+    "passCount": 36,
+    "fixCount": 12,
     "killCount": 0,
-    "averageUserWouldInsertScore": 3.76,
+    "averageUserWouldInsertScore": 3.79,
     "topProblems": [
       "Several previews ask generic or secondary questions while missing the core subject/context needed to produce a useful result.",
       "Some assumed defaults are arbitrary and can change the user's intent, especially for open-ended artifact requests.",
@@ -12,7 +12,7 @@
       "Personal prioritization prompts do not ask for the actual task list/options before prioritizing.",
       "Compiled prompts are often heavier than needed and occasionally add domain boilerplate that does not fit the specific task."
     ],
-    "recommendedNextAction": "Patch context-first handling for underspecified artifacts and replace generic/default-first questions before another preview run."
+    "recommendedNextAction": "Core regression set updated from existing judge results. Add a small candidate pack, then rerun the expansion cycle."
   },
   "cases": [
     {
@@ -439,9 +439,10 @@
         "userWouldInsert": 2
       },
       "problems": [
-        "Same issue as the prioritization case: no actual task list or situation is collected."
+        "The flow does not ask for the actual tasks/options to prioritize.",
+        "Compiled prompt may produce generic productivity advice instead of organizing the user's real situation."
       ],
-      "recommendedFix": "Ask for tasks/options first, then apply selected criteria.",
+      "recommendedFix": "Ask for or reserve space for the task list before applying priority criteria.",
       "priority": "P1"
     },
     {
@@ -853,6 +854,24 @@
     },
     {
       "caseNumber": 44,
+      "caseName": "empathetic rewrite suppression",
+      "draft": "이 문장 고객에게 더 공감 있게 바꿔줘",
+      "verdict": "PASS",
+      "scores": {
+        "clarity": 5,
+        "intentFit": 5,
+        "questionUsefulness": 5,
+        "optionSpecificity": 5,
+        "promptUsefulness": 5,
+        "compactness": 5,
+        "userWouldInsert": 5
+      },
+      "problems": [],
+      "recommendedFix": "No change.",
+      "priority": "P2"
+    },
+    {
+      "caseNumber": 45,
       "caseName": "delayed delivery complaint reply",
       "draft": "배송 지연 고객 불만 답변 써줘",
       "verdict": "PASS",
@@ -870,87 +889,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 45,
-      "caseName": "refund request response",
-      "draft": "환불 요청 고객 답변 써줘",
-      "verdict": "PASS",
-      "scores": {
-        "clarity": 4,
-        "intentFit": 4,
-        "questionUsefulness": 4,
-        "optionSpecificity": 5,
-        "promptUsefulness": 4,
-        "compactness": 4,
-        "userWouldInsert": 4
-      },
-      "problems": [
-        "Policy details are still missing, but the prompt safely avoids promising refund outcomes."
-      ],
-      "recommendedFix": "Keep the safety wording.",
-      "priority": "P2"
-    },
-    {
       "caseNumber": 46,
-      "caseName": "service outage notice",
-      "draft": "서비스 장애 공지 초안 써줘",
-      "verdict": "PASS",
-      "scores": {
-        "clarity": 4,
-        "intentFit": 4,
-        "questionUsefulness": 4,
-        "optionSpecificity": 5,
-        "promptUsefulness": 4,
-        "compactness": 4,
-        "userWouldInsert": 4
-      },
-      "problems": [],
-      "recommendedFix": "No change.",
-      "priority": "P2"
-    },
-    {
-      "caseNumber": 47,
-      "caseName": "support faq draft",
-      "draft": "고객 지원 FAQ 초안 써줘",
-      "verdict": "FIX",
-      "scores": {
-        "clarity": 3,
-        "intentFit": 3,
-        "questionUsefulness": 2,
-        "optionSpecificity": 3,
-        "promptUsefulness": 3,
-        "compactness": 4,
-        "userWouldInsert": 3
-      },
-      "problems": [
-        "Defaulting to existing inquiry list based is unsafe when no inquiry list is provided.",
-        "The prompt may invite fabricated FAQ content."
-      ],
-      "recommendedFix": "Ask whether source inquiries are available, or instruct the model to produce a category template with placeholders rather than invented Q&A.",
-      "priority": "P1"
-    },
-    {
-      "caseNumber": 48,
-      "caseName": "new customer onboarding guide",
-      "draft": "신규 고객 온보딩 문서 만들어줘",
-      "verdict": "FIX",
-      "scores": {
-        "clarity": 3,
-        "intentFit": 3,
-        "questionUsefulness": 2,
-        "optionSpecificity": 3,
-        "promptUsefulness": 3,
-        "compactness": 4,
-        "userWouldInsert": 3
-      },
-      "problems": [
-        "Only asking format misses the product/service and the first success outcome for the new customer.",
-        "The compiled onboarding doc will be generic."
-      ],
-      "recommendedFix": "Ask for product/service context or onboarding goal before format when the audience is already known.",
-      "priority": "P2"
-    },
-    {
-      "caseNumber": 49,
       "caseName": "refund policy support manual",
       "draft": "환불 정책 CS 응대 매뉴얼 만들어줘",
       "verdict": "PASS",
@@ -970,43 +909,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 50,
-      "caseName": "empathetic rewrite suppression",
-      "draft": "이 문장 고객에게 더 공감 있게 바꿔줘",
-      "verdict": "PASS",
-      "scores": {
-        "clarity": 5,
-        "intentFit": 5,
-        "questionUsefulness": 5,
-        "optionSpecificity": 5,
-        "promptUsefulness": 5,
-        "compactness": 5,
-        "userWouldInsert": 5
-      },
-      "problems": [],
-      "recommendedFix": "No change.",
-      "priority": "P2"
-    },
-    {
-      "caseNumber": 51,
-      "caseName": "churn save reply",
-      "draft": "해지하려는 고객에게 붙잡는 답변 써줘",
-      "verdict": "PASS",
-      "scores": {
-        "clarity": 4,
-        "intentFit": 5,
-        "questionUsefulness": 4,
-        "optionSpecificity": 5,
-        "promptUsefulness": 4,
-        "compactness": 4,
-        "userWouldInsert": 4
-      },
-      "problems": [],
-      "recommendedFix": "No change.",
-      "priority": "P2"
-    },
-    {
-      "caseNumber": 52,
+      "caseNumber": 47,
       "caseName": "vip escalation response plan",
       "draft": "VIP 고객 클레임 대응 초안 써줘",
       "verdict": "PASS",
@@ -1024,81 +927,7 @@
       "priority": "P2"
     },
     {
-      "caseNumber": 53,
-      "caseName": "customer success check-in email",
-      "draft": "고객 성공 체크인 메일 써줘",
-      "verdict": "PASS",
-      "scores": {
-        "clarity": 4,
-        "intentFit": 4,
-        "questionUsefulness": 4,
-        "optionSpecificity": 5,
-        "promptUsefulness": 4,
-        "compactness": 4,
-        "userWouldInsert": 4
-      },
-      "problems": [
-        "Customer stage default is an assumption, but the questions are relevant."
-      ],
-      "recommendedFix": "No urgent change.",
-      "priority": "P2"
-    },
-    {
-      "caseNumber": 54,
-      "caseName": "refund reply paraphrase",
-      "draft": "고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘",
-      "verdict": "PASS",
-      "scores": {
-        "clarity": 4,
-        "intentFit": 5,
-        "questionUsefulness": 4,
-        "optionSpecificity": 5,
-        "promptUsefulness": 4,
-        "compactness": 4,
-        "userWouldInsert": 4
-      },
-      "problems": [],
-      "recommendedFix": "No change.",
-      "priority": "P2"
-    },
-    {
-      "caseNumber": 55,
-      "caseName": "outage notice paraphrase",
-      "draft": "점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘",
-      "verdict": "PASS",
-      "scores": {
-        "clarity": 4,
-        "intentFit": 5,
-        "questionUsefulness": 4,
-        "optionSpecificity": 5,
-        "promptUsefulness": 4,
-        "compactness": 4,
-        "userWouldInsert": 4
-      },
-      "problems": [],
-      "recommendedFix": "No change.",
-      "priority": "P2"
-    },
-    {
-      "caseNumber": 56,
-      "caseName": "churn save paraphrase",
-      "draft": "구독 취소하려는 고객 마음 돌리는 메일 써줘",
-      "verdict": "PASS",
-      "scores": {
-        "clarity": 4,
-        "intentFit": 5,
-        "questionUsefulness": 4,
-        "optionSpecificity": 5,
-        "promptUsefulness": 4,
-        "compactness": 4,
-        "userWouldInsert": 4
-      },
-      "problems": [],
-      "recommendedFix": "No change.",
-      "priority": "P2"
-    },
-    {
-      "caseNumber": 57,
+      "caseNumber": 48,
       "caseName": "vip escalation paraphrase",
       "draft": "중요 고객 항의에 긴급 대응 메일 초안 써줘",
       "verdict": "PASS",
@@ -1114,48 +943,6 @@
       "problems": [],
       "recommendedFix": "No change.",
       "priority": "P2"
-    },
-    {
-      "caseNumber": 58,
-      "caseName": "customer success check-in paraphrase",
-      "draft": "사용 현황 확인용 고객 점검 메일 작성해줘",
-      "verdict": "FIX",
-      "scores": {
-        "clarity": 3,
-        "intentFit": 4,
-        "questionUsefulness": 2,
-        "optionSpecificity": 3,
-        "promptUsefulness": 3,
-        "compactness": 4,
-        "userWouldInsert": 3
-      },
-      "problems": [
-        "Q1 asks for the check-in purpose even though 사용 현황 확인 is already explicit in the draft.",
-        "The remaining useful unknown is customer stage, context, or CTA."
-      ],
-      "recommendedFix": "Suppress already-filled purpose questions and ask only customer stage or desired next action.",
-      "priority": "P2"
-    },
-    {
-      "caseNumber": 59,
-      "caseName": "support faq paraphrase",
-      "draft": "자주 받는 고객 문의 Q&A 만들어줘",
-      "verdict": "FIX",
-      "scores": {
-        "clarity": 3,
-        "intentFit": 3,
-        "questionUsefulness": 2,
-        "optionSpecificity": 3,
-        "promptUsefulness": 3,
-        "compactness": 4,
-        "userWouldInsert": 3
-      },
-      "problems": [
-        "The draft implies existing frequent inquiries, but no source questions are provided.",
-        "Defaulting to existing inquiry list based can make the compiled prompt fabricate content."
-      ],
-      "recommendedFix": "Ask for the inquiry list/source or produce a FAQ template with placeholders and 확인 필요 sections.",
-      "priority": "P1"
     }
   ],
   "patchPlan": [

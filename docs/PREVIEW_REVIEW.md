@@ -8,12 +8,12 @@
 
 ## Summary
 
-- total cases: 59
-- core cases: 43
-- candidate cases: 16
-- clarify true count: 47
+- total cases: 48
+- core cases: 48
+- candidate cases: 0
+- clarify true count: 36
 - clarify false count: 12
-- generic domain count: 41
+- generic domain count: 34
 - average questions per clarify case: 1.89
 - prompts over 1200 chars count: 0
 - prompts over 1600 chars count: 0
@@ -25,23 +25,23 @@
 - `brief.decide`: 4
 - `brief.extract`: 4
 - `brief.generic`: 5
-- `brief.plan`: 15
+- `brief.plan`: 14
 - `brief.research`: 2
-- `brief.write`: 20
+- `brief.write`: 10
 
 ### Domain Distribution
 
-- `generic`: 41
+- `generic`: 34
 - `marketing_strategy`: 4
 - `personal_prioritization`: 3
 - `product_planning`: 1
 - `research`: 3
-- `writing_email`: 7
+- `writing_email`: 3
 
 ### Domain Pack Distribution
 
 - `content_education`: 6
-- `customer_support`: 19
+- `customer_support`: 8
 - `founder_strategy`: 3
 - `generic`: 13
 - `gtm_marketing`: 4
@@ -52,23 +52,19 @@
 
 ### Clarification Mode Distribution
 
-- `multiple_choice`: 39
-- `needs_context`: 8
+- `multiple_choice`: 36
 - `suppress`: 12
 
 ### Case Source Distribution
 
-- `candidate`: 16
-- `core`: 43
+- `core`: 48
 
 ### ArtifactType Distribution
 
 - `blog_outline`: 1
-- `churn_save_reply`: 2
 - `complaint_reply`: 2
 - `content_plan`: 1
 - `curriculum`: 1
-- `customer_success_checkin`: 2
 - `demo_agenda`: 1
 - `handoff_doc`: 1
 - `job_posting`: 1
@@ -76,15 +72,12 @@
 - `meeting_agenda`: 1
 - `negotiation_reply`: 1
 - `none`: 27
-- `onboarding_doc`: 2
-- `outage_notice`: 2
+- `onboarding_doc`: 1
 - `presentation_outline`: 1
 - `proposal_outline`: 2
 - `question_set`: 1
 - `refund_policy_manual`: 1
-- `refund_reply`: 2
 - `retrospective_questions`: 1
-- `support_faq`: 2
 - `survey_questions`: 1
 - `vip_complaint_reply`: 2
 
@@ -3406,13 +3399,61 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 44. delayed delivery complaint reply
+## Case 44. empathetic rewrite suppression
+Draft:
+```text
+이 문장 고객에게 더 공감 있게 바꿔줘
+```
+Expected:
+- caseSource: `core`
+- domainPack: `customer_support`
+- clarificationMode: `suppress`
+- shouldShowClarify: `false`
+- expectedTaskType: `brief.generic`
+- expectedDomain: `generic`
+- expectedArtifactType: `none`
+Actual:
+- shouldShowClarify: `false`
+- taskType: `brief.generic`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `none`
+Filled Slots:
+- audience: 고객
+Missing Slots:
+- goal
+- output_format
+- scope
+- constraints
+Suggested Slots:
+- goal
+- output_format
+Clarify behavior:
+
+> 이 케이스는 런타임에서 Clarify chip을 표시하지 않습니다.
+
+Questions:
+Skipped in runtime.
+Assumed Answers:
+Skipped in runtime.
+Compiled Prompt:
+Skipped in runtime.
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 45. delayed delivery complaint reply
 Draft:
 ```text
 배송 지연 고객 불만 답변 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `customer_support`
 - clarificationMode: `multiple_choice`
 - shouldShowClarify: `true`
@@ -3483,347 +3524,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 45. refund request response
-Draft:
-```text
-환불 요청 고객 답변 써줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `needs_context`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `refund_reply`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `generic`
-- domainConfidence: `0.00`
-- artifactType: `refund_reply`
-Filled Slots:
-- audience: 고객
-- output_format: 환불 요청 고객 답변
-- goal: 환불 요청 고객 답변
-Missing Slots:
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- refund_status
-- resolution_policy
-Questions:
-### Q1. 환불 요청은 어떤 상태인가요?
-
-- 검토 후 안내
-- 환불 가능/승인
-- 정책상 어려움
-- 대안/크레딧 제안
-- 추천해줘
-
-### Q2. 답변에서 가장 중요한 기준은?
-
-- 정책 근거 명확화
-- 고객 상황 공감
-- 대안 제시
-- 내부 확인 후 안내
-- 추천해줘
-Assumed Answers:
-- refund_status: 검토 후 안내
-- resolution_policy: 정책 근거 명확화
-Compiled Prompt:
-```text
-# 작업
-환불 요청 고객 답변을 작성한다. 원문 요청 "환불 요청 고객 답변 써줘"의 의도를 보존한다. 목표는 "환불 요청 고객 답변"이다.
-
-# 확인된 정보
-- 원문 요청: "환불 요청 고객 답변 써줘"
-- 목표: 환불 요청 고객 답변
-- 대상: 고객
-- 환불 상태: 검토 후 안내
-- 해결 기준: 정책 근거 명확화
-- 출력 형식: 환불 요청 고객 답변
-
-# 출력 형식
-선택된 출력 형식: 환불 요청 고객 답변
-환불 상태: 검토 후 안내
-해결 기준: 정책 근거 명확화
-- 환불 상태, 정책 근거, 고객 상황 공감, 다음 절차를 구분한다.
-- 환불 가능 여부를 모르면 단정하지 말고 확인 필요와 임시 안내를 분리한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-- 환불 가능 여부와 정책 근거를 모르면 단정하지 않는다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 46. service outage notice
-Draft:
-```text
-서비스 장애 공지 초안 써줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `needs_context`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `outage_notice`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `generic`
-- domainConfidence: `0.00`
-- artifactType: `outage_notice`
-Filled Slots:
-- output_format: 서비스 장애 공지
-- goal: 서비스 장애 공지
-Missing Slots:
-- audience
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- outage_status
-- outage_impact
-Questions:
-### Q1. 장애/점검의 현재 상태는?
-
-- 조사 중
-- 예정된 점검/중단
-- 복구 중
-- 우회 방법 있음
-- 추천해줘
-
-### Q2. 영향 범위는 어디까지인가요?
-
-- 영향 범위 확인 중
-- 전체 서비스 영향
-- 일부 기능 영향
-- 특정 고객/지역 영향
-- 추천해줘
-Assumed Answers:
-- outage_status: 조사 중
-- outage_impact: 영향 범위 확인 중
-Compiled Prompt:
-```text
-# 작업
-서비스 장애 공지 초안을 작성한다. 원문 요청 "서비스 장애 공지 초안 써줘"의 의도를 보존한다. 목표는 "서비스 장애 공지"이다.
-
-# 확인된 정보
-- 원문 요청: "서비스 장애 공지 초안 써줘"
-- 목표: 서비스 장애 공지
-- 장애 상태: 조사 중
-- 영향 범위: 영향 범위 확인 중
-- 출력 형식: 서비스 장애 공지
-
-# 출력 형식
-선택된 출력 형식: 서비스 장애 공지
-장애 상태: 조사 중
-영향 범위: 영향 범위 확인 중
-- 장애 요약, 영향 범위, 현재 상태, 우회책, 다음 업데이트 시점을 구분한다.
-- 책임 회피보다 사과, 사실 확인, 고객이 할 수 있는 다음 행동을 우선한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 장애 영향 범위, 현재 상태, 다음 업데이트 기준을 분리한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 47. support faq draft
-Draft:
-```text
-고객 지원 FAQ 초안 써줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `multiple_choice`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `support_faq`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `generic`
-- domainConfidence: `0.00`
-- artifactType: `support_faq`
-Filled Slots:
-- audience: 고객
-- output_format: 고객 지원 FAQ
-- goal: 고객 지원 FAQ
-Missing Slots:
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- faq_topic
-- faq_format
-Questions:
-### Q1. FAQ에 사용할 문의 범위는?
-
-- 기존 문의 목록 기반
-- 제품 사용법/온보딩
-- 결제/환불
-- 문제 해결/장애
-- 추천해줘
-
-### Q2. Q&A를 어떤 형태로 정리할까요?
-
-- 카테고리별 Q&A
-- 질문-짧은 답변 목록
-- 답변 + 추가 안내
-- 고객용 도움말 문서
-- 추천해줘
-Assumed Answers:
-- faq_topic: 기존 문의 목록 기반
-- faq_format: 카테고리별 Q&A
-Compiled Prompt:
-```text
-# 작업
-고객 지원 FAQ 초안을 작성한다. 원문 요청 "고객 지원 FAQ 초안 써줘"의 의도를 보존한다. 목표는 "고객 지원 FAQ"이다.
-
-# 확인된 정보
-- 원문 요청: "고객 지원 FAQ 초안 써줘"
-- 목표: 고객 지원 FAQ
-- 대상: 고객
-- FAQ 범위: 기존 문의 목록 기반
-- FAQ 형식: 카테고리별 Q&A
-- 출력 형식: 고객 지원 FAQ
-
-# 출력 형식
-선택된 출력 형식: 고객 지원 FAQ
-FAQ 범위: 기존 문의 목록 기반
-FAQ 형식: 카테고리별 Q&A
-- FAQ 카테고리, 질문, 고객용 답변, 필요한 다음 액션을 구분한다.
-- 답변은 고객이 바로 이해할 수 있게 짧고 실무적으로 작성한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 48. new customer onboarding guide
-Draft:
-```text
-신규 고객 온보딩 문서 만들어줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `multiple_choice`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.plan`
-- expectedDomain: `generic`
-- expectedArtifactType: `onboarding_doc`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.plan`
-- domain: `generic`
-- domainConfidence: `0.00`
-- artifactType: `onboarding_doc`
-Filled Slots:
-- audience: 고객
-- onboarding_audience: 신규 고객
-- output_format: 온보딩 문서
-- goal: 온보딩 문서
-Missing Slots:
-- scope
-- timeframe
-- success_criteria
-- constraints
-Suggested Slots:
-- onboarding_format
-Questions:
-### Q1. 원하는 형식은?
-
-- 첫날 체크리스트
-- 1주 온보딩 플랜
-- 단계별 가이드
-- 필요한 자료 목록 포함
-- 추천해줘
-Assumed Answers:
-- onboarding_format: 첫날 체크리스트
-Compiled Prompt:
-```text
-# 작업
-온보딩 문서를 만든다. 원문 요청 "신규 고객 온보딩 문서 만들어줘"의 의도를 보존한다. 목표는 "온보딩 문서"이다.
-
-# 확인된 정보
-- 원문 요청: "신규 고객 온보딩 문서 만들어줘"
-- 목표: 온보딩 문서
-- 대상: 고객
-- 출력 형식: 온보딩 문서
-- 온보딩 대상: 신규 고객
-- 온보딩 형식: 첫날 체크리스트
-
-# 출력 형식
-선택된 출력 형식: 온보딩 문서
-온보딩 형식: 첫날 체크리스트
-- 첫날 체크리스트 형식을 우선 반영한다.
-- 대상, 단계, 체크리스트, 필요한 자료를 구분한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 49. refund policy support manual
+## Case 46. refund policy support manual
 Draft:
 ```text
 환불 정책 CS 응대 매뉴얼 만들어줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `customer_support`
 - clarificationMode: `multiple_choice`
 - shouldShowClarify: `true`
@@ -3902,148 +3609,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 50. empathetic rewrite suppression
-Draft:
-```text
-이 문장 고객에게 더 공감 있게 바꿔줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `suppress`
-- shouldShowClarify: `false`
-- expectedTaskType: `brief.generic`
-- expectedDomain: `generic`
-- expectedArtifactType: `none`
-Actual:
-- shouldShowClarify: `false`
-- taskType: `brief.generic`
-- domain: `generic`
-- domainConfidence: `0.00`
-- artifactType: `none`
-Filled Slots:
-- audience: 고객
-Missing Slots:
-- goal
-- output_format
-- scope
-- constraints
-Suggested Slots:
-- goal
-- output_format
-Clarify behavior:
-
-> 이 케이스는 런타임에서 Clarify chip을 표시하지 않습니다.
-
-Questions:
-Skipped in runtime.
-Assumed Answers:
-Skipped in runtime.
-Compiled Prompt:
-Skipped in runtime.
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 51. churn save reply
-Draft:
-```text
-해지하려는 고객에게 붙잡는 답변 써줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `needs_context`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `churn_save_reply`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `generic`
-- domainConfidence: `0.00`
-- artifactType: `churn_save_reply`
-Filled Slots:
-- audience: 고객
-- output_format: 해지 고객 답변
-- goal: 해지 고객 답변
-Missing Slots:
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- churn_reason
-- retention_boundary
-Questions:
-### Q1. 해지 사유는 무엇에 가까운가요?
-
-- 해지 사유 확인
-- 가격/비용 부담
-- 기능 부족
-- 성과 미흡
-- 추천해줘
-
-### Q2. 답변의 리텐션 기준은?
-
-- 공감 후 사유 확인
-- 대안/플랜 제안
-- 사용법/성과 지원
-- 무리한 설득 없이 종료 지원
-- 추천해줘
-Assumed Answers:
-- churn_reason: 해지 사유 확인
-- retention_boundary: 공감 후 사유 확인
-Compiled Prompt:
-```text
-# 작업
-해지하려는 고객에게 보낼 답변을 작성한다. 원문 요청 "해지하려는 고객에게 붙잡는 답변 써줘"의 의도를 보존한다. 목표는 "해지 고객 답변"이다.
-
-# 확인된 정보
-- 원문 요청: "해지하려는 고객에게 붙잡는 답변 써줘"
-- 목표: 해지 고객 답변
-- 대상: 고객
-- 해지 사유: 해지 사유 확인
-- 리텐션 기준: 공감 후 사유 확인
-- 출력 형식: 해지 고객 답변
-
-# 출력 형식
-선택된 출력 형식: 해지 고객 답변
-해지 사유: 해지 사유 확인
-리텐션 기준: 공감 후 사유 확인
-- 공감, 해지 사유 확인, 가능한 대안, 다음 액션을 구분한다.
-- 무리하게 붙잡기보다 고객 선택권과 신뢰를 해치지 않는 답변으로 작성한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-- 해지 의사를 존중하고 무리한 설득보다 사유 확인과 선택권을 우선한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 52. vip escalation response plan
+## Case 47. vip escalation response plan
 Draft:
 ```text
 VIP 고객 클레임 대응 초안 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `customer_support`
 - clarificationMode: `multiple_choice`
 - shouldShowClarify: `true`
@@ -4124,362 +3696,18 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 53. customer success check-in email
-Draft:
-```text
-고객 성공 체크인 메일 써줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `needs_context`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `customer_success_checkin`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `writing_email`
-- domainConfidence: `0.89`
-- artifactType: `customer_success_checkin`
-Filled Slots:
-- audience: 고객
-- output_format: 고객 성공 체크인 메일
-- goal: 고객 성공 체크인 메일
-Missing Slots:
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- checkin_purpose
-- customer_stage
-Questions:
-### Q1. 체크인의 목적은 무엇인가요?
-
-- 사용 현황 확인
-- 성과/목표 점검
-- 문제 조기 발견
-- 업셀/확장 탐색
-- 추천해줘
-
-### Q2. 고객 상태는 어디에 가깝나요?
-
-- 온보딩 직후
-- 활성 사용 중
-- 이탈 위험
-- 갱신 전
-- 추천해줘
-Assumed Answers:
-- checkin_purpose: 사용 현황 확인
-- customer_stage: 온보딩 직후
-Compiled Prompt:
-```text
-# 작업
-고객 성공 체크인 메일을 작성한다. 원문 요청 "고객 성공 체크인 메일 써줘"의 의도를 보존한다. 목표는 "고객 성공 체크인 메일"이다.
-
-# 확인된 정보
-- 원문 요청: "고객 성공 체크인 메일 써줘"
-- 목표: 고객 성공 체크인 메일
-- 대상: 고객
-- 체크인 목적: 사용 현황 확인
-- 고객 상태: 온보딩 직후
-- 출력 형식: 고객 성공 체크인 메일
-
-# 출력 형식
-선택된 출력 형식: 고객 성공 체크인 메일
-체크인 목적: 사용 현황 확인
-고객 상태: 온보딩 직후
-- 제목, 체크인 목적, 사용 현황 질문, 지원 제안, 다음 액션을 구분한다.
-- 고객이 부담 없이 답할 수 있게 짧고 구체적인 메일로 작성한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 54. refund reply paraphrase
-Draft:
-```text
-고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `needs_context`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `refund_reply`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `writing_email`
-- domainConfidence: `0.89`
-- artifactType: `refund_reply`
-Filled Slots:
-- audience: 고객
-- output_format: 환불 요청 고객 답변
-- goal: 환불 요청 고객 답변
-Missing Slots:
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- refund_status
-- resolution_policy
-Questions:
-### Q1. 환불 요청은 어떤 상태인가요?
-
-- 검토 후 안내
-- 환불 가능/승인
-- 정책상 어려움
-- 대안/크레딧 제안
-- 추천해줘
-
-### Q2. 답변에서 가장 중요한 기준은?
-
-- 정책 근거 명확화
-- 고객 상황 공감
-- 대안 제시
-- 내부 확인 후 안내
-- 추천해줘
-Assumed Answers:
-- refund_status: 검토 후 안내
-- resolution_policy: 정책 근거 명확화
-Compiled Prompt:
-```text
-# 작업
-환불 요청 고객 답변을 작성한다. 원문 요청 "고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘"의 의도를 보존한다. 목표는 "환불 요청 고객 답변"이다.
-
-# 확인된 정보
-- 원문 요청: "고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘"
-- 목표: 환불 요청 고객 답변
-- 대상: 고객
-- 환불 상태: 검토 후 안내
-- 해결 기준: 정책 근거 명확화
-- 출력 형식: 환불 요청 고객 답변
-
-# 출력 형식
-선택된 출력 형식: 환불 요청 고객 답변
-환불 상태: 검토 후 안내
-해결 기준: 정책 근거 명확화
-- 환불 상태, 정책 근거, 고객 상황 공감, 다음 절차를 구분한다.
-- 환불 가능 여부를 모르면 단정하지 말고 확인 필요와 임시 안내를 분리한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 55. outage notice paraphrase
-Draft:
-```text
-점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `needs_context`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `outage_notice`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `generic`
-- domainConfidence: `0.00`
-- artifactType: `outage_notice`
-Filled Slots:
-- audience: 고객
-- output_format: 서비스 장애 공지
-- goal: 서비스 장애 공지
-Missing Slots:
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- outage_status
-- outage_impact
-Questions:
-### Q1. 장애/점검의 현재 상태는?
-
-- 예정된 점검/중단
-- 조사 중
-- 복구 중
-- 우회 방법 있음
-- 추천해줘
-
-### Q2. 영향 범위는 어디까지인가요?
-
-- 영향 범위 확인 중
-- 전체 서비스 영향
-- 일부 기능 영향
-- 특정 고객/지역 영향
-- 추천해줘
-Assumed Answers:
-- outage_status: 예정된 점검/중단
-- outage_impact: 영향 범위 확인 중
-Compiled Prompt:
-```text
-# 작업
-서비스 장애 공지 초안을 작성한다. 원문 요청 "점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘"의 의도를 보존한다. 목표는 "서비스 장애 공지"이다.
-
-# 확인된 정보
-- 원문 요청: "점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘"
-- 목표: 서비스 장애 공지
-- 대상: 고객
-- 장애 상태: 예정된 점검/중단
-- 영향 범위: 영향 범위 확인 중
-- 출력 형식: 서비스 장애 공지
-
-# 출력 형식
-선택된 출력 형식: 서비스 장애 공지
-장애 상태: 예정된 점검/중단
-영향 범위: 영향 범위 확인 중
-- 장애 요약, 영향 범위, 현재 상태, 우회책, 다음 업데이트 시점을 구분한다.
-- 책임 회피보다 사과, 사실 확인, 고객이 할 수 있는 다음 행동을 우선한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 56. churn save paraphrase
-Draft:
-```text
-구독 취소하려는 고객 마음 돌리는 메일 써줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `needs_context`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `churn_save_reply`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `writing_email`
-- domainConfidence: `0.89`
-- artifactType: `churn_save_reply`
-Filled Slots:
-- audience: 고객
-- output_format: 해지 고객 답변
-- goal: 해지 고객 답변
-Missing Slots:
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- churn_reason
-- retention_boundary
-Questions:
-### Q1. 해지 사유는 무엇에 가까운가요?
-
-- 해지 사유 확인
-- 가격/비용 부담
-- 기능 부족
-- 성과 미흡
-- 추천해줘
-
-### Q2. 답변의 리텐션 기준은?
-
-- 공감 후 사유 확인
-- 대안/플랜 제안
-- 사용법/성과 지원
-- 무리한 설득 없이 종료 지원
-- 추천해줘
-Assumed Answers:
-- churn_reason: 해지 사유 확인
-- retention_boundary: 공감 후 사유 확인
-Compiled Prompt:
-```text
-# 작업
-해지하려는 고객에게 보낼 답변을 작성한다. 원문 요청 "구독 취소하려는 고객 마음 돌리는 메일 써줘"의 의도를 보존한다. 목표는 "해지 고객 답변"이다.
-
-# 확인된 정보
-- 원문 요청: "구독 취소하려는 고객 마음 돌리는 메일 써줘"
-- 목표: 해지 고객 답변
-- 대상: 고객
-- 해지 사유: 해지 사유 확인
-- 리텐션 기준: 공감 후 사유 확인
-- 출력 형식: 해지 고객 답변
-
-# 출력 형식
-선택된 출력 형식: 해지 고객 답변
-해지 사유: 해지 사유 확인
-리텐션 기준: 공감 후 사유 확인
-- 공감, 해지 사유 확인, 가능한 대안, 다음 액션을 구분한다.
-- 무리하게 붙잡기보다 고객 선택권과 신뢰를 해치지 않는 답변으로 작성한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 57. vip escalation paraphrase
+## Case 48. vip escalation paraphrase
 Draft:
 ```text
 중요 고객 항의에 긴급 대응 메일 초안 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `customer_support`
 - clarificationMode: `multiple_choice`
 - shouldShowClarify: `true`
 - expectedTaskType: `brief.write`
-- expectedDomain: `generic`
+- expectedDomain: `writing_email`
 - expectedArtifactType: `vip_complaint_reply`
 Actual:
 - shouldShowClarify: `true`
@@ -4537,178 +3765,6 @@ VIP 고객 클레임 대응 초안을 작성한다. 원문 요청 "중요 고객
 오너십: 담당자 지정
 - 사과/공감, 오너십, 심각도 확인, 해결 계획, 다음 업데이트를 구분한다.
 - 보상이나 약속은 단정하지 말고 확인 필요와 가능한 범위를 분리한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 58. customer success check-in paraphrase
-Draft:
-```text
-사용 현황 확인용 고객 점검 메일 작성해줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `needs_context`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `customer_success_checkin`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `writing_email`
-- domainConfidence: `0.89`
-- artifactType: `customer_success_checkin`
-Filled Slots:
-- audience: 고객
-- output_format: 고객 성공 체크인 메일
-- goal: 고객 성공 체크인 메일
-Missing Slots:
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- checkin_purpose
-- customer_stage
-Questions:
-### Q1. 체크인의 목적은 무엇인가요?
-
-- 사용 현황 확인
-- 성과/목표 점검
-- 문제 조기 발견
-- 업셀/확장 탐색
-- 추천해줘
-
-### Q2. 고객 상태는 어디에 가깝나요?
-
-- 온보딩 직후
-- 활성 사용 중
-- 이탈 위험
-- 갱신 전
-- 추천해줘
-Assumed Answers:
-- checkin_purpose: 사용 현황 확인
-- customer_stage: 온보딩 직후
-Compiled Prompt:
-```text
-# 작업
-고객 성공 체크인 메일을 작성한다. 원문 요청 "사용 현황 확인용 고객 점검 메일 작성해줘"의 의도를 보존한다. 목표는 "고객 성공 체크인 메일"이다.
-
-# 확인된 정보
-- 원문 요청: "사용 현황 확인용 고객 점검 메일 작성해줘"
-- 목표: 고객 성공 체크인 메일
-- 대상: 고객
-- 체크인 목적: 사용 현황 확인
-- 고객 상태: 온보딩 직후
-- 출력 형식: 고객 성공 체크인 메일
-
-# 출력 형식
-선택된 출력 형식: 고객 성공 체크인 메일
-체크인 목적: 사용 현황 확인
-고객 상태: 온보딩 직후
-- 제목, 체크인 목적, 사용 현황 질문, 지원 제안, 다음 액션을 구분한다.
-- 고객이 부담 없이 답할 수 있게 짧고 구체적인 메일로 작성한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 59. support faq paraphrase
-Draft:
-```text
-자주 받는 고객 문의 Q&A 만들어줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `customer_support`
-- clarificationMode: `multiple_choice`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.write`
-- expectedDomain: `generic`
-- expectedArtifactType: `support_faq`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.write`
-- domain: `generic`
-- domainConfidence: `0.00`
-- artifactType: `support_faq`
-Filled Slots:
-- audience: 고객
-- output_format: 고객 지원 FAQ
-- goal: 고객 지원 FAQ
-Missing Slots:
-- tone
-- scope
-- style
-- constraints
-Suggested Slots:
-- faq_topic
-- faq_format
-Questions:
-### Q1. FAQ에 사용할 문의 범위는?
-
-- 기존 문의 목록 기반
-- 제품 사용법/온보딩
-- 결제/환불
-- 문제 해결/장애
-- 추천해줘
-
-### Q2. Q&A를 어떤 형태로 정리할까요?
-
-- 카테고리별 Q&A
-- 질문-짧은 답변 목록
-- 답변 + 추가 안내
-- 고객용 도움말 문서
-- 추천해줘
-Assumed Answers:
-- faq_topic: 기존 문의 목록 기반
-- faq_format: 카테고리별 Q&A
-Compiled Prompt:
-```text
-# 작업
-고객 지원 FAQ 초안을 작성한다. 원문 요청 "자주 받는 고객 문의 Q&A 만들어줘"의 의도를 보존한다. 목표는 "고객 지원 FAQ"이다.
-
-# 확인된 정보
-- 원문 요청: "자주 받는 고객 문의 Q&A 만들어줘"
-- 목표: 고객 지원 FAQ
-- 대상: 고객
-- FAQ 범위: 기존 문의 목록 기반
-- FAQ 형식: 카테고리별 Q&A
-- 출력 형식: 고객 지원 FAQ
-
-# 출력 형식
-선택된 출력 형식: 고객 지원 FAQ
-FAQ 범위: 기존 문의 목록 기반
-FAQ 형식: 카테고리별 Q&A
-- FAQ 카테고리, 질문, 고객용 답변, 필요한 다음 액션을 구분한다.
-- 답변은 고객이 바로 이해할 수 있게 짧고 실무적으로 작성한다.
 
 # 주의할 점
 - 모르는 정보는 가정으로 표시한다.

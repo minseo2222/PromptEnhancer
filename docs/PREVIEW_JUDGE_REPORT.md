@@ -1,12 +1,12 @@
 # Preview Judge Report
 
 ## Summary
-- total cases: 59
-- PASS count: 43
-- FIX count: 16
+- total cases: 48
+- PASS count: 36
+- FIX count: 12
 - KILL count: 0
-- average userWouldInsert score: 3.76
-- recommended next action: Patch context-first handling for underspecified artifacts and replace generic/default-first questions before another preview run.
+- average userWouldInsert score: 3.79
+- recommended next action: Core regression set updated from existing judge results. Add a small candidate pack, then rerun the expansion cycle.
 
 ## Top Problems
 - Several previews ask generic or secondary questions while missing the core subject/context needed to produce a useful result.
@@ -64,22 +64,11 @@ No P0 fixes reported.
 | 41. demo meeting agenda | core | sales_bd | multiple_choice | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
 | 42. salesy rewrite suppression | core | sales_bd | suppress | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
 | 43. price negotiation reply | core | sales_bd | multiple_choice | PASS | 4 | 4 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 44. delayed delivery complaint reply | candidate | customer_support | multiple_choice | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 45. refund request response | candidate | customer_support | needs_context | PASS | 4 | 4 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 46. service outage notice | candidate | customer_support | needs_context | PASS | 4 | 4 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 47. support faq draft | candidate | customer_support | multiple_choice | FIX | 3 | 3 | 2 | 3 | 3 | 4 | 3 | P1 |
-| 48. new customer onboarding guide | candidate | customer_support | multiple_choice | FIX | 3 | 3 | 2 | 3 | 3 | 4 | 3 | P2 |
-| 49. refund policy support manual | candidate | customer_support | multiple_choice | PASS | 4 | 4 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 50. empathetic rewrite suppression | candidate | customer_support | suppress | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 51. churn save reply | candidate | customer_support | needs_context | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 52. vip escalation response plan | candidate | customer_support | multiple_choice | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 53. customer success check-in email | candidate | customer_support | needs_context | PASS | 4 | 4 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 54. refund reply paraphrase | candidate | customer_support | needs_context | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 55. outage notice paraphrase | candidate | customer_support | needs_context | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 56. churn save paraphrase | candidate | customer_support | needs_context | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 57. vip escalation paraphrase | candidate | customer_support | multiple_choice | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
-| 58. customer success check-in paraphrase | candidate | customer_support | needs_context | FIX | 3 | 4 | 2 | 3 | 3 | 4 | 3 | P2 |
-| 59. support faq paraphrase | candidate | customer_support | multiple_choice | FIX | 3 | 3 | 2 | 3 | 3 | 4 | 3 | P1 |
+| 44. empathetic rewrite suppression | core | customer_support | suppress | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 45. delayed delivery complaint reply | core | customer_support | multiple_choice | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
+| 46. refund policy support manual | core | customer_support | multiple_choice | PASS | 4 | 4 | 4 | 5 | 4 | 4 | 4 | P2 |
+| 47. vip escalation response plan | core | customer_support | multiple_choice | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
+| 48. vip escalation paraphrase | core | customer_support | multiple_choice | PASS | 4 | 5 | 4 | 5 | 4 | 4 | 4 | P2 |
 
 ## Patch Plan
 | Priority | Target File | Issue | Suggested Change | Affected Cases |
