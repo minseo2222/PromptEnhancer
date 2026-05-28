@@ -8,13 +8,13 @@
 
 ## Summary
 
-- total cases: 43
+- total cases: 53
 - core cases: 43
-- candidate cases: 0
-- clarify true count: 32
-- clarify false count: 11
-- generic domain count: 30
-- average questions per clarify case: 1.91
+- candidate cases: 10
+- clarify true count: 41
+- clarify false count: 12
+- generic domain count: 39
+- average questions per clarify case: 1.90
 - prompts over 1200 chars count: 0
 - prompts over 1600 chars count: 0
 
@@ -24,24 +24,24 @@
 - `brief.create`: 5
 - `brief.decide`: 4
 - `brief.extract`: 4
-- `brief.generic`: 4
-- `brief.plan`: 13
+- `brief.generic`: 5
+- `brief.plan`: 15
 - `brief.research`: 2
-- `brief.write`: 7
+- `brief.write`: 14
 
 ### Domain Distribution
 
-- `generic`: 30
+- `generic`: 39
 - `marketing_strategy`: 4
 - `personal_prioritization`: 3
 - `product_planning`: 1
 - `research`: 3
-- `writing_email`: 2
+- `writing_email`: 3
 
 ### Domain Pack Distribution
 
 - `content_education`: 6
-- `customer_support`: 3
+- `customer_support`: 13
 - `founder_strategy`: 3
 - `generic`: 13
 - `gtm_marketing`: 4
@@ -52,27 +52,30 @@
 
 ### Clarification Mode Distribution
 
-- `multiple_choice`: 32
-- `suppress`: 11
+- `multiple_choice`: 37
+- `needs_context`: 4
+- `suppress`: 12
 
 ### Case Source Distribution
 
+- `candidate`: 10
 - `core`: 43
 
 ### ArtifactType Distribution
 
 - `blog_outline`: 1
-- `complaint_reply`: 1
+- `complaint_reply`: 2
 - `content_plan`: 1
 - `curriculum`: 1
 - `demo_agenda`: 1
+- `generic_document`: 3
 - `handoff_doc`: 1
 - `job_posting`: 1
-- `manual_or_playbook`: 1
+- `manual_or_playbook`: 2
 - `meeting_agenda`: 1
 - `negotiation_reply`: 1
-- `none`: 26
-- `onboarding_doc`: 1
+- `none`: 30
+- `onboarding_doc`: 2
 - `presentation_outline`: 1
 - `proposal_outline`: 2
 - `question_set`: 1
@@ -3387,6 +3390,800 @@ objection 유형: 가격이 비싸다
 - 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
 - 선택한 조건을 우선 반영한다.
 - 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 44. delayed delivery complaint reply
+Draft:
+```text
+배송 지연 고객 불만 답변 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `customer_support`
+- clarificationMode: `multiple_choice`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `complaint_reply`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `complaint_reply`
+Filled Slots:
+- audience: 고객
+- output_format: 고객 불만 답변 초안
+- goal: 고객 불만 답변 초안
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- artifact_topic
+- tone
+Questions:
+### Q1. 고객 불만의 핵심 내용은 무엇인가요?
+
+- 서비스 장애/오류
+- 가격/정책 불만
+- 배송/일정 지연
+- 응대 경험 불만
+- 추천해줘
+
+### Q2. 원하는 톤은?
+
+- 정중하고 공감 있게
+- 단호하지만 부드럽게
+- 짧고 명확하게
+- 신뢰 회복 중심
+- 추천해줘
+Assumed Answers:
+- artifact_topic: 서비스 장애/오류
+- tone: 정중하고 공감 있게
+Compiled Prompt:
+```text
+# 작업
+고객 불만 답변 초안을 작성한다. 원문 요청 "배송 지연 고객 불만 답변 써줘"의 의도를 보존한다. 목표는 "고객 불만 답변 초안"이다.
+
+# 확인된 정보
+- 원문 요청: "배송 지연 고객 불만 답변 써줘"
+- 목표: 고객 불만 답변 초안
+- 대상: 고객
+- 주제/대상: 서비스 장애/오류
+- 출력 형식: 고객 불만 답변 초안
+- 톤: 정중하고 공감 있게
+
+# 출력 형식
+선택된 출력 형식: 고객 불만 답변 초안
+톤: 정중하고 공감 있게
+- 사과/공감, 사실 확인, 해결 방안, 다음 액션을 구분한다.
+- 고객 신뢰를 해치지 않는 답변 초안으로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 45. refund request response
+Draft:
+```text
+환불 요청 고객 답변 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `customer_support`
+- clarificationMode: `needs_context`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `generic_document`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `none`
+Filled Slots:
+- audience: 고객
+- goal: 초안 작성
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- tone
+- scope
+Questions:
+### Q1. 원하는 톤은?
+
+- 정중하고 간결하게
+- 친근하게
+- 단호하지만 부드럽게
+- 전문적으로
+- 추천해줘
+
+### Q2. 어느 정도 범위로 다루면 좋을까요?
+
+- 바로 실행 가능한 수준
+- 1페이지로 정리
+- 4주 실행 계획
+- 전체 구조 잡기
+- 추천해줘
+Assumed Answers:
+- tone: 정중하고 간결하게
+- scope: 바로 실행 가능한 수준
+Compiled Prompt:
+```text
+# 작업
+목적과 독자에 맞는 글을 작성한다. 원문 요청 "환불 요청 고객 답변 써줘"를 바로 수행 가능한 작업 brief로 정리한다. 목표는 "초안 작성"이다.
+
+# 확인된 정보
+- 원문 요청: "환불 요청 고객 답변 써줘"
+- 목표: 초안 작성
+- 대상: 고객
+- 범위: 바로 실행 가능한 수준
+- 톤: 정중하고 간결하게
+
+# 출력 형식
+선택된 출력 형식: 바로 사용할 수 있는 초안
+톤: 정중하고 간결하게
+- 제목 또는 첫 문장을 제안한다.
+- 본문 초안을 바로 사용할 수 있게 작성한다.
+- 필요하면 대체 문구를 짧게 제시한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 46. service outage notice
+Draft:
+```text
+서비스 장애 공지 초안 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `customer_support`
+- clarificationMode: `needs_context`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `generic_document`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `generic_document`
+Filled Slots:
+- output_format: 문서 초안
+- goal: 문서 초안
+Missing Slots:
+- audience
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- document_purpose
+- document_format
+Questions:
+### Q1. 문서의 목적은 무엇인가요?
+
+- 정보 공유
+- 설득
+- 업무 정리
+- 실행 안내
+- 추천해줘
+
+### Q2. 원하는 형식은?
+
+- 간단한 초안
+- 상세 문서
+- 목차 먼저
+- 체크리스트 포함
+- 추천해줘
+Assumed Answers:
+- document_purpose: 정보 공유
+- document_format: 간단한 초안
+Compiled Prompt:
+```text
+# 작업
+문서 초안을 작성한다. 원문 요청 "서비스 장애 공지 초안 써줘"의 의도를 보존한다. 목표는 "문서 초안"이다.
+
+# 확인된 정보
+- 원문 요청: "서비스 장애 공지 초안 써줘"
+- 목표: 문서 초안
+- 출력 형식: 문서 초안
+- 문서 목적: 정보 공유
+- 문서 형식: 간단한 초안
+
+# 출력 형식
+선택된 출력 형식: 문서 초안
+- 문서 목적, 핵심 내용, 구조, 다음 액션을 구분한다.
+- 바로 다듬어 쓸 수 있는 초안으로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 47. support faq draft
+Draft:
+```text
+고객 지원 FAQ 초안 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `customer_support`
+- clarificationMode: `multiple_choice`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `generic_document`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `generic_document`
+Filled Slots:
+- audience: 고객
+- output_format: 문서 초안
+- goal: 문서 초안
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- document_purpose
+- document_format
+Questions:
+### Q1. 문서의 목적은 무엇인가요?
+
+- 정보 공유
+- 설득
+- 업무 정리
+- 실행 안내
+- 추천해줘
+
+### Q2. 원하는 형식은?
+
+- 간단한 초안
+- 상세 문서
+- 목차 먼저
+- 체크리스트 포함
+- 추천해줘
+Assumed Answers:
+- document_purpose: 정보 공유
+- document_format: 간단한 초안
+Compiled Prompt:
+```text
+# 작업
+문서 초안을 작성한다. 원문 요청 "고객 지원 FAQ 초안 써줘"의 의도를 보존한다. 목표는 "문서 초안"이다.
+
+# 확인된 정보
+- 원문 요청: "고객 지원 FAQ 초안 써줘"
+- 목표: 문서 초안
+- 대상: 고객
+- 출력 형식: 문서 초안
+- 문서 목적: 정보 공유
+- 문서 형식: 간단한 초안
+
+# 출력 형식
+선택된 출력 형식: 문서 초안
+- 문서 목적, 핵심 내용, 구조, 다음 액션을 구분한다.
+- 바로 다듬어 쓸 수 있는 초안으로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 48. new customer onboarding guide
+Draft:
+```text
+신규 고객 온보딩 문서 만들어줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `customer_support`
+- clarificationMode: `multiple_choice`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.plan`
+- expectedDomain: `generic`
+- expectedArtifactType: `onboarding_doc`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.plan`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `onboarding_doc`
+Filled Slots:
+- audience: 고객
+- output_format: 온보딩 문서
+- goal: 온보딩 문서
+Missing Slots:
+- scope
+- timeframe
+- success_criteria
+- constraints
+Suggested Slots:
+- onboarding_audience
+- onboarding_format
+Questions:
+### Q1. 누구를 위한 온보딩인가요?
+
+- 신규 직원
+- 신규 고객
+- 신규 사용자
+- 파트너/외부 협업자
+- 추천해줘
+
+### Q2. 원하는 형식은?
+
+- 첫날 체크리스트
+- 1주 온보딩 플랜
+- 단계별 가이드
+- 필요한 자료 목록 포함
+- 추천해줘
+Assumed Answers:
+- onboarding_audience: 신규 직원
+- onboarding_format: 첫날 체크리스트
+Compiled Prompt:
+```text
+# 작업
+온보딩 문서를 만든다. 원문 요청 "신규 고객 온보딩 문서 만들어줘"의 의도를 보존한다. 목표는 "온보딩 문서"이다.
+
+# 확인된 정보
+- 원문 요청: "신규 고객 온보딩 문서 만들어줘"
+- 목표: 온보딩 문서
+- 대상: 고객
+- 출력 형식: 온보딩 문서
+- 온보딩 대상: 신규 직원
+- 온보딩 형식: 첫날 체크리스트
+
+# 출력 형식
+선택된 출력 형식: 온보딩 문서
+온보딩 형식: 첫날 체크리스트
+- 첫날 체크리스트 형식을 우선 반영한다.
+- 대상, 단계, 체크리스트, 필요한 자료를 구분한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 49. refund policy support manual
+Draft:
+```text
+환불 정책 CS 응대 매뉴얼 만들어줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `customer_support`
+- clarificationMode: `multiple_choice`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.plan`
+- expectedDomain: `generic`
+- expectedArtifactType: `manual_or_playbook`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.plan`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `manual_or_playbook`
+Filled Slots:
+- output_format: 매뉴얼/플레이북
+- goal: 매뉴얼/플레이북
+Missing Slots:
+- scope
+- audience
+- timeframe
+- success_criteria
+- constraints
+Suggested Slots:
+- manual_purpose
+- manual_scope
+Questions:
+### Q1. 매뉴얼의 목적은 무엇인가요?
+
+- 일관된 응대
+- 신규 담당자 교육
+- 예외 상황 처리
+- 품질 기준 정리
+- 추천해줘
+
+### Q2. 포함할 범위는?
+
+- 기본 절차
+- 상황별 스크립트
+- 체크리스트
+- escalation 기준
+- 추천해줘
+Assumed Answers:
+- manual_purpose: 일관된 응대
+- manual_scope: 기본 절차
+Compiled Prompt:
+```text
+# 작업
+매뉴얼/플레이북을 만든다. 원문 요청 "환불 정책 CS 응대 매뉴얼 만들어줘"의 의도를 보존한다. 목표는 "매뉴얼/플레이북"이다.
+
+# 확인된 정보
+- 원문 요청: "환불 정책 CS 응대 매뉴얼 만들어줘"
+- 목표: 매뉴얼/플레이북
+- 출력 형식: 매뉴얼/플레이북
+- 매뉴얼 목적: 일관된 응대
+- 매뉴얼 범위: 기본 절차
+
+# 출력 형식
+선택된 출력 형식: 매뉴얼/플레이북
+매뉴얼 범위: 기본 절차
+- 기본 절차 범위를 우선 반영한다.
+- 절차, 상황별 대응, 확인 기준을 구분한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 50. empathetic rewrite suppression
+Draft:
+```text
+이 문장 고객에게 더 공감 있게 바꿔줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `customer_support`
+- clarificationMode: `suppress`
+- shouldShowClarify: `false`
+- expectedTaskType: `brief.generic`
+- expectedDomain: `generic`
+- expectedArtifactType: `none`
+Actual:
+- shouldShowClarify: `false`
+- taskType: `brief.generic`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `none`
+Filled Slots:
+- audience: 고객
+Missing Slots:
+- goal
+- output_format
+- scope
+- constraints
+Suggested Slots:
+- goal
+- output_format
+Clarify behavior:
+
+> 이 케이스는 런타임에서 Clarify chip을 표시하지 않습니다.
+
+Questions:
+Skipped in runtime.
+Assumed Answers:
+Skipped in runtime.
+Compiled Prompt:
+Skipped in runtime.
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 51. churn save reply
+Draft:
+```text
+해지하려는 고객에게 붙잡는 답변 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `customer_support`
+- clarificationMode: `needs_context`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `generic_document`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `none`
+Filled Slots:
+- audience: 고객
+- goal: 초안 작성
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- tone
+- scope
+Questions:
+### Q1. 원하는 톤은?
+
+- 정중하고 간결하게
+- 친근하게
+- 단호하지만 부드럽게
+- 전문적으로
+- 추천해줘
+
+### Q2. 어느 정도 범위로 다루면 좋을까요?
+
+- 바로 실행 가능한 수준
+- 1페이지로 정리
+- 4주 실행 계획
+- 전체 구조 잡기
+- 추천해줘
+Assumed Answers:
+- tone: 정중하고 간결하게
+- scope: 바로 실행 가능한 수준
+Compiled Prompt:
+```text
+# 작업
+목적과 독자에 맞는 글을 작성한다. 원문 요청 "해지하려는 고객에게 붙잡는 답변 써줘"를 바로 수행 가능한 작업 brief로 정리한다. 목표는 "초안 작성"이다.
+
+# 확인된 정보
+- 원문 요청: "해지하려는 고객에게 붙잡는 답변 써줘"
+- 목표: 초안 작성
+- 대상: 고객
+- 범위: 바로 실행 가능한 수준
+- 톤: 정중하고 간결하게
+
+# 출력 형식
+선택된 출력 형식: 바로 사용할 수 있는 초안
+톤: 정중하고 간결하게
+- 제목 또는 첫 문장을 제안한다.
+- 본문 초안을 바로 사용할 수 있게 작성한다.
+- 필요하면 대체 문구를 짧게 제시한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 52. vip escalation response plan
+Draft:
+```text
+VIP 고객 클레임 대응 초안 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `customer_support`
+- clarificationMode: `multiple_choice`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `generic_document`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `generic_document`
+Filled Slots:
+- audience: 고객
+- output_format: 문서 초안
+- goal: 문서 초안
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- document_purpose
+- document_format
+Questions:
+### Q1. 문서의 목적은 무엇인가요?
+
+- 정보 공유
+- 설득
+- 업무 정리
+- 실행 안내
+- 추천해줘
+
+### Q2. 원하는 형식은?
+
+- 간단한 초안
+- 상세 문서
+- 목차 먼저
+- 체크리스트 포함
+- 추천해줘
+Assumed Answers:
+- document_purpose: 정보 공유
+- document_format: 간단한 초안
+Compiled Prompt:
+```text
+# 작업
+문서 초안을 작성한다. 원문 요청 "VIP 고객 클레임 대응 초안 써줘"의 의도를 보존한다. 목표는 "문서 초안"이다.
+
+# 확인된 정보
+- 원문 요청: "VIP 고객 클레임 대응 초안 써줘"
+- 목표: 문서 초안
+- 대상: 고객
+- 출력 형식: 문서 초안
+- 문서 목적: 정보 공유
+- 문서 형식: 간단한 초안
+
+# 출력 형식
+선택된 출력 형식: 문서 초안
+- 문서 목적, 핵심 내용, 구조, 다음 액션을 구분한다.
+- 바로 다듬어 쓸 수 있는 초안으로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 53. customer success check-in email
+Draft:
+```text
+고객 성공 체크인 메일 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `customer_support`
+- clarificationMode: `needs_context`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `generic_document`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.89`
+- artifactType: `none`
+Filled Slots:
+- audience: 고객
+- output_format: 메일 초안
+- goal: 초안 작성
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- tone
+Questions:
+### Q1. 원하는 톤은?
+
+- 정중하고 간결하게
+- 친근하게
+- 단호하지만 부드럽게
+- 전문적으로
+- 추천해줘
+Assumed Answers:
+- tone: 정중하고 간결하게
+Compiled Prompt:
+```text
+# 작업
+목적과 독자에 맞는 글을 작성한다. 원문 요청 "고객 성공 체크인 메일 써줘"를 바로 수행 가능한 작업 brief로 정리한다. 목표는 "초안 작성"이다.
+
+# 확인된 정보
+- 원문 요청: "고객 성공 체크인 메일 써줘"
+- 목표: 초안 작성
+- 대상: 고객
+- 출력 형식: 메일 초안
+- 톤: 정중하고 간결하게
+
+# 출력 형식
+선택된 출력 형식: 메일 초안
+톤: 정중하고 간결하게
+- 제목 또는 첫 문장을 제안한다.
+- 본문 초안을 바로 사용할 수 있게 작성한다.
+- 필요하면 대체 문구를 짧게 제시한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
 ```
 Human Review:
 - 명확성 1~5:
