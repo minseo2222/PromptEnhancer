@@ -368,9 +368,74 @@
     return resolved;
   }
 
+  function getIntentText(draft, resolved) {
+    return `${compactDraft(draft)} ${resolved && resolved.context_line ? resolved.context_line : ""}`.toLowerCase();
+  }
+
+  function textIncludesAny(text, keywords) {
+    return keywords.some((keyword) => text.includes(String(keyword).toLowerCase()));
+  }
+
+  function isProposalWriteRequest(draft, resolved) {
+    const text = getIntentText(draft, resolved);
+
+    return (
+      text.includes("제안서") &&
+      textIncludesAny(text, ["써줘", "작성", "초안", "본문", "메일"]) &&
+      !textIncludesAny(text, ["목차", "구조", "구성", "아웃라인"])
+    );
+  }
+
+  function isPlannedMaintenanceNotice(draft, resolved) {
+    const text = getIntentText(draft, resolved);
+    const hasMaintenanceSignal = textIncludesAny(text, ["점검", "정기 점검", "예정 점검", "사전 안내"]);
+    const hasPlannedSignal = textIncludesAny(text, ["예정", "정기", "사전", "완료 후", "접속 불가", "접속불가"]);
+    const hasUnplannedOutageSignal = textIncludesAny(text, ["장애", "오류", "에러", "다운", "복구 중", "조사 중"]);
+
+    return hasMaintenanceSignal && hasPlannedSignal && !hasUnplannedOutageSignal;
+  }
+
+  function applyArtifactFraming(draft, resolved, intent, answers) {
+    const artifactType = intent && intent.artifactType && intent.artifactType !== "none" ? intent.artifactType : "";
+
+    if (artifactType === "proposal_outline" && isProposalWriteRequest(draft, resolved)) {
+      resolved.__proposalWriteRequest = true;
+
+      if (!answers.goal) {
+        resolved.goal = "고객 상황에 맞는 제안서 초안 작성";
+      }
+
+      if (!answers.output_format) {
+        resolved.output_format = "제안서 본문 초안";
+      }
+    }
+
+    if (artifactType === "outage_notice" && isPlannedMaintenanceNotice(draft, resolved)) {
+      resolved.__plannedMaintenanceNotice = true;
+
+      if (!answers.goal) {
+        resolved.goal = "예정 점검과 접속 제한을 고객에게 사전 안내하기";
+      }
+
+      if (!answers.output_format) {
+        resolved.output_format = "점검/접속 제한 사전 안내문";
+      }
+    }
+
+    return resolved;
+  }
+
   function buildTaskSentence(pattern, draft, resolved, intent) {
     const goal = resolved.goal ? ` 목표는 "${resolved.goal}"이다.` : "";
     const artifactType = intent && intent.artifactType && intent.artifactType !== "none" ? intent.artifactType : "";
+
+    if (artifactType === "proposal_outline" && resolved.__proposalWriteRequest) {
+      return `제안서 본문 초안을 작성한다. 원문 요청 "${draft}"의 의도를 보존한다.${goal}`;
+    }
+
+    if (artifactType === "outage_notice" && resolved.__plannedMaintenanceNotice) {
+      return `예정된 점검/접속 제한 안내문을 작성한다. 원문 요청 "${draft}"의 의도를 보존한다.${goal}`;
+    }
 
     if (artifactType && ARTIFACT_TASK_SENTENCES[artifactType]) {
       return `${ARTIFACT_TASK_SENTENCES[artifactType]} 원문 요청 "${draft}"의 의도를 보존한다.${goal}`;
@@ -471,6 +536,14 @@
 
     if (resolved.output_format) {
       return resolved.output_format;
+    }
+
+    if (artifactType === "proposal_outline" && resolved.__proposalWriteRequest) {
+      return "제안서 본문 초안";
+    }
+
+    if (artifactType === "outage_notice" && resolved.__plannedMaintenanceNotice) {
+      return "점검/접속 제한 사전 안내문";
     }
 
     if (artifactOutput) {
@@ -628,6 +701,22 @@
 
     if (artifactType === "proposal_outline" && resolved.proposal_format) {
       return [`${resolved.proposal_format} 형식을 우선 반영한다.`, "문제 정의, 제안 내용, 기대 효과, 다음 단계를 구분한다."];
+    }
+
+    if (artifactType === "proposal_outline" && resolved.__proposalWriteRequest) {
+      return [
+        "목차만 나열하지 말고 바로 다듬어 쓸 수 있는 제안서 본문 초안으로 작성한다.",
+        "고객 문제, 제안 내용, 기대 효과, 실행 범위, 다음 액션을 구분한다.",
+        "고객/제안 정보가 부족하면 확인 필요 항목을 분리한다."
+      ];
+    }
+
+    if (artifactType === "outage_notice" && resolved.__plannedMaintenanceNotice) {
+      return [
+        "점검 목적, 예정 시간, 영향 범위, 고객이 알아야 할 사항, 완료 후 안내 계획을 구분한다.",
+        "비계획 장애 사과문처럼 쓰지 말고 사전 안내와 협조 요청 중심으로 작성한다.",
+        "예정된 사실과 확인 필요 항목을 분리한다."
+      ];
     }
 
     if (artifactType === "onboarding_doc" && resolved.onboarding_format) {
@@ -893,7 +982,12 @@
     const pattern = getPattern(taskType);
     const confidence = typeof baseIntent.domainConfidence === "number" ? baseIntent.domainConfidence : 0;
     const perspective = confidence >= 0.55 ? getPerspective(domain) : getPerspective("generic");
-    const resolved = applyContextLine(resolveAnswers(taskType, answers, baseIntent), contextLine, baseIntent);
+    const resolved = applyArtifactFraming(
+      draft,
+      applyContextLine(resolveAnswers(taskType, answers, baseIntent), contextLine, baseIntent),
+      baseIntent,
+      answers
+    );
     const confirmedInfo = buildConfirmedInfo(resolved);
     const unresolvedInfo = buildUnresolvedInfo(resolved);
     const draftConstraints = extractDraftConstraints(draft, baseIntent, resolved);

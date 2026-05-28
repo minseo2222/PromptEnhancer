@@ -8,14 +8,14 @@
 
 ## Summary
 
-- total cases: 63
+- total cases: 65
 - core cases: 63
-- candidate cases: 0
-- clarify true count: 51
+- candidate cases: 2
+- clarify true count: 53
 - clarify false count: 12
-- generic domain count: 43
-- context line count: 15
-- average questions per clarify case: 1.63
+- generic domain count: 45
+- context line count: 17
+- average questions per clarify case: 1.60
 - prompts over 1200 chars count: 0
 - prompts over 1600 chars count: 0
 
@@ -26,13 +26,13 @@
 - `brief.decide`: 4
 - `brief.extract`: 4
 - `brief.generic`: 5
-- `brief.plan`: 16
+- `brief.plan`: 17
 - `brief.research`: 2
-- `brief.write`: 22
+- `brief.write`: 23
 
 ### Domain Distribution
 
-- `generic`: 43
+- `generic`: 45
 - `marketing_strategy`: 4
 - `personal_prioritization`: 3
 - `product_planning`: 1
@@ -43,6 +43,7 @@
 
 - `content_education`: 6
 - `context_candidate`: 15
+- `context_line_backlog`: 2
 - `customer_support`: 8
 - `founder_strategy`: 3
 - `generic`: 13
@@ -54,12 +55,13 @@
 
 ### Clarification Mode Distribution
 
-- `context_line`: 15
+- `context_line`: 17
 - `multiple_choice`: 36
 - `suppress`: 12
 
 ### Case Source Distribution
 
+- `candidate`: 2
 - `core`: 63
 
 ### ArtifactType Distribution
@@ -81,9 +83,9 @@
 - `none`: 27
 - `objections_analysis`: 1
 - `onboarding_doc`: 2
-- `outage_notice`: 1
+- `outage_notice`: 2
 - `presentation_outline`: 1
-- `proposal_outline`: 2
+- `proposal_outline`: 3
 - `question_set`: 1
 - `refund_policy_manual`: 1
 - `refund_reply`: 2
@@ -5058,6 +5060,158 @@ Compiled Prompt:
 선택된 출력 형식: 고객 지원 FAQ
 - FAQ 카테고리, 질문, 고객용 답변, 필요한 다음 액션을 구분한다.
 - 답변은 고객이 바로 이해할 수 있게 짧고 실무적으로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 64. proposal for customer A
+Draft:
+```text
+A 고객에게 제안서 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_line_backlog`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write or brief.plan`
+- expectedDomain: `not specified`
+- expectedArtifactType: `proposal_outline`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.plan`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `proposal_outline`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 제안서 구조
+- goal: 제안서 구조
+Missing Slots:
+- scope
+- timeframe
+- success_criteria
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 고객 상황과 제안할 내용을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: A 고객의 지원 비용 절감을 위한 CS 자동화 도입 제안
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+A 고객은 CS 비용 증가가 문제이고, 지원 자동화 도입을 제안하려 함
+```
+Compiled Prompt:
+```text
+# 작업
+제안서 본문 초안을 작성한다. 원문 요청 "A 고객에게 제안서 써줘"의 의도를 보존한다. 목표는 "고객 상황에 맞는 제안서 초안 작성"이다.
+
+# 확인된 정보
+- 원문 요청: "A 고객에게 제안서 써줘"
+- 목표: 고객 상황에 맞는 제안서 초안 작성
+- 대상: 고객
+- 1줄 맥락: A 고객은 CS 비용 증가가 문제이고, 지원 자동화 도입을 제안하려 함
+- 출력 형식: 제안서 본문 초안
+
+# 출력 형식
+선택된 출력 형식: 제안서 본문 초안
+- 목차만 나열하지 말고 바로 다듬어 쓸 수 있는 제안서 본문 초안으로 작성한다.
+- 고객 문제, 제안 내용, 기대 효과, 실행 범위, 다음 액션을 구분한다.
+- 고객/제안 정보가 부족하면 확인 필요 항목을 분리한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 65. outage notice paraphrase
+Draft:
+```text
+점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_line_backlog`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `outage_notice`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `outage_notice`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 서비스 장애 공지
+- goal: 서비스 장애 공지
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 영향 범위, 현재 상태, 다음 업데이트 시점을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 로그인 장애가 30분째 지속, 일부 계정 영향, 1시간 뒤 업데이트
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+예정 점검으로 23시부터 30분간 접속 불가, 완료 후 공지 예정
+```
+Compiled Prompt:
+```text
+# 작업
+예정된 점검/접속 제한 안내문을 작성한다. 원문 요청 "점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘"의 의도를 보존한다. 목표는 "예정 점검과 접속 제한을 고객에게 사전 안내하기"이다.
+
+# 확인된 정보
+- 원문 요청: "점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘"
+- 목표: 예정 점검과 접속 제한을 고객에게 사전 안내하기
+- 대상: 고객
+- 1줄 맥락: 예정 점검으로 23시부터 30분간 접속 불가, 완료 후 공지 예정
+- 출력 형식: 점검/접속 제한 사전 안내문
+
+# 출력 형식
+선택된 출력 형식: 점검/접속 제한 사전 안내문
+- 점검 목적, 예정 시간, 영향 범위, 고객이 알아야 할 사항, 완료 후 안내 계획을 구분한다.
+- 비계획 장애 사과문처럼 쓰지 말고 사전 안내와 협조 요청 중심으로 작성한다.
+- 예정된 사실과 확인 필요 항목을 분리한다.
 
 # 주의할 점
 - 모르는 정보는 가정으로 표시한다.
