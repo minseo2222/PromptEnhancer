@@ -27,9 +27,21 @@ function firstReviewOption(question) {
 
 function assumedAnswersFor(questions, draft, taskType, domain, sampleAnswers = {}) {
   return questions.reduce((answers, question) => {
+    if (question.inputType === "context_line") {
+      return answers;
+    }
+
     answers[question.slot] = window.CBSRuleEngine.selectAssumedAnswer(question, draft, taskType, domain, sampleAnswers) || firstReviewOption(question);
     return answers;
   }, {});
+}
+
+function contextLineFor(caseItem, intent) {
+  if (caseItem.sampleContextLine) {
+    return caseItem.sampleContextLine;
+  }
+
+  return intent.needsContextLine ? "" : "";
 }
 
 function countBy(items, key) {
@@ -52,6 +64,15 @@ function renderQuestions(questions) {
 
   return questions
     .map((question, index) => {
+      if (question.inputType === "context_line") {
+        return [
+          `### Q${index + 1}. ${question.label}`,
+          "",
+          "- inputType: `context_line`",
+          `- placeholder: ${question.placeholder || "한 줄 맥락"}`
+        ].join("\n");
+      }
+
       const options = question.options.map((option) => `- ${option}`).join("\n");
       return `### Q${index + 1}. ${question.label}\n\n${options}`;
     })
@@ -91,13 +112,15 @@ function buildReviewCase(caseItem) {
   const taskType = intent.taskType;
   const questions = window.CBSRuleEngine.planQuestions(intent);
   const answers = shouldShowClarify ? assumedAnswersFor(questions, caseItem.draft, taskType, domain, caseItem.sampleAnswers) : {};
+  const contextLine = shouldShowClarify ? contextLineFor(caseItem, intent) : "";
   const compiledPrompt = shouldShowClarify
     ? window.CBSBriefCompiler.compileBrief({
         draft: caseItem.draft,
         domain,
         taskType,
         answers,
-        intent
+        intent,
+        contextLine
       })
     : "";
 
@@ -116,8 +139,10 @@ function buildReviewCase(caseItem) {
     filledSlots: intent.filledSlots,
     missingSlots: intent.missingSlots,
     suggestedSlots: intent.suggestedSlots,
+    needsContextLine: !!intent.needsContextLine,
     questions: shouldShowClarify ? questions : [],
     answers,
+    contextLine,
     compiledPrompt,
     promptLength: compiledPrompt.length
   };
@@ -134,6 +159,12 @@ function renderCase(caseItem, index) {
       ].join("\n");
   const questionsText = caseItem.shouldShowClarifyActual ? renderQuestions(caseItem.questions) : "Skipped in runtime.";
   const answersText = caseItem.shouldShowClarifyActual ? renderAnswers(caseItem.answers) : "Skipped in runtime.";
+  const contextLineText =
+    caseItem.shouldShowClarifyActual && caseItem.needsContextLine
+      ? fenced(caseItem.contextLine || "No sample context line provided.")
+      : caseItem.shouldShowClarifyActual
+        ? "_Not used for this case._"
+        : "Skipped in runtime.";
   const promptText = caseItem.shouldShowClarifyActual ? fenced(caseItem.compiledPrompt) : "Skipped in runtime.";
   const expectedTaskType = caseItem.expectedTaskType || (caseItem.expectedTaskTypes || []).join(" or ") || "not specified";
 
@@ -160,6 +191,7 @@ function renderCase(caseItem, index) {
     `- domain: \`${caseItem.domainActual}\``,
     `- domainConfidence: \`${caseItem.domainConfidenceActual.toFixed(2)}\``,
     `- artifactType: \`${caseItem.artifactTypeActual}\``,
+    `- needsContextLine: \`${caseItem.needsContextLine}\``,
     "",
     "Filled Slots:",
     renderObjectMap(caseItem.filledSlots),
@@ -178,6 +210,10 @@ function renderCase(caseItem, index) {
     "Assumed Answers:",
     "",
     answersText,
+    "",
+    "Context Line:",
+    "",
+    contextLineText,
     "",
     "Compiled Prompt:",
     "",
@@ -205,6 +241,7 @@ const candidateCaseCount = reviewCases.filter((caseItem) => caseItem.caseSource 
 const over1200Count = reviewCases.filter((caseItem) => caseItem.promptLength > 1200).length;
 const over1600Count = reviewCases.filter((caseItem) => caseItem.promptLength > 1600).length;
 const genericDomainCount = reviewCases.filter((caseItem) => caseItem.domainActual === "generic").length;
+const contextLineCount = reviewCases.filter((caseItem) => caseItem.needsContextLine).length;
 const averageQuestions = clarifyTrueCount
   ? reviewCases
       .filter((caseItem) => caseItem.shouldShowClarifyActual)
@@ -228,6 +265,7 @@ const documentBody = [
   `- clarify true count: ${clarifyTrueCount}`,
   `- clarify false count: ${clarifyFalseCount}`,
   `- generic domain count: ${genericDomainCount}`,
+  `- context line count: ${contextLineCount}`,
   `- average questions per clarify case: ${averageQuestions.toFixed(2)}`,
   `- prompts over 1200 chars count: ${over1200Count}`,
   `- prompts over 1600 chars count: ${over1600Count}`,
@@ -247,6 +285,7 @@ const documentBody = [
   "## Assumed Answer Rule",
   "",
   "- If a fixture case has `sampleAnswers`, those values are used first.",
+  "- If a fixture case has `sampleContextLine`, that value is used for `context_line` preview compilation.",
   "- Otherwise, the first concrete option that is not `추천해줘` is selected after intent-aware option ranking.",
   "- The assumed answers are used only to generate this offline review artifact.",
   "",

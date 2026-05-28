@@ -41,6 +41,7 @@ Do not add new domain cases directly to `promptCases.cjs`. Add candidate cases t
 ## Clarification Modes
 
 - `multiple_choice`: Clarify should ask one or two useful multiple-choice questions.
+- `context_line`: Clarify should ask for one short free-text context line when fixed options cannot capture the missing product, customer, policy, incident, offer, or source material.
 - `suppress`: Clarify should not appear in runtime.
 - `needs_free_text`: Multiple-choice is likely insufficient; keep safe or document limitation.
 - `ask_first_later`: Useful later, but not required for the current runtime.

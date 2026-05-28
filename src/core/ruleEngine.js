@@ -90,6 +90,19 @@
     "brief.generic"
   ];
 
+  const CONTEXT_LINE_ARTIFACTS = [
+    "sales_script",
+    "cold_email",
+    "follow_up_email",
+    "objections_analysis",
+    "sales_collateral",
+    "refund_reply",
+    "outage_notice",
+    "churn_save_reply",
+    "customer_success_checkin",
+    "support_faq"
+  ];
+
   function normalizeDraft(draft) {
     return String(draft || "")
       .replace(/\s+/g, " ")
@@ -478,6 +491,76 @@
     return "";
   }
 
+  function shouldUseContextLine(draft, taskType, artifactType) {
+    const text = normalizeDraft(draft).toLowerCase();
+
+    if (CONTEXT_LINE_ARTIFACTS.includes(artifactType)) {
+      return true;
+    }
+
+    if (artifactType === "onboarding_doc" && includesAny(text, ["고객", "사용자"])) {
+      return true;
+    }
+
+    if (
+      artifactType === "proposal_outline" &&
+      text.includes("고객") &&
+      !includesAny(text, ["목차", "구조", "구성", "제휴"])
+    ) {
+      return true;
+    }
+
+    return taskType === "brief.write" && includesAny(text, ["제품 세일즈 자료", "세일즈 자료"]);
+  }
+
+  function getContextLineLabel(intent) {
+    const labels = {
+      sales_script: "제품, 대상 고객, 콜 목적을 한 줄로 알려주세요.",
+      cold_email: "제품/오퍼와 대상 고객을 한 줄로 알려주세요.",
+      follow_up_email: "이전 접점과 원하는 다음 액션을 한 줄로 알려주세요.",
+      objections_analysis: "제품/고객군과 자주 나오는 objection을 한 줄로 알려주세요.",
+      sales_collateral: "제품과 대상 고객, 자료 목적을 한 줄로 알려주세요.",
+      proposal_outline: "고객 상황과 제안할 내용을 한 줄로 알려주세요.",
+      refund_reply: "환불 정책/상태와 고객 상황을 한 줄로 알려주세요.",
+      outage_notice: "영향 범위, 현재 상태, 다음 업데이트 시점을 한 줄로 알려주세요.",
+      churn_save_reply: "해지 사유, 고객 상태, 제안 가능한 대안을 한 줄로 알려주세요.",
+      customer_success_checkin: "고객 상태, 사용 맥락, 체크인 목적을 한 줄로 알려주세요.",
+      support_faq: "원본 문의 목록이나 FAQ로 만들 범위를 한 줄로 알려주세요.",
+      onboarding_doc: "제품/서비스와 온보딩 목표를 한 줄로 알려주세요."
+    };
+
+    return labels[intent.artifactType] || "이 작업에 필요한 핵심 맥락을 한 줄로 알려주세요.";
+  }
+
+  function getContextLinePlaceholder(intent) {
+    const placeholders = {
+      sales_script: "예: SMB 대표에게 재고관리 SaaS 데모 미팅을 잡기 위한 첫 콜",
+      cold_email: "예: HR팀장에게 채용 자동화 툴 데모를 제안하는 첫 메일",
+      follow_up_email: "예: 어제 데모 후 가격표를 보낸 리드에게 다음 미팅을 요청",
+      objections_analysis: "예: 보안 우려가 큰 엔터프라이즈 IT 담당자 대상",
+      sales_collateral: "예: B2B 회계 자동화 제품, CFO 대상, 도입 검토용 1페이지 자료",
+      proposal_outline: "예: A 고객의 지원 비용 절감을 위한 CS 자동화 도입 제안",
+      refund_reply: "예: 7일 환불 기간이 지났지만 첫 결제 고객이라 예외 검토 중",
+      outage_notice: "예: 로그인 장애가 30분째 지속, 일부 계정 영향, 1시간 뒤 업데이트",
+      churn_save_reply: "예: 가격 부담으로 해지 고민, 월간 플랜 할인은 불가하고 사용법 지원 가능",
+      customer_success_checkin: "예: 도입 2주차 고객, 기능 사용률 낮음, 활성화 지원 목적",
+      support_faq: "예: 환불, 로그인 오류, 결제수단 변경 문의가 반복됨",
+      onboarding_doc: "예: 신규 고객이 첫 주 안에 결제 연동과 팀 초대를 완료하게 하기"
+    };
+
+    return placeholders[intent.artifactType] || "예: 대상, 상황, 제약, 원하는 결과를 한 줄로 작성";
+  }
+
+  function getContextLineQuestion(intent) {
+    return {
+      slot: "context_line",
+      label: getContextLineLabel(intent),
+      inputType: "context_line",
+      placeholder: getContextLinePlaceholder(intent),
+      options: []
+    };
+  }
+
   function deriveFilledSlots(draft, signals, taskType, artifactType) {
     const text = normalizeDraft(draft).toLowerCase();
     const filled = {};
@@ -687,7 +770,10 @@
     const filledSlots = deriveFilledSlots(normalized, signals, taskType, artifactType);
     const missingSlots = getMissingSlots(taskType, filledSlots);
     const intentQuestionKey = getIntentQuestionKey(normalized, taskType, domainAnalysis.domain, artifactType, signals);
-    const suggestedSlots = getSuggestedSlots(taskType, domainAnalysis.domain, artifactType, intentQuestionKey, filledSlots, missingSlots);
+    const needsContextLine = shouldUseContextLine(normalized, taskType, artifactType);
+    const suggestedSlots = needsContextLine
+      ? ["context_line"]
+      : getSuggestedSlots(taskType, domainAnalysis.domain, artifactType, intentQuestionKey, filledSlots, missingSlots);
     const shouldClarify = determineShouldClarify(normalized, taskType, domainAnalysis.domain, artifactType);
 
     return {
@@ -702,6 +788,7 @@
       filledSlots,
       missingSlots,
       suggestedSlots,
+      needsContextLine,
       shouldClarify
     };
   }
@@ -1121,6 +1208,10 @@
   }
 
   function planQuestions(intent) {
+    if (intent.needsContextLine) {
+      return [getContextLineQuestion(intent)];
+    }
+
     return intent.suggestedSlots
       .map((slot) => getQuestionTemplateForSlot(slot, intent))
       .slice(0, 2)

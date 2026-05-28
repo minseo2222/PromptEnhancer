@@ -49,6 +49,7 @@
     goal: "목표",
     audience: "대상",
     context: "맥락",
+    context_line: "1줄 맥락",
     output_format: "출력 형식",
     scope: "범위",
     depth: "깊이",
@@ -349,6 +350,24 @@
     return resolved;
   }
 
+  function applyContextLine(resolved, contextLine, intent) {
+    const line = compactDraft(contextLine);
+
+    if (line) {
+      resolved.context_line = line;
+      return resolved;
+    }
+
+    if (intent && intent.needsContextLine) {
+      const unresolved = resolved.__unresolvedSlots || [];
+      if (!unresolved.includes("context_line")) {
+        resolved.__unresolvedSlots = unresolved.concat("context_line");
+      }
+    }
+
+    return resolved;
+  }
+
   function buildTaskSentence(pattern, draft, resolved, intent) {
     const goal = resolved.goal ? ` 목표는 "${resolved.goal}"이다.` : "";
     const artifactType = intent && intent.artifactType && intent.artifactType !== "none" ? intent.artifactType : "";
@@ -365,6 +384,7 @@
       "goal",
       "audience",
       "context",
+      "context_line",
       "artifact_topic",
       "target_customer",
       "sales_stage",
@@ -762,7 +782,13 @@
     );
   }
 
-  function shouldUseContextFirstPrompt(draft, intent) {
+  function hasSpecificAnswers(answers) {
+    return Object.entries(answers || {}).some(([slot, value]) => {
+      return slot !== "context_line" && !isRecommend(value) && !isUnresolvedValue(value);
+    });
+  }
+
+  function shouldUseContextFirstPrompt(draft, intent, answers) {
     const artifactType = intent && intent.artifactType && intent.artifactType !== "none" ? intent.artifactType : "";
     const text = compactDraft(draft).toLowerCase();
     const isPrdWithoutFeatureDetail = intent && intent.intentQuestionKey === "prd_feature" && text.includes("새 기능");
@@ -771,12 +797,17 @@
       text.includes("고객") &&
       !["목차", "구조", "구성", "제휴"].some((term) => text.includes(term));
 
+    if (isPrdWithoutFeatureDetail && hasSpecificAnswers(answers)) {
+      return false;
+    }
+
     return isPrdWithoutFeatureDetail || artifactType === "sales_collateral" || isCustomerProposal;
   }
 
   function buildContextFirstPrompt(taskType, pattern, draft, resolved, intent) {
     const artifactType = intent && intent.artifactType && intent.artifactType !== "none" ? intent.artifactType : "";
     const confirmedInfo = buildConfirmedInfo(resolved);
+    const unresolvedInfo = buildUnresolvedInfo(resolved);
     const isPrd = intent && intent.intentQuestionKey === "prd_feature";
     const outputLabel = isPrd ? "PRD" : artifactType === "sales_collateral" ? "세일즈 자료" : "제안서";
     let contextQuestions;
@@ -808,6 +839,7 @@
       "# 확인된 정보",
       `- 원문 요청: "${draft}"`,
       ...(confirmedInfo.length ? confirmedInfo : ["- 선택/추론된 조건이 부족하다."]),
+      ...(unresolvedInfo.length ? ["", "확인 필요:", ...unresolvedInfo] : []),
       "",
       "# 출력 형식",
       "먼저 아래 확인 질문을 짧게 묻는다.",
@@ -857,15 +889,16 @@
     const domain = input && input.domain ? input.domain : baseIntent.domain || "generic";
     const taskType = input && input.taskType ? input.taskType : baseIntent.taskType || "brief.generic";
     const answers = input && input.answers ? input.answers : {};
+    const contextLine = input && input.contextLine ? input.contextLine : answers.context_line;
     const pattern = getPattern(taskType);
     const confidence = typeof baseIntent.domainConfidence === "number" ? baseIntent.domainConfidence : 0;
     const perspective = confidence >= 0.55 ? getPerspective(domain) : getPerspective("generic");
-    const resolved = resolveAnswers(taskType, answers, baseIntent);
+    const resolved = applyContextLine(resolveAnswers(taskType, answers, baseIntent), contextLine, baseIntent);
     const confirmedInfo = buildConfirmedInfo(resolved);
     const unresolvedInfo = buildUnresolvedInfo(resolved);
     const draftConstraints = extractDraftConstraints(draft, baseIntent, resolved);
 
-    if (shouldUseContextFirstPrompt(draft, baseIntent)) {
+    if (shouldUseContextFirstPrompt(draft, baseIntent, answers) && !resolved.context_line) {
       return buildContextFirstPrompt(taskType, pattern, draft, resolved, baseIntent);
     }
 

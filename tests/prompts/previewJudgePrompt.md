@@ -43,6 +43,7 @@ For each case, evaluate:
 - taskType/domain/domainConfidence
 - filledSlots/missingSlots/suggestedSlots
 - questions and options
+- context line input, when `clarificationMode` or question `inputType` is `context_line`
 - assumed answers
 - compiled prompt, unless skipped in runtime
 
@@ -89,6 +90,22 @@ Especially penalize:
 - Persona-first regression.
 - Selected answers not reflected in the prompt.
 - Questions that ask for information already explicit in the draft.
+
+## Context-line Cases
+
+Apply this section only when the case metadata explicitly says `clarificationMode: context_line` or the rendered question is marked `inputType: context_line`.
+
+For those `context_line` cases, judge the preview as a one-line free-text clarification flow rather than a multiple-choice flow.
+
+- The one-line context should be visibly included in the compiled prompt.
+- The compiled prompt should become meaningfully more specific than the original draft.
+- Missing policy, product, customer, incident, offer, or source facts must not be fabricated.
+- Do not penalize the absence of multiple-choice options when the question is marked `inputType: context_line`.
+- Penalize if the context line is ignored, buried, or contradicted.
+
+For existing `multiple_choice` or `suppress` core-regression cases, do not lower the verdict merely because a future `context_line` UX might be better. Judge those cases against their declared current clarification mode and only mark them down for concrete issues in the rendered questions or compiled prompt.
+
+Core-regression cases intentionally use the current v0 multiple-choice/suppress behavior. For those cases, do not require missing product, topic, role, policy, customer, or source facts to be collected as free text unless the compiled prompt fabricates those facts, contradicts the draft, ignores selected answers, or creates a clear user-facing risk. A prompt that preserves the draft, reflects selected answers, and separates unknowns/assumptions can still be PASS even if a future context-line UX would be stronger.
 
 ## Output Requirements
 

@@ -8,39 +8,41 @@
 
 ## Summary
 
-- total cases: 48
+- total cases: 65
 - core cases: 48
-- candidate cases: 0
-- clarify true count: 36
+- candidate cases: 17
+- clarify true count: 53
 - clarify false count: 12
-- generic domain count: 34
-- average questions per clarify case: 1.89
+- generic domain count: 45
+- context line count: 17
+- average questions per clarify case: 1.60
 - prompts over 1200 chars count: 0
 - prompts over 1600 chars count: 0
 
 ### TaskType Distribution
 
-- `brief.analyze`: 4
+- `brief.analyze`: 5
 - `brief.create`: 5
 - `brief.decide`: 4
 - `brief.extract`: 4
 - `brief.generic`: 5
-- `brief.plan`: 14
+- `brief.plan`: 17
 - `brief.research`: 2
-- `brief.write`: 10
+- `brief.write`: 23
 
 ### Domain Distribution
 
-- `generic`: 34
+- `generic`: 45
 - `marketing_strategy`: 4
 - `personal_prioritization`: 3
 - `product_planning`: 1
 - `research`: 3
-- `writing_email`: 3
+- `writing_email`: 9
 
 ### Domain Pack Distribution
 
 - `content_education`: 6
+- `context_candidate`: 17
 - `customer_support`: 8
 - `founder_strategy`: 3
 - `generic`: 13
@@ -52,38 +54,51 @@
 
 ### Clarification Mode Distribution
 
+- `context_line`: 17
 - `multiple_choice`: 36
 - `suppress`: 12
 
 ### Case Source Distribution
 
+- `candidate`: 17
 - `core`: 48
 
 ### ArtifactType Distribution
 
 - `blog_outline`: 1
+- `churn_save_reply`: 2
+- `cold_email`: 1
 - `complaint_reply`: 2
 - `content_plan`: 1
 - `curriculum`: 1
+- `customer_success_checkin`: 2
 - `demo_agenda`: 1
+- `follow_up_email`: 1
 - `handoff_doc`: 1
 - `job_posting`: 1
 - `manual_or_playbook`: 1
 - `meeting_agenda`: 1
 - `negotiation_reply`: 1
 - `none`: 27
-- `onboarding_doc`: 1
+- `objections_analysis`: 1
+- `onboarding_doc`: 2
+- `outage_notice`: 2
 - `presentation_outline`: 1
-- `proposal_outline`: 2
+- `proposal_outline`: 3
 - `question_set`: 1
 - `refund_policy_manual`: 1
+- `refund_reply`: 2
 - `retrospective_questions`: 1
+- `sales_collateral`: 1
+- `sales_script`: 1
+- `support_faq`: 2
 - `survey_questions`: 1
 - `vip_complaint_reply`: 2
 
 ## Assumed Answer Rule
 
 - If a fixture case has `sampleAnswers`, those values are used first.
+- If a fixture case has `sampleContextLine`, that value is used for `context_line` preview compilation.
 - Otherwise, the first concrete option that is not `추천해줘` is selected after intent-aware option ranking.
 - The assumed answers are used only to generate this offline review artifact.
 
@@ -106,6 +121,7 @@ Actual:
 - domain: `marketing_strategy`
 - domainConfidence: `0.92`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - none
 Missing Slots:
@@ -138,6 +154,8 @@ Questions:
 Assumed Answers:
 - goal: 신규 유저 획득
 - output_format: 1페이지 전략 문서
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -204,6 +222,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - timeframe: 다음 달
 - scope: 4주 실행 계획
@@ -235,6 +254,8 @@ Questions:
 Assumed Answers:
 - launch_subject: 제품/기능
 - launch_plan_focus: 일정과 마일스톤
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -304,6 +325,7 @@ Actual:
 - domain: `product_planning`
 - domainConfidence: `0.95`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - goal: PRD 작성
 Missing Slots:
@@ -335,28 +357,45 @@ Questions:
 Assumed Answers:
 - feature_problem: 새 기능 아이디어 구체화
 - prd_scope: 성공 지표와 릴리즈 계획
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
-PRD를 바로 작성하기 전에 필요한 정보를 먼저 확인한다. 원문 요청 "새 기능 PRD 써줘"의 의도를 보존한다.
+실행 가능한 계획을 설계한다. 원문 요청 "새 기능 PRD 써줘"를 바로 수행 가능한 작업 brief로 정리한다. 목표는 "PRD 작성"이다.
 
-# 확인된 정보
-- 원문 요청: "새 기능 PRD 써줘"
+# 목표
+PRD 작성
+
+# 맥락
+사용자의 원문 요청:
+"새 기능 PRD 써줘"
+
+확정된 정보:
 - 목표: PRD 작성
 - 기능/문제: 새 기능 아이디어 구체화
 - PRD 범위: 성공 지표와 릴리즈 계획
 
-# 출력 형식
-먼저 아래 확인 질문을 짧게 묻는다.
-- 어떤 기능 또는 고객 문제를 다룰지 확인한다.
-- 대상 사용자와 핵심 사용 시나리오를 확인한다.
-- 성공 지표, 주요 요구사항, 릴리즈 범위를 확인한다.
-사용자가 답하면 문제 정의, 사용자 시나리오, 요구사항, 성공 지표를 포함한 PRD 초안으로 이어서 작성한다.
+# 제약
+- 모르는 정보는 지어내지 말고, 필요한 경우 합리적 가정이라고 표시한다.
+- 추상적인 조언보다 실행 가능한 제안을 우선한다.
+- 불확실한 부분은 “확인 필요”로 분리한다.
 
-# 주의할 점
-- 제품, 고객, 제안 내용을 지어내지 않는다.
-- 부족한 정보는 확인 필요로 분리한다.
-- 상대가 부담스럽지 않게 신뢰와 다음 액션을 우선한다.
+# 출력 형식
+선택된 출력 형식: PRD 초안
+PRD 범위: 성공 지표와 릴리즈 계획
+- 문제 정의와 목표, 사용자 시나리오, 요구사항과 우선순위를 구분한다.
+- 성공 지표와 릴리즈 전 확인할 리스크를 포함한다.
+- PRD 관점에서 문제, 요구사항, 사용자 시나리오를 반영한다.
+- 성공 지표와 우선순위를 포함한다.
+
+# 좋은 답변의 기준
+- 바로 실행할 수 있을 만큼 구체적이다.
+- 우선순위와 순서가 분명하다.
+- 모르는 정보는 가정으로 분리한다.
+
+# 관점
+시니어 PM 관점에서 답하라.
 ```
 Human Review:
 - 명확성 1~5:
@@ -386,6 +425,7 @@ Actual:
 - domain: `research`
 - domainConfidence: `0.92`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - goal: 경쟁 구도 파악
 - analysis_target: 경쟁 구도
@@ -416,6 +456,8 @@ Questions:
 Assumed Answers:
 - competitor_scope: 같은 카테고리의 주요 서비스
 - comparison_dimensions: 기능/제품
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -482,6 +524,7 @@ Actual:
 - domain: `marketing_strategy`
 - domainConfidence: `0.89`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - goal: 문제 원인 진단
 - analysis_target: 문제 원인
@@ -512,6 +555,8 @@ Questions:
 Assumed Answers:
 - funnel_stage: 방문 → 가입
 - diagnosis_method: 원인 가설 트리
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -579,6 +624,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - goal: 장단점 비교
 - analysis_target: 장단점
@@ -598,6 +644,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -629,6 +677,7 @@ Actual:
 - domain: `writing_email`
 - domainConfidence: `0.92`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - audience: 투자자
 - output_format: 메일 초안
@@ -650,6 +699,8 @@ Questions:
 - 추천해줘
 Assumed Answers:
 - tone: 정중하고 간결하게
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -704,6 +755,7 @@ Actual:
 - domain: `writing_email`
 - domainConfidence: `0.89`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - audience: 고객
 - output_format: 메일 초안
@@ -725,6 +777,8 @@ Questions:
 - 추천해줘
 Assumed Answers:
 - tone: 정중하고 간결하게
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -780,6 +834,7 @@ Actual:
 - domain: `research`
 - domainConfidence: `0.92`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - none
 Missing Slots:
@@ -811,6 +866,8 @@ Questions:
 Assumed Answers:
 - market_scope: 글로벌 시장
 - source_preference: 검증된 근거 중심
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -876,6 +933,7 @@ Actual:
 - domain: `research`
 - domainConfidence: `0.92`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - timeframe: 최근
 Missing Slots:
@@ -907,6 +965,8 @@ Questions:
 Assumed Answers:
 - research_timeframe: 최근 3개월
 - source_preference: 공식 스토어/제품 자료
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -974,6 +1034,7 @@ Actual:
 - domain: `personal_prioritization`
 - domainConfidence: `0.95`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - none
 Missing Slots:
@@ -1004,6 +1065,8 @@ Questions:
 Assumed Answers:
 - goal: 우선순위 정리
 - decision_criteria: 속도
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -1070,6 +1133,7 @@ Actual:
 - domain: `personal_prioritization`
 - domainConfidence: `0.95`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - timeframe: 이번 주
 Missing Slots:
@@ -1099,6 +1163,8 @@ Questions:
 Assumed Answers:
 - goal: 우선순위 정리
 - decision_criteria: 효과
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -1167,6 +1233,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - goal: 선택지 비교
 - decision_options: A와 B 비교
@@ -1185,6 +1252,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -1216,6 +1285,7 @@ Actual:
 - domain: `marketing_strategy`
 - domainConfidence: `0.89`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - quantity: 10개
 - goal: 캠페인 아이디어
@@ -1246,6 +1316,8 @@ Questions:
 Assumed Answers:
 - campaign_audience: 신규 고객
 - campaign_objective: 인지도 높이기
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -1299,6 +1371,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - goal: 이름/슬로건
 Missing Slots:
@@ -1329,6 +1402,8 @@ Questions:
 Assumed Answers:
 - naming_context: 소비자 앱
 - naming_style: 짧고 기억하기 쉽게
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -1379,6 +1454,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - input_source: 아래 내용
 Missing Slots:
@@ -1396,6 +1472,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -1427,6 +1505,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 표로 정리
 - input_source: 아래 내용
@@ -1444,6 +1523,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -1475,6 +1556,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - none
 Missing Slots:
@@ -1493,6 +1575,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -1524,6 +1608,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - none
 Missing Slots:
@@ -1542,6 +1627,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -1573,6 +1660,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - none
 Missing Slots:
@@ -1591,6 +1679,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -1622,6 +1712,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - none
 Missing Slots:
@@ -1640,6 +1731,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -1671,6 +1764,7 @@ Actual:
 - domain: `personal_prioritization`
 - domainConfidence: `0.95`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - none
 Missing Slots:
@@ -1701,6 +1795,8 @@ Questions:
 Assumed Answers:
 - goal: 우선순위 정리
 - decision_criteria: 효과
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -1767,6 +1863,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - input_source: 아래 내용
 Missing Slots:
@@ -1784,6 +1881,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -1815,6 +1914,7 @@ Actual:
 - domain: `marketing_strategy`
 - domainConfidence: `0.92`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - quantity: 1페이지
 - output_format: 1페이지 전략 문서
@@ -1837,6 +1937,8 @@ Questions:
 - 추천해줘
 Assumed Answers:
 - goal: 보고용 전략 정리
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -1905,6 +2007,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `job_posting`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 채용 공고 초안
 - goal: 채용 공고 초안
@@ -1936,6 +2039,8 @@ Questions:
 Assumed Answers:
 - role_type: 개발자
 - emphasis: 직무 요건 명확화
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -1987,6 +2092,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `meeting_agenda`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 회의 아젠다
 - goal: 회의 아젠다
@@ -2018,6 +2124,8 @@ Questions:
 Assumed Answers:
 - artifact_topic: 프로젝트 진행 상황
 - agenda_format: 30분 회의 아젠다
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2070,6 +2178,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `question_set`
+- needsContextLine: `false`
 Filled Slots:
 - audience: 고객
 - output_format: 질문 목록
@@ -2100,6 +2209,8 @@ Questions:
 Assumed Answers:
 - question_purpose: 문제 검증
 - question_format: 핵심 질문 10개
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2154,6 +2265,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `presentation_outline`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 발표 구조
 - goal: 발표 구조
@@ -2185,6 +2297,8 @@ Questions:
 Assumed Answers:
 - artifact_topic: 제품/서비스 소개
 - outline_format: 5분 발표 구조
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2237,6 +2351,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `curriculum`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 커리큘럼 초안
 - goal: 커리큘럼 초안
@@ -2268,6 +2383,8 @@ Questions:
 Assumed Answers:
 - artifact_topic: 업무/실무 교육
 - learning_audience: 입문자
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2319,6 +2436,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `manual_or_playbook`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 매뉴얼/플레이북
 - goal: 매뉴얼/플레이북
@@ -2350,6 +2468,8 @@ Questions:
 Assumed Answers:
 - manual_purpose: 일관된 응대
 - manual_scope: 기본 절차
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2402,6 +2522,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `onboarding_doc`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 온보딩 문서
 - goal: 온보딩 문서
@@ -2433,6 +2554,8 @@ Questions:
 Assumed Answers:
 - onboarding_audience: 신규 직원
 - onboarding_format: 첫날 체크리스트
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2485,6 +2608,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `content_plan`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 콘텐츠 기획안
 - goal: 콘텐츠 기획안
@@ -2516,6 +2640,8 @@ Questions:
 Assumed Answers:
 - artifact_topic: 제품/서비스 소개
 - content_output: 기획안 구조
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2568,6 +2694,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `blog_outline`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 블로그 목차
 - goal: 블로그 목차
@@ -2599,6 +2726,8 @@ Questions:
 Assumed Answers:
 - artifact_topic: 제품/서비스 설명
 - outline_format: 핵심 목차만
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2651,6 +2780,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `survey_questions`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 설문 문항 목록
 - goal: 설문 문항 목록
@@ -2681,6 +2811,8 @@ Questions:
 Assumed Answers:
 - artifact_topic: 고객 만족도
 - question_format: 핵심 질문 10개
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2733,6 +2865,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - goal: 장단점 비교
 - analysis_target: 장단점
@@ -2751,6 +2884,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -2782,6 +2917,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `retrospective_questions`
+- needsContextLine: `false`
 Filled Slots:
 - audience: 팀
 - output_format: 회고 질문 목록
@@ -2812,6 +2948,8 @@ Questions:
 Assumed Answers:
 - question_purpose: 회고/학습 도출
 - question_format: 핵심 질문 10개
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2865,6 +3003,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `handoff_doc`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 인수인계 문서
 - goal: 인수인계 문서
@@ -2896,6 +3035,8 @@ Questions:
 Assumed Answers:
 - artifact_topic: 운영 업무
 - handoff_format: 체크리스트
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -2948,6 +3089,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `complaint_reply`
+- needsContextLine: `false`
 Filled Slots:
 - audience: 고객
 - output_format: 고객 불만 답변 초안
@@ -2979,6 +3121,8 @@ Questions:
 Assumed Answers:
 - artifact_topic: 서비스 장애/오류
 - tone: 정중하고 공감 있게
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -3033,6 +3177,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `proposal_outline`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 제안서 구조
 - goal: 제안서 구조
@@ -3064,6 +3209,8 @@ Questions:
 Assumed Answers:
 - proposal_goal: 문제 해결안 제시
 - proposal_context: 제품/서비스 도입
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -3117,6 +3264,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `proposal_outline`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 제안서 구조
 - goal: 제안서 구조
@@ -3148,6 +3296,8 @@ Questions:
 Assumed Answers:
 - proposal_goal: 제휴 구조 제안
 - proposal_context: 제휴/협업 구조
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -3201,6 +3351,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `demo_agenda`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 데모 미팅 아젠다
 - goal: 데모 미팅 아젠다
@@ -3232,6 +3383,8 @@ Questions:
 Assumed Answers:
 - meeting_goal: 제품 가치 설명
 - sales_stage: 데모/미팅 전
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -3285,6 +3438,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - none
 Missing Slots:
@@ -3303,6 +3457,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -3334,6 +3490,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `negotiation_reply`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 가격 협상 대응 문구
 - goal: 가격 협상 대응 문구
@@ -3365,6 +3522,8 @@ Questions:
 Assumed Answers:
 - objection_type: 가격이 비싸다
 - negotiation_boundary: 할인 없이 가치 설명
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -3418,6 +3577,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `none`
+- needsContextLine: `false`
 Filled Slots:
 - audience: 고객
 Missing Slots:
@@ -3435,6 +3595,8 @@ Clarify behavior:
 Questions:
 Skipped in runtime.
 Assumed Answers:
+Skipped in runtime.
+Context Line:
 Skipped in runtime.
 Compiled Prompt:
 Skipped in runtime.
@@ -3466,6 +3628,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `complaint_reply`
+- needsContextLine: `false`
 Filled Slots:
 - audience: 고객
 - artifact_topic: 배송/일정 지연
@@ -3488,6 +3651,8 @@ Questions:
 - 추천해줘
 Assumed Answers:
 - tone: 정중하고 공감 있게
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -3543,6 +3708,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `refund_policy_manual`
+- needsContextLine: `false`
 Filled Slots:
 - output_format: 환불 정책 CS 응대 매뉴얼
 - goal: 환불 정책 CS 응대 매뉴얼
@@ -3574,6 +3740,8 @@ Questions:
 Assumed Answers:
 - refund_policy_scope: 환불 가능/불가 기준
 - manual_scope: 기본 절차
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -3628,6 +3796,7 @@ Actual:
 - domain: `generic`
 - domainConfidence: `0.00`
 - artifactType: `vip_complaint_reply`
+- needsContextLine: `false`
 Filled Slots:
 - audience: 고객
 - output_format: VIP 클레임 대응 초안
@@ -3659,6 +3828,8 @@ Questions:
 Assumed Answers:
 - escalation_level: 반복 불만/중요 고객
 - ownership_model: 담당자 지정
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -3715,6 +3886,7 @@ Actual:
 - domain: `writing_email`
 - domainConfidence: `0.89`
 - artifactType: `vip_complaint_reply`
+- needsContextLine: `false`
 Filled Slots:
 - audience: 고객
 - output_format: VIP 클레임 대응 초안
@@ -3746,6 +3918,8 @@ Questions:
 Assumed Answers:
 - escalation_level: 긴급 장애/업무 영향
 - ownership_model: 담당자 지정
+Context Line:
+_Not used for this case._
 Compiled Prompt:
 ```text
 # 작업
@@ -3765,6 +3939,1276 @@ VIP 고객 클레임 대응 초안을 작성한다. 원문 요청 "중요 고객
 오너십: 담당자 지정
 - 사과/공감, 오너십, 심각도 확인, 해결 계획, 다음 업데이트를 구분한다.
 - 보상이나 약속은 단정하지 말고 확인 필요와 가능한 범위를 분리한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 49. sales call script
+Draft:
+```text
+세일즈 콜 스크립트 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write or brief.plan`
+- expectedDomain: `not specified`
+- expectedArtifactType: `sales_script`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `sales_script`
+- needsContextLine: `true`
+Filled Slots:
+- output_format: 세일즈 콜 스크립트
+- goal: 세일즈 콜 스크립트
+Missing Slots:
+- audience
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 제품, 대상 고객, 콜 목적을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: SMB 대표에게 재고관리 SaaS 데모 미팅을 잡기 위한 첫 콜
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+재고관리 SaaS를 SMB 대표에게 소개하고 데모 미팅을 잡는 첫 콜
+```
+Compiled Prompt:
+```text
+# 작업
+세일즈 콜 스크립트를 작성한다. 원문 요청 "세일즈 콜 스크립트 써줘"의 의도를 보존한다. 목표는 "세일즈 콜 스크립트"이다.
+
+# 확인된 정보
+- 원문 요청: "세일즈 콜 스크립트 써줘"
+- 목표: 세일즈 콜 스크립트
+- 1줄 맥락: 재고관리 SaaS를 SMB 대표에게 소개하고 데모 미팅을 잡는 첫 콜
+- 출력 형식: 세일즈 콜 스크립트
+
+# 출력 형식
+선택된 출력 형식: 세일즈 콜 스크립트
+- 오프닝, 니즈 파악 질문, 가치 제안, 예상 objection 대응, 다음 액션 제안을 구분한다.
+- 콜에서 바로 읽거나 변형해 쓸 수 있는 스크립트 형태로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 50. cold email draft
+Draft:
+```text
+콜드메일 작성해줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `not specified`
+- expectedArtifactType: `cold_email`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.89`
+- artifactType: `cold_email`
+- needsContextLine: `true`
+Filled Slots:
+- output_format: 콜드메일 초안
+- goal: 콜드메일 초안
+Missing Slots:
+- audience
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 제품/오퍼와 대상 고객을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: HR팀장에게 채용 자동화 툴 데모를 제안하는 첫 메일
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+HR팀장에게 채용 자동화 SaaS 무료 데모를 제안하는 첫 콜드메일
+```
+Compiled Prompt:
+```text
+# 작업
+콜드메일 초안을 작성한다. 원문 요청 "콜드메일 작성해줘"의 의도를 보존한다. 목표는 "콜드메일 초안"이다.
+
+# 확인된 정보
+- 원문 요청: "콜드메일 작성해줘"
+- 목표: 콜드메일 초안
+- 1줄 맥락: HR팀장에게 채용 자동화 SaaS 무료 데모를 제안하는 첫 콜드메일
+- 출력 형식: 콜드메일 초안
+
+# 출력 형식
+선택된 출력 형식: 콜드메일 초안
+- 제목 후보 2개, 첫 문장, 본문, CTA, 짧은 버전을 구분한다.
+- 낯선 상대가 빠르게 이해하고 답장할 수 있게 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 51. prospect objections analysis
+Draft:
+```text
+잠재 고객 objections 정리해줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.analyze or brief.extract`
+- expectedDomain: `not specified`
+- expectedArtifactType: `objections_analysis`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.analyze`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `objections_analysis`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: objection 대응 정리
+- goal: objection 대응 정리
+Missing Slots:
+- analysis_target
+- criteria
+- depth
+- assumptions_policy
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 제품/고객군과 자주 나오는 objection을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 보안 우려가 큰 엔터프라이즈 IT 담당자 대상
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+보안과 도입 리스크를 우려하는 엔터프라이즈 IT 담당자 대상
+```
+Compiled Prompt:
+```text
+# 작업
+잠재 고객 objection과 우려 대응을 정리한다. 원문 요청 "잠재 고객 objections 정리해줘"의 의도를 보존한다. 목표는 "objection 대응 정리"이다.
+
+# 확인된 정보
+- 원문 요청: "잠재 고객 objections 정리해줘"
+- 목표: objection 대응 정리
+- 대상: 고객
+- 1줄 맥락: 보안과 도입 리스크를 우려하는 엔터프라이즈 IT 담당자 대상
+- 출력 형식: objection 대응 정리
+
+# 출력 형식
+선택된 출력 형식: objection 대응 정리
+- objection 유형별 정리, 고객 심리/우려, 대응 메시지, 확인 질문을 구분한다.
+- 반박을 누르기보다 우려를 확인하고 신뢰를 높이는 방식으로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 52. sales follow-up email
+Draft:
+```text
+영업 후속 메일 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `not specified`
+- expectedArtifactType: `follow_up_email`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.89`
+- artifactType: `follow_up_email`
+- needsContextLine: `true`
+Filled Slots:
+- output_format: 영업 후속 메일
+- goal: 영업 후속 메일
+Missing Slots:
+- audience
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 이전 접점과 원하는 다음 액션을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 어제 데모 후 가격표를 보낸 리드에게 다음 미팅을 요청
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+어제 제품 데모 후 가격표를 보낸 리드에게 다음 미팅을 요청
+```
+Compiled Prompt:
+```text
+# 작업
+영업 후속 메일을 작성한다. 원문 요청 "영업 후속 메일 써줘"의 의도를 보존한다. 목표는 "영업 후속 메일"이다.
+
+# 확인된 정보
+- 원문 요청: "영업 후속 메일 써줘"
+- 목표: 영업 후속 메일
+- 1줄 맥락: 어제 제품 데모 후 가격표를 보낸 리드에게 다음 미팅을 요청
+- 출력 형식: 영업 후속 메일
+
+# 출력 형식
+선택된 출력 형식: 영업 후속 메일
+- 제목, 맥락 리마인드, 핵심 가치/다음 단계, CTA를 구분한다.
+- 이전 접점을 부담스럽지 않게 이어가는 후속 메일로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 53. sales collateral for our product
+Draft:
+```text
+우리 제품 세일즈 자료 만들어줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.plan or brief.write`
+- expectedDomain: `not specified`
+- expectedArtifactType: `sales_collateral`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.plan`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `sales_collateral`
+- needsContextLine: `true`
+Filled Slots:
+- output_format: 세일즈 자료
+- goal: 세일즈 자료
+Missing Slots:
+- scope
+- audience
+- timeframe
+- success_criteria
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 제품과 대상 고객, 자료 목적을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: B2B 회계 자동화 제품, CFO 대상, 도입 검토용 1페이지 자료
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+B2B 회계 자동화 제품, CFO 대상, 도입 검토용 1페이지 자료
+```
+Compiled Prompt:
+```text
+# 작업
+세일즈 자료를 만든다. 원문 요청 "우리 제품 세일즈 자료 만들어줘"의 의도를 보존한다. 목표는 "세일즈 자료"이다.
+
+# 확인된 정보
+- 원문 요청: "우리 제품 세일즈 자료 만들어줘"
+- 목표: 세일즈 자료
+- 1줄 맥락: B2B 회계 자동화 제품, CFO 대상, 도입 검토용 1페이지 자료
+- 출력 형식: 세일즈 자료
+
+# 출력 형식
+선택된 출력 형식: 세일즈 자료
+- 핵심 메시지, 대상 고객 pain point, 가치 제안, proof point, CTA를 구분한다.
+- 제품 정보가 부족하면 가정과 확인 필요 항목을 분리한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 54. proposal for customer A
+Draft:
+```text
+A 고객에게 제안서 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write or brief.plan`
+- expectedDomain: `not specified`
+- expectedArtifactType: `proposal_outline`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.plan`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `proposal_outline`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 제안서 구조
+- goal: 제안서 구조
+Missing Slots:
+- scope
+- timeframe
+- success_criteria
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 고객 상황과 제안할 내용을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: A 고객의 지원 비용 절감을 위한 CS 자동화 도입 제안
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+A 고객은 CS 비용 증가가 문제이고, 지원 자동화 도입을 제안하려 함
+```
+Compiled Prompt:
+```text
+# 작업
+제안서 구조를 잡는다. 원문 요청 "A 고객에게 제안서 써줘"의 의도를 보존한다. 목표는 "제안서 구조"이다.
+
+# 확인된 정보
+- 원문 요청: "A 고객에게 제안서 써줘"
+- 목표: 제안서 구조
+- 대상: 고객
+- 1줄 맥락: A 고객은 CS 비용 증가가 문제이고, 지원 자동화 도입을 제안하려 함
+- 출력 형식: 제안서 구조
+
+# 출력 형식
+선택된 출력 형식: 제안서 구조
+- 문제 정의, 제안 내용, 기대 효과, 비용/리스크, 다음 단계를 구분한다.
+- 제안서 구조를 바로 확장할 수 있게 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 55. refund request response
+Draft:
+```text
+환불 요청 고객 답변 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `refund_reply`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `refund_reply`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 환불 요청 고객 답변
+- goal: 환불 요청 고객 답변
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 환불 정책/상태와 고객 상황을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 7일 환불 기간이 지났지만 첫 결제 고객이라 예외 검토 중
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+7일 환불 기간은 지났지만 첫 결제 고객이라 내부 검토 후 안내해야 함
+```
+Compiled Prompt:
+```text
+# 작업
+환불 요청 고객 답변을 작성한다. 원문 요청 "환불 요청 고객 답변 써줘"의 의도를 보존한다. 목표는 "환불 요청 고객 답변"이다.
+
+# 확인된 정보
+- 원문 요청: "환불 요청 고객 답변 써줘"
+- 목표: 환불 요청 고객 답변
+- 대상: 고객
+- 1줄 맥락: 7일 환불 기간은 지났지만 첫 결제 고객이라 내부 검토 후 안내해야 함
+- 출력 형식: 환불 요청 고객 답변
+
+# 출력 형식
+선택된 출력 형식: 환불 요청 고객 답변
+- 환불 상태, 정책 근거, 고객 상황 공감, 다음 절차를 구분한다.
+- 환불 가능 여부를 모르면 단정하지 말고 확인 필요와 임시 안내를 분리한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+- 환불 가능 여부와 정책 근거를 모르면 단정하지 않는다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 56. service outage notice
+Draft:
+```text
+서비스 장애 공지 초안 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `outage_notice`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `outage_notice`
+- needsContextLine: `true`
+Filled Slots:
+- output_format: 서비스 장애 공지
+- goal: 서비스 장애 공지
+Missing Slots:
+- audience
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 영향 범위, 현재 상태, 다음 업데이트 시점을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 로그인 장애가 30분째 지속, 일부 계정 영향, 1시간 뒤 업데이트
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+로그인 장애가 30분째 지속, 일부 계정 영향, 1시간 뒤 상태 업데이트 예정
+```
+Compiled Prompt:
+```text
+# 작업
+서비스 장애 공지 초안을 작성한다. 원문 요청 "서비스 장애 공지 초안 써줘"의 의도를 보존한다. 목표는 "서비스 장애 공지"이다.
+
+# 확인된 정보
+- 원문 요청: "서비스 장애 공지 초안 써줘"
+- 목표: 서비스 장애 공지
+- 1줄 맥락: 로그인 장애가 30분째 지속, 일부 계정 영향, 1시간 뒤 상태 업데이트 예정
+- 출력 형식: 서비스 장애 공지
+
+# 출력 형식
+선택된 출력 형식: 서비스 장애 공지
+- 장애 요약, 영향 범위, 현재 상태, 우회책, 다음 업데이트 시점을 구분한다.
+- 책임 회피보다 사과, 사실 확인, 고객이 할 수 있는 다음 행동을 우선한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 장애 영향 범위, 현재 상태, 다음 업데이트 기준을 분리한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 57. support faq draft
+Draft:
+```text
+고객 지원 FAQ 초안 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `support_faq`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `support_faq`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 고객 지원 FAQ
+- goal: 고객 지원 FAQ
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 원본 문의 목록이나 FAQ로 만들 범위를 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 환불, 로그인 오류, 결제수단 변경 문의가 반복됨
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+반복 문의는 로그인 오류, 환불 절차, 결제수단 변경, 비밀번호 재설정
+```
+Compiled Prompt:
+```text
+# 작업
+고객 지원 FAQ 초안을 작성한다. 원문 요청 "고객 지원 FAQ 초안 써줘"의 의도를 보존한다. 목표는 "고객 지원 FAQ"이다.
+
+# 확인된 정보
+- 원문 요청: "고객 지원 FAQ 초안 써줘"
+- 목표: 고객 지원 FAQ
+- 대상: 고객
+- 1줄 맥락: 반복 문의는 로그인 오류, 환불 절차, 결제수단 변경, 비밀번호 재설정
+- 출력 형식: 고객 지원 FAQ
+
+# 출력 형식
+선택된 출력 형식: 고객 지원 FAQ
+- FAQ 카테고리, 질문, 고객용 답변, 필요한 다음 액션을 구분한다.
+- 답변은 고객이 바로 이해할 수 있게 짧고 실무적으로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 58. new customer onboarding guide
+Draft:
+```text
+신규 고객 온보딩 문서 만들어줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.plan`
+- expectedDomain: `generic`
+- expectedArtifactType: `onboarding_doc`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.plan`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `onboarding_doc`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- onboarding_audience: 신규 고객
+- output_format: 온보딩 문서
+- goal: 온보딩 문서
+Missing Slots:
+- scope
+- timeframe
+- success_criteria
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 제품/서비스와 온보딩 목표를 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 신규 고객이 첫 주 안에 결제 연동과 팀 초대를 완료하게 하기
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+신규 고객이 첫 주 안에 결제 연동과 팀 초대를 완료하게 하는 SaaS 온보딩
+```
+Compiled Prompt:
+```text
+# 작업
+온보딩 문서를 만든다. 원문 요청 "신규 고객 온보딩 문서 만들어줘"의 의도를 보존한다. 목표는 "온보딩 문서"이다.
+
+# 확인된 정보
+- 원문 요청: "신규 고객 온보딩 문서 만들어줘"
+- 목표: 온보딩 문서
+- 대상: 고객
+- 1줄 맥락: 신규 고객이 첫 주 안에 결제 연동과 팀 초대를 완료하게 하는 SaaS 온보딩
+- 출력 형식: 온보딩 문서
+- 온보딩 대상: 신규 고객
+
+# 출력 형식
+선택된 출력 형식: 온보딩 문서
+- 대상, 단계, 체크리스트, 필요한 자료를 구분한다.
+- 첫 실행자가 바로 따라갈 수 있는 온보딩 문서로 구성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 59. churn save reply
+Draft:
+```text
+해지하려는 고객에게 붙잡는 답변 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `churn_save_reply`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `churn_save_reply`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 해지 고객 답변
+- goal: 해지 고객 답변
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 해지 사유, 고객 상태, 제안 가능한 대안을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 가격 부담으로 해지 고민, 월간 플랜 할인은 불가하고 사용법 지원 가능
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+가격 부담으로 해지를 고민하지만 사용량은 높고 월간 할인은 불가
+```
+Compiled Prompt:
+```text
+# 작업
+해지하려는 고객에게 보낼 답변을 작성한다. 원문 요청 "해지하려는 고객에게 붙잡는 답변 써줘"의 의도를 보존한다. 목표는 "해지 고객 답변"이다.
+
+# 확인된 정보
+- 원문 요청: "해지하려는 고객에게 붙잡는 답변 써줘"
+- 목표: 해지 고객 답변
+- 대상: 고객
+- 1줄 맥락: 가격 부담으로 해지를 고민하지만 사용량은 높고 월간 할인은 불가
+- 출력 형식: 해지 고객 답변
+
+# 출력 형식
+선택된 출력 형식: 해지 고객 답변
+- 공감, 해지 사유 확인, 가능한 대안, 다음 액션을 구분한다.
+- 무리하게 붙잡기보다 고객 선택권과 신뢰를 해치지 않는 답변으로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+- 해지 의사를 존중하고 무리한 설득보다 사유 확인과 선택권을 우선한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 60. customer success check-in email
+Draft:
+```text
+고객 성공 체크인 메일 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `customer_success_checkin`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.89`
+- artifactType: `customer_success_checkin`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 고객 성공 체크인 메일
+- goal: 고객 성공 체크인 메일
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 고객 상태, 사용 맥락, 체크인 목적을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 도입 2주차 고객, 기능 사용률 낮음, 활성화 지원 목적
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+도입 2주차 고객, 핵심 기능 사용률이 낮아 활성화 지원 목적
+```
+Compiled Prompt:
+```text
+# 작업
+고객 성공 체크인 메일을 작성한다. 원문 요청 "고객 성공 체크인 메일 써줘"의 의도를 보존한다. 목표는 "고객 성공 체크인 메일"이다.
+
+# 확인된 정보
+- 원문 요청: "고객 성공 체크인 메일 써줘"
+- 목표: 고객 성공 체크인 메일
+- 대상: 고객
+- 1줄 맥락: 도입 2주차 고객, 핵심 기능 사용률이 낮아 활성화 지원 목적
+- 출력 형식: 고객 성공 체크인 메일
+
+# 출력 형식
+선택된 출력 형식: 고객 성공 체크인 메일
+- 제목, 체크인 목적, 사용 현황 질문, 지원 제안, 다음 액션을 구분한다.
+- 고객이 부담 없이 답할 수 있게 짧고 구체적인 메일로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 61. refund reply paraphrase
+Draft:
+```text
+고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `refund_reply`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.89`
+- artifactType: `refund_reply`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 환불 요청 고객 답변
+- goal: 환불 요청 고객 답변
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 환불 정책/상태와 고객 상황을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 7일 환불 기간이 지났지만 첫 결제 고객이라 예외 검토 중
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+결제 후 3일 내 요청이라 환불 가능성이 높지만 결제수단 확인 필요
+```
+Compiled Prompt:
+```text
+# 작업
+환불 요청 고객 답변을 작성한다. 원문 요청 "고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘"의 의도를 보존한다. 목표는 "환불 요청 고객 답변"이다.
+
+# 확인된 정보
+- 원문 요청: "고객이 결제 취소하고 돈을 돌려달라고 할 때 답장 써줘"
+- 목표: 환불 요청 고객 답변
+- 대상: 고객
+- 1줄 맥락: 결제 후 3일 내 요청이라 환불 가능성이 높지만 결제수단 확인 필요
+- 출력 형식: 환불 요청 고객 답변
+
+# 출력 형식
+선택된 출력 형식: 환불 요청 고객 답변
+- 환불 상태, 정책 근거, 고객 상황 공감, 다음 절차를 구분한다.
+- 환불 가능 여부를 모르면 단정하지 말고 확인 필요와 임시 안내를 분리한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 62. outage notice paraphrase
+Draft:
+```text
+점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `outage_notice`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `outage_notice`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 서비스 장애 공지
+- goal: 서비스 장애 공지
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 영향 범위, 현재 상태, 다음 업데이트 시점을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 로그인 장애가 30분째 지속, 일부 계정 영향, 1시간 뒤 업데이트
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+예정 점검으로 23시부터 30분간 접속 불가, 완료 후 공지 예정
+```
+Compiled Prompt:
+```text
+# 작업
+서비스 장애 공지 초안을 작성한다. 원문 요청 "점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘"의 의도를 보존한다. 목표는 "서비스 장애 공지"이다.
+
+# 확인된 정보
+- 원문 요청: "점검 때문에 접속 불가한 상황을 고객 안내문으로 작성해줘"
+- 목표: 서비스 장애 공지
+- 대상: 고객
+- 1줄 맥락: 예정 점검으로 23시부터 30분간 접속 불가, 완료 후 공지 예정
+- 출력 형식: 서비스 장애 공지
+
+# 출력 형식
+선택된 출력 형식: 서비스 장애 공지
+- 장애 요약, 영향 범위, 현재 상태, 우회책, 다음 업데이트 시점을 구분한다.
+- 책임 회피보다 사과, 사실 확인, 고객이 할 수 있는 다음 행동을 우선한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 63. churn save paraphrase
+Draft:
+```text
+구독 취소하려는 고객 마음 돌리는 메일 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `churn_save_reply`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.89`
+- artifactType: `churn_save_reply`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 해지 고객 답변
+- goal: 해지 고객 답변
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 해지 사유, 고객 상태, 제안 가능한 대안을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 가격 부담으로 해지 고민, 월간 플랜 할인은 불가하고 사용법 지원 가능
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+구독 취소 이유는 팀 사용률 저하, 교육 세션 제안 가능
+```
+Compiled Prompt:
+```text
+# 작업
+해지하려는 고객에게 보낼 답변을 작성한다. 원문 요청 "구독 취소하려는 고객 마음 돌리는 메일 써줘"의 의도를 보존한다. 목표는 "해지 고객 답변"이다.
+
+# 확인된 정보
+- 원문 요청: "구독 취소하려는 고객 마음 돌리는 메일 써줘"
+- 목표: 해지 고객 답변
+- 대상: 고객
+- 1줄 맥락: 구독 취소 이유는 팀 사용률 저하, 교육 세션 제안 가능
+- 출력 형식: 해지 고객 답변
+
+# 출력 형식
+선택된 출력 형식: 해지 고객 답변
+- 공감, 해지 사유 확인, 가능한 대안, 다음 액션을 구분한다.
+- 무리하게 붙잡기보다 고객 선택권과 신뢰를 해치지 않는 답변으로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 64. customer success check-in paraphrase
+Draft:
+```text
+사용 현황 확인용 고객 점검 메일 작성해줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `customer_success_checkin`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.89`
+- artifactType: `customer_success_checkin`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 고객 성공 체크인 메일
+- goal: 고객 성공 체크인 메일
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 고객 상태, 사용 맥락, 체크인 목적을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 도입 2주차 고객, 기능 사용률 낮음, 활성화 지원 목적
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+월간 리포트 확인 전 사용 현황과 막힌 지점을 묻는 고객 성공 메일
+```
+Compiled Prompt:
+```text
+# 작업
+고객 성공 체크인 메일을 작성한다. 원문 요청 "사용 현황 확인용 고객 점검 메일 작성해줘"의 의도를 보존한다. 목표는 "고객 성공 체크인 메일"이다.
+
+# 확인된 정보
+- 원문 요청: "사용 현황 확인용 고객 점검 메일 작성해줘"
+- 목표: 고객 성공 체크인 메일
+- 대상: 고객
+- 1줄 맥락: 월간 리포트 확인 전 사용 현황과 막힌 지점을 묻는 고객 성공 메일
+- 출력 형식: 고객 성공 체크인 메일
+
+# 출력 형식
+선택된 출력 형식: 고객 성공 체크인 메일
+- 제목, 체크인 목적, 사용 현황 질문, 지원 제안, 다음 액션을 구분한다.
+- 고객이 부담 없이 답할 수 있게 짧고 구체적인 메일로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 65. support faq paraphrase
+Draft:
+```text
+자주 받는 고객 문의 Q&A 만들어줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `context_candidate`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `support_faq`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `generic`
+- domainConfidence: `0.00`
+- artifactType: `support_faq`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 고객 지원 FAQ
+- goal: 고객 지원 FAQ
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 원본 문의 목록이나 FAQ로 만들 범위를 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 환불, 로그인 오류, 결제수단 변경 문의가 반복됨
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+자주 받는 문의는 배송 지연, 환불 가능 여부, 계정 로그인 문제
+```
+Compiled Prompt:
+```text
+# 작업
+고객 지원 FAQ 초안을 작성한다. 원문 요청 "자주 받는 고객 문의 Q&A 만들어줘"의 의도를 보존한다. 목표는 "고객 지원 FAQ"이다.
+
+# 확인된 정보
+- 원문 요청: "자주 받는 고객 문의 Q&A 만들어줘"
+- 목표: 고객 지원 FAQ
+- 대상: 고객
+- 1줄 맥락: 자주 받는 문의는 배송 지연, 환불 가능 여부, 계정 로그인 문제
+- 출력 형식: 고객 지원 FAQ
+
+# 출력 형식
+선택된 출력 형식: 고객 지원 FAQ
+- FAQ 카테고리, 질문, 고객용 답변, 필요한 다음 액션을 구분한다.
+- 답변은 고객이 바로 이해할 수 있게 짧고 실무적으로 작성한다.
 
 # 주의할 점
 - 모르는 정보는 가정으로 표시한다.
