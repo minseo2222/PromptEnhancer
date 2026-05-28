@@ -29,6 +29,8 @@ Manifest V3 기반의 local-only Chrome Extension v0입니다. ChatGPT 입력창
 3. `Load unpacked`를 클릭합니다.
 4. 이 프로젝트 루트 폴더를 선택합니다.
 5. `Clarify Before Send Prototype`이 manifest error 없이 로드되는지 확인합니다.
+
+단축키: 기본값은 Windows/Linux `Ctrl+Shift+Y`, macOS `Command+Shift+Y`입니다. Chrome의 `chrome://extensions/shortcuts`에서 사용자가 변경할 수 있습니다.
 6. 확장 아이콘을 눌러 popup에 `Local Only Mode`가 보이는지 확인합니다.
 
 ## Manual Test On ChatGPT

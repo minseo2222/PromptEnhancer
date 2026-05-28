@@ -53,6 +53,7 @@
     }
     startMutationObserver();
     listenForSettingsChanges();
+    listenForShortcutMessages();
     scheduleComposerCheck(250);
   }
 
@@ -87,6 +88,20 @@
       } else {
         scheduleComposerCheck(100);
       }
+    });
+  }
+
+  function listenForShortcutMessages() {
+    if (typeof chrome === "undefined" || !chrome.runtime || !chrome.runtime.onMessage) {
+      return;
+    }
+
+    chrome.runtime.onMessage.addListener((message) => {
+      if (!message || message.type !== "cbs-trigger-clarify") {
+        return;
+      }
+
+      triggerClarifyFromShortcut();
     });
   }
 
@@ -200,6 +215,35 @@
     }
 
     renderClarifyChip(composer);
+  }
+
+  function triggerClarifyFromShortcut() {
+    if (!state.enabled) {
+      return;
+    }
+
+    if (state.popover) {
+      if (state.uiState === "inserted" || state.uiState === "error") {
+        closeFlow({ schedule: false });
+      } else {
+        cancelFlow();
+      }
+      return;
+    }
+
+    const composer = findComposer();
+    if (!composer) {
+      return;
+    }
+
+    const draft = getComposerText(composer);
+    if (!window.CBSRuleEngine.shouldShowClarify(draft)) {
+      return;
+    }
+
+    state.composer = composer;
+    state.dismissedDraftFingerprint = "";
+    openQuestions();
   }
 
   function findComposer() {
@@ -1136,6 +1180,7 @@
     setComposerText,
     dispatchInputEvents,
     parsePromptForPreview,
-    renderPromptPreview
+    renderPromptPreview,
+    triggerClarifyFromShortcut
   };
 })();

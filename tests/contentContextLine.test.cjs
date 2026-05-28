@@ -284,6 +284,23 @@ async function main() {
       return { enabled: true, showLocalBadge: true };
     }
   };
+  let runtimeMessageHandler = null;
+  const chrome = {
+    runtime: {
+      onMessage: {
+        addListener(handler) {
+          runtimeMessageHandler = handler;
+        }
+      }
+    },
+    storage: {
+      onChanged: {
+        addListener() {}
+      }
+    }
+  };
+  global.chrome = chrome;
+  window.chrome = chrome;
 
   const composer = document.createElement("textarea");
   composer.id = "prompt-textarea";
@@ -310,12 +327,21 @@ async function main() {
 
   const chip = document.querySelector("#cbs-clarify-chip");
   assert.ok(chip, "Clarify chip should render for context_line draft");
-  chip.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
+  assert.ok(runtimeMessageHandler, "content script should register shortcut message listener");
+  runtimeMessageHandler({ type: "cbs-trigger-clarify" }, {}, () => {});
 
-  const contextInput = document.querySelector(".cbs-context-line-input");
+  let contextInput = document.querySelector(".cbs-context-line-input");
   assert.ok(contextInput, "context_line input should render");
   assert.ok(!document.querySelector(".cbs-option"), "context_line case should not render multiple-choice chips");
   assert.strictEqual(document.activeElement, contextInput, "popover should focus the first interactive control");
+  assert.strictEqual(window.CBSContent.getComposerText(composer), "콜드메일 작성해줘", "shortcut trigger must not auto-send");
+
+  runtimeMessageHandler({ type: "cbs-trigger-clarify" }, {}, () => {});
+  assert.ok(!document.querySelector("#cbs-clarify-popover"), "second shortcut trigger should toggle the popover closed");
+
+  runtimeMessageHandler({ type: "cbs-trigger-clarify" }, {}, () => {});
+  contextInput = document.querySelector(".cbs-context-line-input");
+  assert.ok(contextInput, "shortcut trigger should reopen the popover for the same draft");
 
   const initialPreview = document.querySelector(".cbs-preview-rendered");
   assert.ok(initialPreview, "empty context should still render a graceful preview");
@@ -352,7 +378,7 @@ async function main() {
   await new Promise((resolve) => setTimeout(resolve, 900));
   assert.strictEqual(document.querySelectorAll("#cbs-clarify-popover").length, 0, "dismissed draft should not auto-reopen popover");
 
-  chip.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
+  runtimeMessageHandler({ type: "cbs-trigger-clarify" }, {}, () => {});
   const reopenedInput = document.querySelector(".cbs-context-line-input");
   reopenedInput.value = contextLine;
   reopenedInput.dispatchEvent(new FakeEvent("input", { bubbles: true }));
@@ -368,6 +394,11 @@ async function main() {
   assert.ok(undoButton, "undo button should render");
   undoButton.dispatchEvent(new FakeEvent("click", { bubbles: true, cancelable: true }));
   assert.strictEqual(window.CBSContent.getComposerText(composer), "콜드메일 작성해줘", "undo should restore original draft");
+
+  composer.value = "안녕";
+  runtimeMessageHandler({ type: "cbs-trigger-clarify" }, {}, () => {});
+  assert.ok(!document.querySelector("#cbs-clarify-popover"), "shortcut trigger should do nothing for suppressed drafts");
+  assert.strictEqual(window.CBSContent.getComposerText(composer), "안녕", "suppressed shortcut trigger must not alter composer text");
   process.stdout.write("content context_line DOM test ok\n");
 }
 

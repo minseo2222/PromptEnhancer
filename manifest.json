@@ -24,6 +24,18 @@
       "128": "icons/icon128.png"
     }
   },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "commands": {
+    "cbs-trigger-clarify": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Open Clarify Before Send for the current ChatGPT draft"
+    }
+  },
   "content_scripts": [
     {
       "matches": [

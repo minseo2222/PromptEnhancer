@@ -71,6 +71,13 @@ h1 {
   text-decoration: none;
 }
 
+.shortcut-note {
+  margin: 0;
+  color: #475467;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .feedback-link:hover,
 .feedback-link:focus-visible {
   text-decoration: underline;
@@ -112,6 +119,7 @@ h1 {
   }
 
   .privacy-list,
+  .shortcut-note,
   .toggle-row {
     color: #d4d4d8;
   }
