@@ -118,7 +118,20 @@
     objection_type: "objection 유형",
     meeting_goal: "미팅 목적",
     proposal_goal: "제안서 목적",
-    proposal_context: "제안 내용"
+    proposal_context: "제안 내용",
+    refund_status: "환불 상태",
+    resolution_policy: "해결 기준",
+    outage_status: "장애 상태",
+    outage_impact: "영향 범위",
+    churn_reason: "해지 사유",
+    retention_boundary: "리텐션 기준",
+    escalation_level: "심각도",
+    ownership_model: "오너십",
+    checkin_purpose: "체크인 목적",
+    customer_stage: "고객 상태",
+    faq_topic: "FAQ 범위",
+    faq_format: "FAQ 형식",
+    refund_policy_scope: "환불 정책 범위"
   };
 
   const ARTIFACT_TASK_SENTENCES = {
@@ -141,6 +154,13 @@
     content_plan: "콘텐츠 기획안을 만든다.",
     blog_outline: "블로그 글 목차를 잡는다.",
     handoff_doc: "업무 인수인계 문서를 작성한다.",
+    refund_reply: "환불 요청 고객 답변을 작성한다.",
+    outage_notice: "서비스 장애 공지 초안을 작성한다.",
+    churn_save_reply: "해지하려는 고객에게 보낼 답변을 작성한다.",
+    vip_complaint_reply: "VIP 고객 클레임 대응 초안을 작성한다.",
+    customer_success_checkin: "고객 성공 체크인 메일을 작성한다.",
+    support_faq: "고객 지원 FAQ 초안을 작성한다.",
+    refund_policy_manual: "환불 정책 CS 응대 매뉴얼을 만든다.",
     complaint_reply: "고객 불만 답변 초안을 작성한다.",
     proposal_outline: "제안서 구조를 잡는다.",
     generic_outline: "요청한 결과물의 구조를 잡는다.",
@@ -167,6 +187,13 @@
     content_plan: "콘텐츠 목적에 맞는 기획안 만들기",
     blog_outline: "글의 논리 흐름과 목차를 명확히 하기",
     handoff_doc: "업무 인수인계를 빠짐없이 정리하기",
+    refund_reply: "환불 요청에 정책과 고객 신뢰를 함께 지키며 답하기",
+    outage_notice: "장애 상황을 숨기지 않고 고객이 다음 행동을 알 수 있게 공지하기",
+    churn_save_reply: "해지 의사를 존중하면서 이탈 사유와 가능한 대안을 확인하기",
+    vip_complaint_reply: "중요 고객 클레임에 오너십과 해결 일정을 분명히 하기",
+    customer_success_checkin: "고객의 사용 현황과 성공 가능성을 부담 없이 확인하기",
+    support_faq: "고객이 스스로 문제를 해결할 수 있는 FAQ 만들기",
+    refund_policy_manual: "지원팀이 환불 정책을 일관되고 안전하게 안내하도록 만들기",
     complaint_reply: "고객 불만에 신뢰를 해치지 않고 답하기",
     proposal_outline: "제안의 논리와 구조를 명확히 하기",
     generic_outline: "요청한 구조를 명확히 잡기",
@@ -196,6 +223,34 @@
     content_plan: ["콘텐츠 목적, 핵심 메시지, 흐름, 훅 또는 제목 후보를 포함한다.", "제작 전 확인할 체크리스트를 짧게 붙인다."],
     blog_outline: ["제목 후보와 H2/H3 목차를 제시한다.", "섹션별 핵심 메시지를 짧게 설명한다."],
     handoff_doc: ["현재 상태, 진행 중인 작업, 담당자/시스템 정보, 리스크를 구분한다.", "바로 실행할 다음 TODO를 포함한다."],
+    refund_reply: [
+      "환불 상태, 정책 근거, 고객 상황 공감, 다음 절차를 구분한다.",
+      "환불 가능 여부를 모르면 단정하지 말고 확인 필요와 임시 안내를 분리한다."
+    ],
+    outage_notice: [
+      "장애 요약, 영향 범위, 현재 상태, 우회책, 다음 업데이트 시점을 구분한다.",
+      "책임 회피보다 사과, 사실 확인, 고객이 할 수 있는 다음 행동을 우선한다."
+    ],
+    churn_save_reply: [
+      "공감, 해지 사유 확인, 가능한 대안, 다음 액션을 구분한다.",
+      "무리하게 붙잡기보다 고객 선택권과 신뢰를 해치지 않는 답변으로 작성한다."
+    ],
+    vip_complaint_reply: [
+      "사과/공감, 오너십, 심각도 확인, 해결 계획, 다음 업데이트를 구분한다.",
+      "보상이나 약속은 단정하지 말고 확인 필요와 가능한 범위를 분리한다."
+    ],
+    customer_success_checkin: [
+      "제목, 체크인 목적, 사용 현황 질문, 지원 제안, 다음 액션을 구분한다.",
+      "고객이 부담 없이 답할 수 있게 짧고 구체적인 메일로 작성한다."
+    ],
+    support_faq: [
+      "FAQ 카테고리, 질문, 고객용 답변, 필요한 다음 액션을 구분한다.",
+      "답변은 고객이 바로 이해할 수 있게 짧고 실무적으로 작성한다."
+    ],
+    refund_policy_manual: [
+      "환불 가능/불가 기준, 예외/승인 절차, 상황별 응대 스크립트, escalation 기준을 구분한다.",
+      "정책이 불명확한 부분은 확인 필요로 표시하고 임의로 약속하지 않는다."
+    ],
     complaint_reply: ["사과/공감, 사실 확인, 해결 방안, 다음 액션을 구분한다.", "고객 신뢰를 해치지 않는 답변 초안으로 작성한다."],
     proposal_outline: ["문제 정의, 제안 내용, 기대 효과, 비용/리스크, 다음 단계를 구분한다.", "제안서 구조를 바로 확장할 수 있게 작성한다."],
     generic_outline: ["핵심 목차와 단계별 흐름을 먼저 제시한다.", "각 섹션에 들어갈 핵심 내용을 짧게 붙인다."],
@@ -222,6 +277,13 @@
     content_plan: ["콘텐츠 목적과 흐름이 맞물린다.", "제작자가 바로 다음 단계로 갈 수 있다."],
     blog_outline: ["독자가 얻을 가치가 목차에 드러난다.", "섹션 간 흐름이 중복 없이 이어진다."],
     handoff_doc: ["업무 공백을 줄이는 정보가 우선된다.", "리스크와 다음 액션이 분명하다."],
+    refund_reply: ["정책과 고객 상황을 함께 고려한다.", "환불 가능 여부를 섣불리 단정하지 않는다."],
+    outage_notice: ["영향 범위와 현재 상태가 분명하다.", "사과와 다음 업데이트 기준이 빠지지 않는다."],
+    churn_save_reply: ["해지 사유를 먼저 존중하고 확인한다.", "과한 설득보다 신뢰와 선택권을 우선한다."],
+    vip_complaint_reply: ["오너십과 해결 일정이 분명하다.", "중요 고객에게 방어적으로 들리지 않는다."],
+    customer_success_checkin: ["체크인 목적과 다음 액션이 분명하다.", "고객이 답하기 쉬운 질문으로 구성된다."],
+    support_faq: ["질문과 답변이 고객 관점에서 명확하다.", "고객 지원팀의 반복 문의를 줄일 수 있다."],
+    refund_policy_manual: ["정책 기준과 예외 처리가 분명하다.", "지원 담당자가 같은 기준으로 응대할 수 있다."],
     complaint_reply: ["고객 감정을 인정하면서 해결 방향을 제시한다.", "불필요한 방어적 표현을 피한다."],
     proposal_outline: ["상대가 왜 이 제안이 필요한지 이해할 수 있다.", "기대 효과와 다음 단계가 구체적이다."],
     generic_outline: ["구조가 원문 의도와 맞고 확장 가능하다.", "각 항목의 역할이 분명하다."],
@@ -314,6 +376,19 @@
       "meeting_goal",
       "proposal_goal",
       "proposal_context",
+      "refund_status",
+      "resolution_policy",
+      "outage_status",
+      "outage_impact",
+      "churn_reason",
+      "retention_boundary",
+      "escalation_level",
+      "ownership_model",
+      "checkin_purpose",
+      "customer_stage",
+      "faq_topic",
+      "faq_format",
+      "refund_policy_scope",
       "scope",
       "timeframe",
       "research_timeframe",
@@ -482,6 +557,19 @@
       "meeting_goal",
       "proposal_goal",
       "proposal_context",
+      "refund_status",
+      "resolution_policy",
+      "outage_status",
+      "outage_impact",
+      "churn_reason",
+      "retention_boundary",
+      "escalation_level",
+      "ownership_model",
+      "checkin_purpose",
+      "customer_stage",
+      "faq_topic",
+      "faq_format",
+      "refund_policy_scope",
       "diagnosis_method",
       "launch_plan_focus",
       "prd_scope"
@@ -622,6 +710,26 @@
 
     if (text.includes("고객")) {
       constraints.push("고객이 이해하기 쉬운 표현을 사용한다.");
+    }
+
+    if (text.includes("환불")) {
+      constraints.push("환불 가능 여부와 정책 근거를 모르면 단정하지 않는다.");
+    }
+
+    if (text.includes("장애")) {
+      constraints.push("장애 영향 범위, 현재 상태, 다음 업데이트 기준을 분리한다.");
+    }
+
+    if (text.includes("배송 지연") || text.includes("일정 지연")) {
+      constraints.push("배송/일정 지연 신호를 서비스 장애로 바꾸지 않는다.");
+    }
+
+    if (text.includes("해지")) {
+      constraints.push("해지 의사를 존중하고 무리한 설득보다 사유 확인과 선택권을 우선한다.");
+    }
+
+    if (text.includes("vip") || text.includes("클레임")) {
+      constraints.push("중요 고객 클레임은 오너십, 해결 일정, 재발 방지 관점으로 다룬다.");
     }
 
     if (intent && intent.signals && intent.signals.outputHints.includes("표")) {

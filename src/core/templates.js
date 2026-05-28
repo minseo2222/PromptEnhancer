@@ -829,6 +829,34 @@
       { slot: "artifact_topic", label: "어떤 업무를 인수인계하나요?", options: ["운영 업무", "프로젝트 진행 업무", "고객/파트너 관리", "시스템/도구 관리", RECOMMEND_OPTION] },
       { slot: "handoff_format", label: "원하는 형식은?", options: ["체크리스트", "상세 문서", "표로 정리", "바로 실행할 TODO 포함", RECOMMEND_OPTION] }
     ],
+    refund_reply: [
+      { slot: "refund_status", label: "환불 요청은 어떤 상태인가요?", options: ["환불 가능/승인", "정책상 어려움", "검토 후 안내", "대안/크레딧 제안", RECOMMEND_OPTION] },
+      { slot: "resolution_policy", label: "답변에서 가장 중요한 기준은?", options: ["정책 근거 명확화", "고객 상황 공감", "대안 제시", "내부 확인 후 안내", RECOMMEND_OPTION] }
+    ],
+    outage_notice: [
+      { slot: "outage_status", label: "장애의 현재 상태는?", options: ["조사 중", "복구 중", "복구 완료", "우회 방법 있음", RECOMMEND_OPTION] },
+      { slot: "outage_impact", label: "영향 범위는 어디까지인가요?", options: ["전체 서비스 영향", "일부 기능 영향", "특정 고객/지역 영향", "영향 범위 확인 중", RECOMMEND_OPTION] }
+    ],
+    churn_save_reply: [
+      { slot: "churn_reason", label: "해지 사유는 무엇에 가까운가요?", options: ["해지 사유 확인", "가격/비용 부담", "기능 부족", "성과 미흡", RECOMMEND_OPTION] },
+      { slot: "retention_boundary", label: "답변의 리텐션 기준은?", options: ["공감 후 사유 확인", "대안/플랜 제안", "사용법/성과 지원", "무리한 설득 없이 종료 지원", RECOMMEND_OPTION] }
+    ],
+    vip_complaint_reply: [
+      { slot: "escalation_level", label: "클레임의 심각도는?", options: ["긴급 장애/업무 영향", "계약/보상 이슈", "반복 불만/중요 고객", "담당자 대응 불만", RECOMMEND_OPTION] },
+      { slot: "ownership_model", label: "응대에서 가장 중요한 오너십은?", options: ["담당자 지정", "관리자/리더 개입", "해결 일정 공유", "재발 방지 약속", RECOMMEND_OPTION] }
+    ],
+    customer_success_checkin: [
+      { slot: "checkin_purpose", label: "체크인의 목적은 무엇인가요?", options: ["사용 현황 확인", "성과/목표 점검", "문제 조기 발견", "업셀/확장 탐색", RECOMMEND_OPTION] },
+      { slot: "customer_stage", label: "고객 상태는 어디에 가깝나요?", options: ["온보딩 직후", "활성 사용 중", "이탈 위험", "갱신 전", RECOMMEND_OPTION] }
+    ],
+    support_faq: [
+      { slot: "faq_topic", label: "FAQ에서 다룰 범위는 무엇인가요?", options: ["고객 지원 전반", "제품 사용법", "결제/환불", "문제 해결/장애", RECOMMEND_OPTION] },
+      { slot: "faq_format", label: "FAQ 형식은 어떻게 구성할까요?", options: ["질문-답변 목록", "카테고리별 FAQ", "짧은 답변 중심", "관련 링크/다음 액션 포함", RECOMMEND_OPTION] }
+    ],
+    refund_policy_manual: [
+      { slot: "refund_policy_scope", label: "환불 정책 매뉴얼에서 가장 중요한 범위는?", options: ["환불 가능/불가 기준", "예외/승인 절차", "상황별 응대 스크립트", "escalation 기준", RECOMMEND_OPTION] },
+      { slot: "manual_scope", label: "매뉴얼 형식은 어떻게 구성할까요?", options: ["기본 절차", "상황별 스크립트", "체크리스트", "escalation 기준", RECOMMEND_OPTION] }
+    ],
     complaint_reply: [
       { slot: "artifact_topic", label: "고객 불만의 핵심 내용은 무엇인가요?", options: ["서비스 장애/오류", "가격/정책 불만", "배송/일정 지연", "응대 경험 불만", RECOMMEND_OPTION] },
       { slot: "tone", label: "원하는 톤은?", options: ["정중하고 공감 있게", "단호하지만 부드럽게", "짧고 명확하게", "신뢰 회복 중심", RECOMMEND_OPTION] }
@@ -867,6 +895,13 @@
     content_plan: "콘텐츠 기획안",
     blog_outline: "블로그 목차",
     handoff_doc: "인수인계 문서",
+    refund_reply: "환불 요청 고객 답변",
+    outage_notice: "서비스 장애 공지",
+    churn_save_reply: "해지 고객 답변",
+    vip_complaint_reply: "VIP 클레임 대응 초안",
+    customer_success_checkin: "고객 성공 체크인 메일",
+    support_faq: "고객 지원 FAQ",
+    refund_policy_manual: "환불 정책 CS 응대 매뉴얼",
     complaint_reply: "고객 불만 답변 초안",
     proposal_outline: "제안서 구조",
     generic_outline: "구조 초안",
@@ -893,6 +928,13 @@
     content_plan: "brief.plan",
     blog_outline: "brief.write",
     handoff_doc: "brief.write",
+    refund_reply: "brief.write",
+    outage_notice: "brief.write",
+    churn_save_reply: "brief.write",
+    vip_complaint_reply: "brief.write",
+    customer_success_checkin: "brief.write",
+    support_faq: "brief.write",
+    refund_policy_manual: "brief.plan",
     complaint_reply: "brief.write",
     proposal_outline: "brief.plan",
     generic_outline: "brief.plan",
@@ -1174,6 +1216,110 @@
       priority: {
         "brief.plan": 1,
         "brief.write": 1
+      }
+    },
+    refund_status: {
+      label: "환불 상태",
+      genericQuestion: "환불 요청은 어떤 상태인가요?",
+      options: ["환불 가능/승인", "정책상 어려움", "검토 후 안내", "대안/크레딧 제안", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    resolution_policy: {
+      label: "해결 기준",
+      genericQuestion: "답변에서 가장 중요한 기준은?",
+      options: ["정책 근거 명확화", "고객 상황 공감", "대안 제시", "내부 확인 후 안내", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    outage_status: {
+      label: "장애 상태",
+      genericQuestion: "장애의 현재 상태는?",
+      options: ["조사 중", "복구 중", "복구 완료", "우회 방법 있음", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    outage_impact: {
+      label: "영향 범위",
+      genericQuestion: "영향 범위는 어디까지인가요?",
+      options: ["전체 서비스 영향", "일부 기능 영향", "특정 고객/지역 영향", "영향 범위 확인 중", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    churn_reason: {
+      label: "해지 사유",
+      genericQuestion: "해지 사유는 무엇에 가까운가요?",
+      options: ["해지 사유 확인", "가격/비용 부담", "기능 부족", "성과 미흡", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    retention_boundary: {
+      label: "리텐션 기준",
+      genericQuestion: "답변의 리텐션 기준은?",
+      options: ["공감 후 사유 확인", "대안/플랜 제안", "사용법/성과 지원", "무리한 설득 없이 종료 지원", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    escalation_level: {
+      label: "심각도",
+      genericQuestion: "클레임의 심각도는?",
+      options: ["긴급 장애/업무 영향", "계약/보상 이슈", "반복 불만/중요 고객", "담당자 대응 불만", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    ownership_model: {
+      label: "오너십",
+      genericQuestion: "응대에서 가장 중요한 오너십은?",
+      options: ["담당자 지정", "관리자/리더 개입", "해결 일정 공유", "재발 방지 약속", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    checkin_purpose: {
+      label: "체크인 목적",
+      genericQuestion: "체크인의 목적은 무엇인가요?",
+      options: ["사용 현황 확인", "성과/목표 점검", "문제 조기 발견", "업셀/확장 탐색", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    customer_stage: {
+      label: "고객 상태",
+      genericQuestion: "고객 상태는 어디에 가깝나요?",
+      options: ["온보딩 직후", "활성 사용 중", "이탈 위험", "갱신 전", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    faq_topic: {
+      label: "FAQ 범위",
+      genericQuestion: "FAQ에서 다룰 범위는 무엇인가요?",
+      options: ["고객 지원 전반", "제품 사용법", "결제/환불", "문제 해결/장애", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    faq_format: {
+      label: "FAQ 형식",
+      genericQuestion: "FAQ 형식은 어떻게 구성할까요?",
+      options: ["질문-답변 목록", "카테고리별 FAQ", "짧은 답변 중심", "관련 링크/다음 액션 포함", RECOMMEND_OPTION],
+      priority: {
+        "brief.write": 1
+      }
+    },
+    refund_policy_scope: {
+      label: "환불 정책 범위",
+      genericQuestion: "환불 정책 매뉴얼에서 가장 중요한 범위는?",
+      options: ["환불 가능/불가 기준", "예외/승인 절차", "상황별 응대 스크립트", "escalation 기준", RECOMMEND_OPTION],
+      priority: {
+        "brief.plan": 1
       }
     },
     preserve: {

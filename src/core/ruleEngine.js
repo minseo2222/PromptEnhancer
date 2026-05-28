@@ -178,6 +178,38 @@
   function classifyArtifactType(draft) {
     const text = normalizeDraft(draft).toLowerCase();
 
+    if (includesAny(text, ["환불 요청", "환불 답변", "환불 문의", "환불 고객 답변", "환불 요청 고객"])) {
+      return "refund_reply";
+    }
+
+    if (includesAny(text, ["서비스 장애 공지", "장애 공지", "장애 안내", "장애 발생 공지", "오류 공지"])) {
+      return "outage_notice";
+    }
+
+    if (includesAny(text, ["해지하려는 고객", "해지 고객", "해지 방어", "해지 만류", "붙잡는 답변"])) {
+      return "churn_save_reply";
+    }
+
+    if (includesAny(text, ["vip 고객 클레임", "vip 클레임", "고객 클레임 대응", "클레임 대응", "에스컬레이션", "escalation"])) {
+      return "vip_complaint_reply";
+    }
+
+    if (includesAny(text, ["고객 성공 체크인", "고객 체크인 메일", "체크인 메일", "customer success check-in"])) {
+      return "customer_success_checkin";
+    }
+
+    if (includesAny(text, ["고객 지원 faq", "지원 faq", "faq 초안", "자주 묻는 질문", "faq"])) {
+      return "support_faq";
+    }
+
+    if (includesAny(text, ["환불 정책 cs 응대 매뉴얼", "환불 정책 응대 매뉴얼", "환불 cs 매뉴얼", "환불 정책 매뉴얼"])) {
+      return "refund_policy_manual";
+    }
+
+    if (includesAny(text, ["배송 지연", "일정 지연", "delivery delay"])) {
+      return "complaint_reply";
+    }
+
     if (includesAny(text, ["세일즈 콜 스크립트", "영업 콜 스크립트", "콜 스크립트"])) {
       return "sales_script";
     }
@@ -521,6 +553,20 @@
       filled.goal = "PRD 작성";
     }
 
+    if (artifactType === "onboarding_doc") {
+      if (text.includes("고객")) {
+        filled.onboarding_audience = "신규 고객";
+      } else if (text.includes("사용자")) {
+        filled.onboarding_audience = "신규 사용자";
+      } else if (includesAny(text, ["직원", "신입"])) {
+        filled.onboarding_audience = "신규 직원";
+      }
+    }
+
+    if (artifactType === "complaint_reply" && includesAny(text, ["배송 지연", "일정 지연", "delivery delay"])) {
+      filled.artifact_topic = "배송/일정 지연";
+    }
+
     if (text.includes("다음 달") || text.includes("한 달") || text.includes("4주")) {
       filled.scope = "4주 실행 계획";
     }
@@ -597,12 +643,14 @@
   function getSuggestedSlots(taskType, domain, artifactType, intentQuestionKey, filledSlots, missingSlots) {
     const intentQuestions = window.CBSTemplates.INTENT_QUESTION_TEMPLATES && window.CBSTemplates.INTENT_QUESTION_TEMPLATES[intentQuestionKey];
     if (intentQuestions && intentQuestions.length) {
-      return intentQuestions.map((question) => question.slot).slice(0, 2);
+      const intentSlots = intentQuestions.map((question) => question.slot).filter((slot) => !filledSlots[slot]);
+      return (intentSlots.length ? intentSlots : intentQuestions.map((question) => question.slot)).slice(0, 2);
     }
 
     const artifactQuestions = window.CBSTemplates.ARTIFACT_QUESTION_TEMPLATES && window.CBSTemplates.ARTIFACT_QUESTION_TEMPLATES[artifactType];
     if (artifactQuestions && artifactQuestions.length) {
-      return artifactQuestions.map((question) => question.slot).slice(0, 2);
+      const artifactSlots = artifactQuestions.map((question) => question.slot).filter((slot) => !filledSlots[slot]);
+      return (artifactSlots.length ? artifactSlots : missingSlots).slice(0, 2);
     }
 
     const comboKey = `${taskType}:${domain}`;
@@ -819,6 +867,101 @@
         if (draftText.includes("제휴")) candidates.push("제휴/협업 구조");
         if (draftText.includes("고객")) candidates.push("고객 문제 해결안");
         if (includesAny(draftText, ["가격", "계약"])) candidates.push("가격/계약 조건");
+      }
+
+      if (question.slot === "artifact_topic") {
+        if (artifactType === "complaint_reply") {
+          if (includesAny(draftText, ["배송 지연", "일정 지연", "delivery delay"])) candidates.push("배송/일정 지연");
+          if (includesAny(draftText, ["장애", "오류"])) candidates.push("서비스 장애/오류");
+          if (includesAny(draftText, ["가격", "정책", "환불"])) candidates.push("가격/정책 불만");
+          if (draftText.includes("응대")) candidates.push("응대 경험 불만");
+        }
+      }
+
+      if (question.slot === "onboarding_audience") {
+        if (draftText.includes("고객")) candidates.push("신규 고객");
+        if (draftText.includes("사용자")) candidates.push("신규 사용자");
+        if (includesAny(draftText, ["직원", "신입"])) candidates.push("신규 직원");
+      }
+
+      if (question.slot === "refund_status") {
+        if (draftText.includes("승인")) candidates.push("환불 가능/승인");
+        if (includesAny(draftText, ["거부", "불가", "어려"])) candidates.push("정책상 어려움");
+        if (includesAny(draftText, ["대안", "크레딧"])) candidates.push("대안/크레딧 제안");
+        if (draftText.includes("환불")) candidates.push("검토 후 안내");
+      }
+
+      if (question.slot === "resolution_policy") {
+        if (draftText.includes("환불")) candidates.push("정책 근거 명확화", "고객 상황 공감");
+        if (includesAny(draftText, ["불만", "클레임", "해지"])) candidates.push("신뢰 회복 우선");
+        if (includesAny(draftText, ["장애", "지연"])) candidates.push("사실 확인과 다음 액션");
+      }
+
+      if (question.slot === "outage_status") {
+        if (draftText.includes("복구 완료")) candidates.push("복구 완료");
+        if (draftText.includes("복구")) candidates.push("복구 중");
+        if (draftText.includes("우회")) candidates.push("우회 방법 있음");
+        if (draftText.includes("장애")) candidates.push("조사 중");
+      }
+
+      if (question.slot === "outage_impact") {
+        if (draftText.includes("전체")) candidates.push("전체 서비스 영향");
+        if (includesAny(draftText, ["일부", "기능"])) candidates.push("일부 기능 영향");
+        if (includesAny(draftText, ["특정", "지역", "고객"])) candidates.push("특정 고객/지역 영향");
+        if (draftText.includes("장애")) candidates.push("영향 범위 확인 중");
+      }
+
+      if (question.slot === "churn_reason") {
+        if (includesAny(draftText, ["가격", "비용"])) candidates.push("가격/비용 부담");
+        if (draftText.includes("기능")) candidates.push("기능 부족");
+        if (includesAny(draftText, ["성과", "효과"])) candidates.push("성과 미흡");
+        if (draftText.includes("해지")) candidates.push("해지 사유 확인");
+      }
+
+      if (question.slot === "retention_boundary") {
+        if (draftText.includes("해지")) candidates.push("공감 후 사유 확인");
+        if (includesAny(draftText, ["혜택", "할인", "대안"])) candidates.push("대안/플랜 제안");
+      }
+
+      if (question.slot === "escalation_level") {
+        if (includesAny(draftText, ["vip", "클레임"])) candidates.push("반복 불만/중요 고객");
+        if (includesAny(draftText, ["장애", "업무 영향"])) candidates.push("긴급 장애/업무 영향");
+        if (includesAny(draftText, ["보상", "계약"])) candidates.push("계약/보상 이슈");
+      }
+
+      if (question.slot === "ownership_model") {
+        if (includesAny(draftText, ["vip", "클레임"])) candidates.push("담당자 지정");
+        if (draftText.includes("리더")) candidates.push("관리자/리더 개입");
+        if (includesAny(draftText, ["일정", "해결"])) candidates.push("해결 일정 공유");
+      }
+
+      if (question.slot === "checkin_purpose") {
+        if (draftText.includes("체크인")) candidates.push("사용 현황 확인");
+        if (includesAny(draftText, ["성과", "목표"])) candidates.push("성과/목표 점검");
+        if (includesAny(draftText, ["문제", "불만"])) candidates.push("문제 조기 발견");
+      }
+
+      if (question.slot === "customer_stage") {
+        if (draftText.includes("신규")) candidates.push("온보딩 직후");
+        if (includesAny(draftText, ["해지", "이탈"])) candidates.push("이탈 위험");
+        if (draftText.includes("갱신")) candidates.push("갱신 전");
+      }
+
+      if (question.slot === "faq_topic") {
+        if (includesAny(draftText, ["고객 지원", "지원"])) candidates.push("고객 지원 전반");
+        if (includesAny(draftText, ["환불", "결제"])) candidates.push("결제/환불");
+        if (includesAny(draftText, ["장애", "오류", "문제"])) candidates.push("문제 해결/장애");
+        if (includesAny(draftText, ["사용법", "온보딩"])) candidates.push("제품 사용법");
+      }
+
+      if (question.slot === "faq_format") {
+        if (draftText.includes("faq")) candidates.push("질문-답변 목록");
+      }
+
+      if (question.slot === "refund_policy_scope") {
+        if (draftText.includes("환불")) candidates.push("환불 가능/불가 기준");
+        if (includesAny(draftText, ["정책", "예외"])) candidates.push("예외/승인 절차");
+        if (includesAny(draftText, ["응대", "cs"])) candidates.push("상황별 응대 스크립트");
       }
     }
 
