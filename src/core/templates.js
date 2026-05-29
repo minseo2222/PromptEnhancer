@@ -853,6 +853,50 @@
       { slot: "faq_topic", label: "FAQ에 사용할 문의 범위는?", options: ["기존 문의 목록 기반", "제품 사용법/온보딩", "결제/환불", "문제 해결/장애", RECOMMEND_OPTION] },
       { slot: "faq_format", label: "Q&A를 어떤 형태로 정리할까요?", options: ["카테고리별 Q&A", "질문-짧은 답변 목록", "답변 + 추가 안내", "고객용 도움말 문서", RECOMMEND_OPTION] }
     ],
+    email_draft: [
+      { slot: "email_purpose", label: "메일의 목적은 무엇인가요?", options: ["자료/정보 요청", "안내/공유", "승인/검토 요청", "일정 조율", RECOMMEND_OPTION] },
+      { slot: "tone", label: "메일 톤은 어떻게 할까요?", options: ["정중하고 간결하게", "친근하지만 분명하게", "단호하지만 부드럽게", "격식 있게", RECOMMEND_OPTION] }
+    ],
+    approval_request_email: [
+      { slot: "approval_target", label: "무엇에 대한 승인을 요청하나요?", options: ["일정/계획 승인", "예산/비용 승인", "자료/문서 승인", "의사결정 검토", RECOMMEND_OPTION] },
+      { slot: "email_tone", label: "메일 톤은 어떻게 할까요?", options: ["정중하고 간결하게", "근거 중심으로", "빠른 결정을 요청하게", "격식 있게", RECOMMEND_OPTION] }
+    ],
+    schedule_change_email: [
+      { slot: "schedule_change_context", label: "일정 변경의 성격은 무엇인가요?", options: ["회의/미팅 일정 변경", "프로젝트 일정 변경", "마감일 조정", "행사/운영 일정 변경", RECOMMEND_OPTION] },
+      { slot: "email_tone", label: "메일 톤은 어떻게 할까요?", options: ["정중하고 간결하게", "양해를 구하는 톤", "대안 일정을 제시하며", "격식 있게", RECOMMEND_OPTION] }
+    ],
+    apology_email: [
+      { slot: "apology_context", label: "사과해야 하는 상황은 무엇인가요?", options: ["일정/응대 지연", "실수 또는 누락", "서비스/품질 문제", "오해를 만든 커뮤니케이션", RECOMMEND_OPTION] },
+      { slot: "email_tone", label: "메일 톤은 어떻게 할까요?", options: ["진심 있게 사과", "짧고 책임감 있게", "해결책 중심으로", "격식 있게", RECOMMEND_OPTION] }
+    ],
+    email_followup: [
+      { slot: "previous_touchpoint", label: "어떤 접점 이후의 팔로업인가요?", options: ["회의/미팅 이후", "자료 공유 이후", "답변 대기 중", "논의 후 확인", RECOMMEND_OPTION] },
+      { slot: "email_cta", label: "상대에게 원하는 다음 액션은?", options: ["회의 내용/액션아이템 공유", "답장 요청", "자료 확인", "일정 확정", RECOMMEND_OPTION] }
+    ],
+    pm_user_story: [
+      { slot: "pm_user_type", label: "어떤 사용자를 기준으로 쓰나요?", options: ["신규 사용자", "활성 사용자", "관리자/운영자", "내부 팀원", RECOMMEND_OPTION] },
+      { slot: "pm_story_scope", label: "유저 스토리 범위는?", options: ["핵심 플로우", "예외 케이스 포함", "수용 기준 포함", "우선순위 포함", RECOMMEND_OPTION] }
+    ],
+    pm_sprint_priority: [
+      { slot: "pm_priority_basis", label: "우선순위 기준은 무엇인가요?", options: ["고객 영향", "비즈니스 임팩트", "개발 리스크", "이번 스프린트 완료 가능성", RECOMMEND_OPTION] },
+      { slot: "pm_output_format", label: "어떤 형식으로 정리할까요?", options: ["우선순위 목록", "RICE/ICE 표", "스프린트 목표와 TODO", "리스크 포함", RECOMMEND_OPTION] }
+    ],
+    pm_requirements_brief: [
+      { slot: "pm_requirement_scope", label: "요구사항 범위는 무엇인가요?", options: ["문제 정의", "사용자 시나리오", "기능 요구사항", "수용 기준/테스트 조건", RECOMMEND_OPTION] },
+      { slot: "pm_output_format", label: "어떤 형식으로 정리할까요?", options: ["요구사항 목록", "유저 스토리 형식", "PRD 섹션", "우선순위 포함", RECOMMEND_OPTION] }
+    ],
+    pm_status_report: [
+      { slot: "pm_report_audience", label: "누구에게 보고하나요?", options: ["임원/리더십", "프로젝트 팀", "이해관계자", "고객/파트너", RECOMMEND_OPTION] },
+      { slot: "pm_report_focus", label: "현황 보고의 초점은?", options: ["진행 상황", "리스크/이슈", "성과와 지표", "다음 의사결정", RECOMMEND_OPTION] }
+    ],
+    pm_feedback_synthesis: [
+      { slot: "pm_feedback_source", label: "어떤 피드백을 정리하나요?", options: ["베타 테스트", "사용자 인터뷰", "고객 문의/불만", "내부 리뷰", RECOMMEND_OPTION] },
+      { slot: "pm_output_format", label: "어떤 형식으로 정리할까요?", options: ["인사이트 요약", "우선순위 목록", "문제/요구사항 매핑", "액션아이템 포함", RECOMMEND_OPTION] }
+    ],
+    pm_metrics_dashboard: [
+      { slot: "pm_metric_goal", label: "지표를 보는 목적은?", options: ["제품 활성화 파악", "전환/퍼널 개선", "리텐션 추적", "운영 상태 점검", RECOMMEND_OPTION] },
+      { slot: "pm_output_format", label: "어떤 형식으로 정리할까요?", options: ["지표 목록", "대시보드 섹션", "정의와 계산식 포함", "우선순위 포함", RECOMMEND_OPTION] }
+    ],
     refund_policy_manual: [
       { slot: "refund_policy_scope", label: "환불 정책 매뉴얼에서 가장 중요한 범위는?", options: ["환불 가능/불가 기준", "예외/승인 절차", "상황별 응대 스크립트", "escalation 기준", RECOMMEND_OPTION] },
       { slot: "manual_scope", label: "매뉴얼 형식은 어떻게 구성할까요?", options: ["기본 절차", "상황별 스크립트", "체크리스트", "escalation 기준", RECOMMEND_OPTION] }
@@ -901,6 +945,17 @@
     vip_complaint_reply: "VIP 클레임 대응 초안",
     customer_success_checkin: "고객 성공 체크인 메일",
     support_faq: "고객 지원 FAQ",
+    email_draft: "메일 초안",
+    approval_request_email: "승인 요청 메일",
+    schedule_change_email: "일정 변경 메일",
+    apology_email: "사과 메일",
+    email_followup: "팔로업 메일",
+    pm_user_story: "유저 스토리",
+    pm_sprint_priority: "스프린트 우선순위",
+    pm_requirements_brief: "요구사항 정리",
+    pm_status_report: "프로젝트 현황 보고",
+    pm_feedback_synthesis: "피드백 정리",
+    pm_metrics_dashboard: "제품 지표 대시보드 항목",
     refund_policy_manual: "환불 정책 CS 응대 매뉴얼",
     complaint_reply: "고객 불만 답변 초안",
     proposal_outline: "제안서 구조",
@@ -934,6 +989,17 @@
     vip_complaint_reply: "brief.write",
     customer_success_checkin: "brief.write",
     support_faq: "brief.write",
+    email_draft: "brief.write",
+    approval_request_email: "brief.write",
+    schedule_change_email: "brief.write",
+    apology_email: "brief.write",
+    email_followup: "brief.write",
+    pm_user_story: "brief.write",
+    pm_sprint_priority: "brief.decide",
+    pm_requirements_brief: "brief.write",
+    pm_status_report: "brief.write",
+    pm_feedback_synthesis: "brief.analyze",
+    pm_metrics_dashboard: "brief.analyze",
     refund_policy_manual: "brief.plan",
     complaint_reply: "brief.write",
     proposal_outline: "brief.plan",

@@ -102,6 +102,7 @@ For those `context_line` cases, judge the preview as a one-line free-text clarif
 - Missing policy, product, customer, incident, offer, or source facts must not be fabricated.
 - Do not penalize the absence of multiple-choice options when the question is marked `inputType: context_line`.
 - Penalize if the context line is ignored, buried, or contradicted.
+- If a context-line case explicitly says `Compiled Prompt: Skipped until the user enters the one-line context`, judge the question/placeholder quality and safety, not insert-readiness of a missing compiled prompt.
 
 For existing `multiple_choice` or `suppress` core-regression cases, do not lower the verdict merely because a future `context_line` UX might be better. Judge those cases against their declared current clarification mode and only mark them down for concrete issues in the rendered questions or compiled prompt.
 

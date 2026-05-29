@@ -132,7 +132,22 @@
     customer_stage: "고객 상태",
     faq_topic: "FAQ 범위",
     faq_format: "FAQ 형식",
-    refund_policy_scope: "환불 정책 범위"
+    refund_policy_scope: "환불 정책 범위",
+    email_purpose: "메일 목적",
+    email_tone: "메일 톤",
+    approval_target: "승인 대상",
+    schedule_change_context: "일정 변경 성격",
+    apology_context: "사과 상황",
+    email_cta: "메일 CTA",
+    pm_user_type: "사용자 유형",
+    pm_story_scope: "유저 스토리 범위",
+    pm_priority_basis: "우선순위 기준",
+    pm_output_format: "PM 출력 형식",
+    pm_requirement_scope: "요구사항 범위",
+    pm_report_audience: "보고 대상",
+    pm_report_focus: "보고 초점",
+    pm_feedback_source: "피드백 출처",
+    pm_metric_goal: "지표 목적"
   };
 
   const ARTIFACT_TASK_SENTENCES = {
@@ -162,6 +177,17 @@
     customer_success_checkin: "고객 성공 체크인 메일을 작성한다.",
     support_faq: "고객 지원 FAQ 초안을 작성한다.",
     refund_policy_manual: "환불 정책 CS 응대 매뉴얼을 만든다.",
+    email_draft: "메일 초안을 작성한다.",
+    approval_request_email: "승인 요청 메일을 작성한다.",
+    schedule_change_email: "일정 변경 메일을 작성한다.",
+    apology_email: "사과 메일을 작성한다.",
+    email_followup: "팔로업 메일을 작성한다.",
+    pm_user_story: "요구사항을 유저 스토리로 정리한다.",
+    pm_sprint_priority: "스프린트 우선순위를 정리한다.",
+    pm_requirements_brief: "제품 요구사항을 정리한다.",
+    pm_status_report: "프로젝트 현황 보고를 작성한다.",
+    pm_feedback_synthesis: "제품 피드백을 정리한다.",
+    pm_metrics_dashboard: "제품 지표 대시보드 항목을 추천한다.",
     complaint_reply: "고객 불만 답변 초안을 작성한다.",
     proposal_outline: "제안서 구조를 잡는다.",
     generic_outline: "요청한 결과물의 구조를 잡는다.",
@@ -195,6 +221,17 @@
     customer_success_checkin: "고객의 사용 현황과 성공 가능성을 부담 없이 확인하기",
     support_faq: "고객이 스스로 문제를 해결할 수 있는 FAQ 만들기",
     refund_policy_manual: "지원팀이 환불 정책을 일관되고 안전하게 안내하도록 만들기",
+    email_draft: "상대와 목적에 맞는 메일 초안 만들기",
+    approval_request_email: "필요한 승인과 근거를 명확히 전달하기",
+    schedule_change_email: "일정 변경을 정중하고 혼선 없이 안내하기",
+    apology_email: "상황을 인정하고 신뢰 회복 방향을 분명히 하기",
+    email_followup: "이전 접점 이후 다음 액션으로 자연스럽게 이어가기",
+    pm_user_story: "사용자 관점의 요구와 수용 기준을 명확히 하기",
+    pm_sprint_priority: "이번 스프린트에서 먼저 할 일을 판단 가능하게 정리하기",
+    pm_requirements_brief: "제품 요구사항을 실행 가능한 단위로 정리하기",
+    pm_status_report: "프로젝트 상태와 필요한 의사결정을 명확히 전달하기",
+    pm_feedback_synthesis: "피드백을 인사이트와 액션아이템으로 바꾸기",
+    pm_metrics_dashboard: "제품 상태를 판단할 지표 항목을 우선순위화하기",
     complaint_reply: "고객 불만에 신뢰를 해치지 않고 답하기",
     proposal_outline: "제안의 논리와 구조를 명확히 하기",
     generic_outline: "요청한 구조를 명확히 잡기",
@@ -252,6 +289,50 @@
       "환불 가능/불가 기준, 예외/승인 절차, 상황별 응대 스크립트, escalation 기준을 구분한다.",
       "정책이 불명확한 부분은 확인 필요로 표시하고 임의로 약속하지 않는다."
     ],
+    email_draft: [
+      "제목, 첫 문장, 본문 초안, 요청 또는 CTA를 구분한다.",
+      "독자와 목적에 맞게 짧고 바로 보낼 수 있는 메일로 작성한다."
+    ],
+    approval_request_email: [
+      "요청 배경, 승인 대상, 판단 근거, 필요한 결정, 답변 기한 또는 다음 액션을 구분한다.",
+      "승인자가 빠르게 판단할 수 있게 사실과 요청을 분명히 쓴다."
+    ],
+    schedule_change_email: [
+      "변경 사유, 기존 일정, 제안 일정, 상대가 확인할 액션을 구분한다.",
+      "불편을 줄이는 톤으로 혼선 없이 작성한다."
+    ],
+    apology_email: [
+      "사과, 발생 상황, 영향, 해결/재발 방지 방향, 다음 액션을 구분한다.",
+      "변명보다 책임감과 신뢰 회복을 우선한다."
+    ],
+    email_followup: [
+      "이전 접점 리마인드, 핵심 요지, 필요한 확인, CTA를 구분한다.",
+      "상대가 부담 없이 답할 수 있게 짧고 분명하게 작성한다."
+    ],
+    pm_user_story: [
+      "사용자 유형, 니즈, 목표 행동, 수용 기준을 구분한다.",
+      "개발/디자인이 바로 논의할 수 있는 단위로 작성한다."
+    ],
+    pm_sprint_priority: [
+      "우선순위 목록, 판단 기준, 리스크, 이번 스프린트 목표를 구분한다.",
+      "왜 먼저 해야 하는지와 보류할 항목을 함께 제시한다."
+    ],
+    pm_requirements_brief: [
+      "문제 정의, 사용자 시나리오, 기능 요구사항, 수용 기준을 구분한다.",
+      "모호한 요구는 확인 필요로 분리하고 구현 단위로 정리한다."
+    ],
+    pm_status_report: [
+      "진행 상황, 리스크/이슈, 지표, 필요한 의사결정, 다음 액션을 구분한다.",
+      "보고 대상이 바로 판단할 수 있게 요점을 앞에 둔다."
+    ],
+    pm_feedback_synthesis: [
+      "피드백 주제, 반복 패턴, 사용자 pain point, 우선순위, 액션아이템을 구분한다.",
+      "원문에 없는 사실은 가정으로 표시하고 확인 필요를 분리한다."
+    ],
+    pm_metrics_dashboard: [
+      "지표 후보, 목적, 정의/계산식, 사용 의사결정, 우선순위를 구분한다.",
+      "보기 좋은 지표보다 실제 판단에 쓰이는 지표를 우선한다."
+    ],
     complaint_reply: ["사과/공감, 사실 확인, 해결 방안, 다음 액션을 구분한다.", "고객 신뢰를 해치지 않는 답변 초안으로 작성한다."],
     proposal_outline: ["문제 정의, 제안 내용, 기대 효과, 비용/리스크, 다음 단계를 구분한다.", "제안서 구조를 바로 확장할 수 있게 작성한다."],
     generic_outline: ["핵심 목차와 단계별 흐름을 먼저 제시한다.", "각 섹션에 들어갈 핵심 내용을 짧게 붙인다."],
@@ -285,6 +366,17 @@
     customer_success_checkin: ["체크인 목적과 다음 액션이 분명하다.", "고객이 답하기 쉬운 질문으로 구성된다."],
     support_faq: ["질문과 답변이 고객 관점에서 명확하다.", "고객 지원팀의 반복 문의를 줄일 수 있다."],
     refund_policy_manual: ["정책 기준과 예외 처리가 분명하다.", "지원 담당자가 같은 기준으로 응대할 수 있다."],
+    email_draft: ["메일 목적과 요청이 분명하다.", "독자가 바로 이해하고 답할 수 있다."],
+    approval_request_email: ["승인 대상과 판단 근거가 분명하다.", "요청이 과장 없이 간결하다."],
+    schedule_change_email: ["변경 내용과 상대 액션이 혼선 없이 드러난다.", "정중하지만 불필요하게 장황하지 않다."],
+    apology_email: ["책임과 해결 방향이 분명하다.", "변명처럼 들리지 않는다."],
+    email_followup: ["이전 맥락과 다음 액션이 자연스럽다.", "답장 부담을 줄이는 문장이다."],
+    pm_user_story: ["사용자, 목적, 수용 기준이 구분된다.", "팀이 바로 논의할 수 있는 수준이다."],
+    pm_sprint_priority: ["판단 기준과 우선순위가 일관된다.", "리스크와 보류 항목이 분명하다."],
+    pm_requirements_brief: ["요구사항이 실행 가능한 단위로 정리된다.", "모호한 부분을 확인 필요로 분리한다."],
+    pm_status_report: ["보고 대상이 핵심 상태를 빠르게 파악할 수 있다.", "필요한 결정과 다음 액션이 빠지지 않는다."],
+    pm_feedback_synthesis: ["피드백을 단순 나열하지 않고 패턴으로 묶는다.", "인사이트가 액션으로 이어진다."],
+    pm_metrics_dashboard: ["지표가 의사결정 목적과 연결된다.", "정의와 우선순위가 명확하다."],
     complaint_reply: ["고객 감정을 인정하면서 해결 방향을 제시한다.", "불필요한 방어적 표현을 피한다."],
     proposal_outline: ["상대가 왜 이 제안이 필요한지 이해할 수 있다.", "기대 효과와 다음 단계가 구체적이다."],
     generic_outline: ["구조가 원문 의도와 맞고 확장 가능하다.", "각 항목의 역할이 분명하다."],
@@ -474,6 +566,21 @@
       "faq_topic",
       "faq_format",
       "refund_policy_scope",
+      "email_purpose",
+      "email_tone",
+      "approval_target",
+      "schedule_change_context",
+      "apology_context",
+      "email_cta",
+      "pm_user_type",
+      "pm_story_scope",
+      "pm_priority_basis",
+      "pm_output_format",
+      "pm_requirement_scope",
+      "pm_report_audience",
+      "pm_report_focus",
+      "pm_feedback_source",
+      "pm_metric_goal",
       "scope",
       "timeframe",
       "research_timeframe",
@@ -663,6 +770,21 @@
       "faq_topic",
       "faq_format",
       "refund_policy_scope",
+      "email_purpose",
+      "email_tone",
+      "approval_target",
+      "schedule_change_context",
+      "apology_context",
+      "email_cta",
+      "pm_user_type",
+      "pm_story_scope",
+      "pm_priority_basis",
+      "pm_output_format",
+      "pm_requirement_scope",
+      "pm_report_audience",
+      "pm_report_focus",
+      "pm_feedback_source",
+      "pm_metric_goal",
       "diagnosis_method",
       "launch_plan_focus",
       "prd_scope"
@@ -717,6 +839,21 @@
         "비계획 장애 사과문처럼 쓰지 말고 사전 안내와 협조 요청 중심으로 작성한다.",
         "예정된 사실과 확인 필요 항목을 분리한다."
       ];
+    }
+
+    if (
+      ["email_draft", "approval_request_email", "schedule_change_email", "apology_email", "email_followup"].includes(
+        artifactType
+      )
+    ) {
+      const contract = ARTIFACT_OUTPUT_CONTRACTS[artifactType] || ARTIFACT_OUTPUT_CONTRACTS.email_draft;
+      const selected = resolved.email_purpose || resolved.approval_target || resolved.schedule_change_context || resolved.apology_context || resolved.email_cta;
+      return selected ? [`선택된 조건 "${selected}"을 메일 구조에 우선 반영한다.`].concat(contract) : contract;
+    }
+
+    if (artifactType && artifactType.startsWith("pm_")) {
+      const contract = ARTIFACT_OUTPUT_CONTRACTS[artifactType] || pattern.outputContract;
+      return resolved.pm_output_format ? [`${resolved.pm_output_format} 형식을 우선 반영한다.`].concat(contract) : contract;
     }
 
     if (artifactType === "onboarding_doc" && resolved.onboarding_format) {

@@ -8,36 +8,36 @@
 
 ## Summary
 
-- total cases: 65
+- total cases: 75
 - core cases: 65
-- candidate cases: 0
-- clarify true count: 53
+- candidate cases: 10
+- clarify true count: 63
 - clarify false count: 12
 - generic domain count: 45
-- context line count: 17
-- average questions per clarify case: 1.60
+- context line count: 27
+- average questions per clarify case: 1.52
 - prompts over 1200 chars count: 0
 - prompts over 1600 chars count: 0
 
 ### TaskType Distribution
 
-- `brief.analyze`: 5
+- `brief.analyze`: 7
 - `brief.create`: 5
-- `brief.decide`: 4
+- `brief.decide`: 5
 - `brief.extract`: 4
 - `brief.generic`: 5
 - `brief.plan`: 17
 - `brief.research`: 2
-- `brief.write`: 23
+- `brief.write`: 30
 
 ### Domain Distribution
 
 - `generic`: 45
 - `marketing_strategy`: 4
 - `personal_prioritization`: 3
-- `product_planning`: 1
+- `product_planning`: 6
 - `research`: 3
-- `writing_email`: 9
+- `writing_email`: 14
 
 ### Domain Pack Distribution
 
@@ -45,6 +45,7 @@
 - `context_candidate`: 15
 - `context_line_backlog`: 2
 - `customer_support`: 8
+- `email_pm`: 10
 - `founder_strategy`: 3
 - `generic`: 13
 - `gtm_marketing`: 4
@@ -55,16 +56,19 @@
 
 ### Clarification Mode Distribution
 
-- `context_line`: 17
-- `multiple_choice`: 36
+- `context_line`: 25
+- `multiple_choice`: 38
 - `suppress`: 12
 
 ### Case Source Distribution
 
+- `candidate`: 10
 - `core`: 65
 
 ### ArtifactType Distribution
 
+- `apology_email`: 1
+- `approval_request_email`: 1
 - `blog_outline`: 1
 - `churn_save_reply`: 2
 - `cold_email`: 1
@@ -73,16 +77,23 @@
 - `curriculum`: 1
 - `customer_success_checkin`: 2
 - `demo_agenda`: 1
+- `email_draft`: 3
+- `email_followup`: 1
 - `follow_up_email`: 1
 - `handoff_doc`: 1
 - `job_posting`: 1
 - `manual_or_playbook`: 1
 - `meeting_agenda`: 1
 - `negotiation_reply`: 1
-- `none`: 27
+- `none`: 25
 - `objections_analysis`: 1
 - `onboarding_doc`: 2
 - `outage_notice`: 2
+- `pm_feedback_synthesis`: 1
+- `pm_metrics_dashboard`: 1
+- `pm_sprint_priority`: 1
+- `pm_status_report`: 1
+- `pm_user_story`: 1
 - `presentation_outline`: 1
 - `proposal_outline`: 3
 - `question_set`: 1
@@ -91,6 +102,7 @@
 - `retrospective_questions`: 1
 - `sales_collateral`: 1
 - `sales_script`: 1
+- `schedule_change_email`: 1
 - `support_faq`: 2
 - `survey_questions`: 1
 - `vip_complaint_reply`: 2
@@ -675,58 +687,34 @@ Actual:
 - shouldShowClarify: `true`
 - taskType: `brief.write`
 - domain: `writing_email`
-- domainConfidence: `0.92`
-- artifactType: `none`
-- needsContextLine: `false`
+- domainConfidence: `0.86`
+- artifactType: `email_draft`
+- needsContextLine: `true`
 Filled Slots:
 - audience: 투자자
 - output_format: 메일 초안
-- goal: 안내/공유
+- email_purpose: 안내/공유
+- goal: 메일 초안
 Missing Slots:
 - tone
 - scope
 - style
 - constraints
 Suggested Slots:
-- tone
+- context_line
 Questions:
-### Q1. 원하는 톤은?
+### Q1. 공유할 성과, 리스크, 다음 계획을 한 줄로 알려주세요.
 
-- 정중하고 간결하게
-- 친근하게
-- 단호하지만 부드럽게
-- 전문적으로
-- 추천해줘
+- inputType: `context_line`
+- placeholder: 예: 4월 MRR 12% 성장, 이탈률 상승 리스크, 다음 달 엔터프라이즈 출시 예정
 Assumed Answers:
-- tone: 정중하고 간결하게
+_No assumed answers._
 Context Line:
-_Not used for this case._
-Compiled Prompt:
 ```text
-# 작업
-목적과 독자에 맞는 글을 작성한다. 원문 요청 "투자자에게 업데이트 메일 써줘"를 바로 수행 가능한 작업 brief로 정리한다. 목표는 "안내/공유"이다.
-
-# 확인된 정보
-- 원문 요청: "투자자에게 업데이트 메일 써줘"
-- 목표: 안내/공유
-- 대상: 투자자
-- 출력 형식: 메일 초안
-- 톤: 정중하고 간결하게
-
-# 출력 형식
-선택된 출력 형식: 메일 초안
-톤: 정중하고 간결하게
-- 제목 또는 첫 문장을 제안한다.
-- 본문 초안을 바로 사용할 수 있게 작성한다.
-- 필요하면 대체 문구를 짧게 제시한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 투자자가 궁금해할 성과, 리스크, 다음 계획을 포함한다.
+No sample context line provided.
 ```
+Compiled Prompt:
+Skipped until the user enters the one-line context.
 Human Review:
 - 명확성 1~5:
 - 사용자 의도 반영 1~5:
@@ -753,59 +741,34 @@ Actual:
 - shouldShowClarify: `true`
 - taskType: `brief.write`
 - domain: `writing_email`
-- domainConfidence: `0.89`
-- artifactType: `none`
-- needsContextLine: `false`
+- domainConfidence: `0.86`
+- artifactType: `email_draft`
+- needsContextLine: `true`
 Filled Slots:
 - audience: 고객
 - output_format: 메일 초안
-- goal: 안내/공유
+- email_purpose: 안내/공유
+- goal: 메일 초안
 Missing Slots:
 - tone
 - scope
 - style
 - constraints
 Suggested Slots:
-- tone
+- context_line
 Questions:
-### Q1. 원하는 톤은?
+### Q1. 가격 인상 내용, 적용 시점, 고객 액션을 한 줄로 알려주세요.
 
-- 정중하고 간결하게
-- 친근하게
-- 단호하지만 부드럽게
-- 전문적으로
-- 추천해줘
+- inputType: `context_line`
+- placeholder: 예: Pro 요금 7월 1일부터 15% 인상, 기존 고객은 30일 전 안내와 FAQ 링크 제공
 Assumed Answers:
-- tone: 정중하고 간결하게
+_No assumed answers._
 Context Line:
-_Not used for this case._
-Compiled Prompt:
 ```text
-# 작업
-목적과 독자에 맞는 글을 작성한다. 원문 요청 "고객에게 가격 인상 안내 메일 써줘"를 바로 수행 가능한 작업 brief로 정리한다. 목표는 "안내/공유"이다.
-
-# 확인된 정보
-- 원문 요청: "고객에게 가격 인상 안내 메일 써줘"
-- 목표: 안내/공유
-- 대상: 고객
-- 출력 형식: 메일 초안
-- 톤: 정중하고 간결하게
-
-# 출력 형식
-선택된 출력 형식: 메일 초안
-톤: 정중하고 간결하게
-- 제목 또는 첫 문장을 제안한다.
-- 본문 초안을 바로 사용할 수 있게 작성한다.
-- 필요하면 대체 문구를 짧게 제시한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-- 가격 인상에 대한 고객 반응과 신뢰 훼손 리스크를 고려한다.
-- 고객이 이해하기 쉬운 표현을 사용한다.
+No sample context line provided.
 ```
+Compiled Prompt:
+Skipped until the user enters the one-line context.
 Human Review:
 - 명확성 1~5:
 - 사용자 의도 반영 1~5:
@@ -5218,6 +5181,769 @@ Compiled Prompt:
 - 선택한 조건을 우선 반영한다.
 - 바로 사용할 수 있는 형태로 작성한다.
 - 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 66. email information request
+Draft:
+```text
+팀원에게 자료 요청하는 메일 작성해줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `email_pm`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `writing_email`
+- expectedArtifactType: `email_draft`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.86`
+- artifactType: `email_draft`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 팀
+- output_format: 메일 초안
+- email_purpose: 자료/정보 요청
+- goal: 메일 초안
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 요청할 자료, 필요한 이유, 기한을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 다음 주 월요일까지 3월 매출 자료를 받아 보고서에 반영해야 함
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+다음 주 월요일까지 3월 매출 자료를 받아 보고서에 반영해야 함
+```
+Compiled Prompt:
+```text
+# 작업
+메일 초안을 작성한다. 원문 요청 "팀원에게 자료 요청하는 메일 작성해줘"의 의도를 보존한다. 목표는 "메일 초안"이다.
+
+# 확인된 정보
+- 원문 요청: "팀원에게 자료 요청하는 메일 작성해줘"
+- 목표: 메일 초안
+- 대상: 팀
+- 1줄 맥락: 다음 주 월요일까지 3월 매출 자료를 받아 보고서에 반영해야 함
+- 메일 목적: 자료/정보 요청
+- 출력 형식: 메일 초안
+
+# 출력 형식
+선택된 출력 형식: 메일 초안
+메일 목적: 자료/정보 요청
+- 선택된 조건 "자료/정보 요청"을 메일 구조에 우선 반영한다.
+- 제목, 첫 문장, 본문 초안, 요청 또는 CTA를 구분한다.
+- 독자와 목적에 맞게 짧고 바로 보낼 수 있는 메일로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 67. approval request email
+Draft:
+```text
+대표님께 승인 요청 메일 보내야 해. 초안 좀
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `email_pm`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `writing_email`
+- expectedArtifactType: `approval_request_email`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.86`
+- artifactType: `approval_request_email`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 대표
+- output_format: 승인 요청 메일
+- goal: 승인 요청 메일
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 승인받을 대상과 필요한 결정을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 다음 분기 채용 예산 500만원 승인을 대표에게 요청
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+다음 분기 채용 예산 500만원 승인을 요청하는 상황
+```
+Compiled Prompt:
+```text
+# 작업
+승인 요청 메일을 작성한다. 원문 요청 "대표님께 승인 요청 메일 보내야 해. 초안 좀"의 의도를 보존한다. 목표는 "승인 요청 메일"이다.
+
+# 확인된 정보
+- 원문 요청: "대표님께 승인 요청 메일 보내야 해. 초안 좀"
+- 목표: 승인 요청 메일
+- 대상: 대표
+- 1줄 맥락: 다음 분기 채용 예산 500만원 승인을 요청하는 상황
+- 출력 형식: 승인 요청 메일
+
+# 출력 형식
+선택된 출력 형식: 승인 요청 메일
+- 요청 배경, 승인 대상, 판단 근거, 필요한 결정, 답변 기한 또는 다음 액션을 구분한다.
+- 승인자가 빠르게 판단할 수 있게 사실과 요청을 분명히 쓴다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 68. schedule change email
+Draft:
+```text
+파트너사에 일정 변경 메일 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `email_pm`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `writing_email`
+- expectedArtifactType: `schedule_change_email`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.86`
+- artifactType: `schedule_change_email`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 파트너사
+- output_format: 일정 변경 메일
+- goal: 일정 변경 메일
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 변경 전후 일정과 상대에게 요청할 내용을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 파트너 미팅을 내부 일정 때문에 목요일 오후로 변경 요청
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+다음 주 미팅을 내부 일정 때문에 목요일 오후로 변경 요청
+```
+Compiled Prompt:
+```text
+# 작업
+일정 변경 메일을 작성한다. 원문 요청 "파트너사에 일정 변경 메일 써줘"의 의도를 보존한다. 목표는 "일정 변경 메일"이다.
+
+# 확인된 정보
+- 원문 요청: "파트너사에 일정 변경 메일 써줘"
+- 목표: 일정 변경 메일
+- 대상: 파트너사
+- 1줄 맥락: 다음 주 미팅을 내부 일정 때문에 목요일 오후로 변경 요청
+- 출력 형식: 일정 변경 메일
+
+# 출력 형식
+선택된 출력 형식: 일정 변경 메일
+- 변경 사유, 기존 일정, 제안 일정, 상대가 확인할 액션을 구분한다.
+- 불편을 줄이는 톤으로 혼선 없이 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 69. apology email
+Draft:
+```text
+고객에게 사과 메일 작성해줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `email_pm`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `writing_email`
+- expectedArtifactType: `apology_email`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.86`
+- artifactType: `apology_email`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 고객
+- output_format: 사과 메일
+- goal: 사과 메일
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 사과해야 하는 상황과 원하는 회복 방향을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 자료 전달이 하루 늦어졌고 재발 방지 계획을 짧게 포함
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+자료 전달이 하루 늦어진 상황이며 재발 방지 계획을 짧게 포함
+```
+Compiled Prompt:
+```text
+# 작업
+사과 메일을 작성한다. 원문 요청 "고객에게 사과 메일 작성해줘"의 의도를 보존한다. 목표는 "사과 메일"이다.
+
+# 확인된 정보
+- 원문 요청: "고객에게 사과 메일 작성해줘"
+- 목표: 사과 메일
+- 대상: 고객
+- 1줄 맥락: 자료 전달이 하루 늦어진 상황이며 재발 방지 계획을 짧게 포함
+- 출력 형식: 사과 메일
+
+# 출력 형식
+선택된 출력 형식: 사과 메일
+- 사과, 발생 상황, 영향, 해결/재발 방지 방향, 다음 액션을 구분한다.
+- 변명보다 책임감과 신뢰 회복을 우선한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+- 고객이 이해하기 쉬운 표현을 사용한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 70. meeting follow-up email
+Draft:
+```text
+회의 후 팔로업 메일 써줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `email_pm`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `writing_email`
+- expectedArtifactType: `email_followup`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `writing_email`
+- domainConfidence: `0.86`
+- artifactType: `email_followup`
+- needsContextLine: `true`
+Filled Slots:
+- output_format: 팔로업 메일
+- previous_touchpoint: 회의/미팅 이후
+- goal: 팔로업 메일
+Missing Slots:
+- audience
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 회의 요약, 결정 사항, 원하는 다음 액션을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 오늘 킥오프에서 일정과 담당자를 정했고 금요일까지 초안 공유 요청
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+오늘 킥오프에서 일정과 담당자를 정했고 금요일까지 초안 공유를 요청
+```
+Compiled Prompt:
+```text
+# 작업
+팔로업 메일을 작성한다. 원문 요청 "회의 후 팔로업 메일 써줘"의 의도를 보존한다. 목표는 "팔로업 메일"이다.
+
+# 확인된 정보
+- 원문 요청: "회의 후 팔로업 메일 써줘"
+- 목표: 팔로업 메일
+- 1줄 맥락: 오늘 킥오프에서 일정과 담당자를 정했고 금요일까지 초안 공유를 요청
+- 이전 접점: 회의/미팅 이후
+- 출력 형식: 팔로업 메일
+
+# 출력 형식
+선택된 출력 형식: 팔로업 메일
+이전 접점: 회의/미팅 이후
+- 이전 접점 리마인드, 핵심 요지, 필요한 확인, CTA를 구분한다.
+- 상대가 부담 없이 답할 수 있게 짧고 분명하게 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 71. pm user story conversion
+Draft:
+```text
+신규 기능 요구사항을 유저 스토리로 바꿔줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `email_pm`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `product_planning`
+- expectedArtifactType: `pm_user_story`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `product_planning`
+- domainConfidence: `0.86`
+- artifactType: `pm_user_story`
+- needsContextLine: `true`
+Filled Slots:
+- output_format: 유저 스토리
+- goal: 유저 스토리
+Missing Slots:
+- audience
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 변환할 요구사항 또는 기능 설명을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 신규 사용자가 결제 전 무료 체험 한도를 확인하고 업그레이드할 수 있어야 함
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+신규 사용자가 결제 전 무료 체험 한도를 확인하고 업그레이드할 수 있어야 함
+```
+Compiled Prompt:
+```text
+# 작업
+요구사항을 유저 스토리로 정리한다. 원문 요청 "신규 기능 요구사항을 유저 스토리로 바꿔줘"의 의도를 보존한다. 목표는 "유저 스토리"이다.
+
+# 확인된 정보
+- 원문 요청: "신규 기능 요구사항을 유저 스토리로 바꿔줘"
+- 목표: 유저 스토리
+- 1줄 맥락: 신규 사용자가 결제 전 무료 체험 한도를 확인하고 업그레이드할 수 있어야 함
+- 출력 형식: 유저 스토리
+
+# 출력 형식
+선택된 출력 형식: 유저 스토리
+- 사용자 유형, 니즈, 목표 행동, 수용 기준을 구분한다.
+- 개발/디자인이 바로 논의할 수 있는 단위로 작성한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 72. pm sprint priority
+Draft:
+```text
+다음 스프린트 우선순위 정리해줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `email_pm`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.decide`
+- expectedDomain: `product_planning`
+- expectedArtifactType: `pm_sprint_priority`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.decide`
+- domain: `product_planning`
+- domainConfidence: `0.86`
+- artifactType: `pm_sprint_priority`
+- needsContextLine: `true`
+Filled Slots:
+- output_format: 스프린트 우선순위
+- goal: 스프린트 우선순위
+Missing Slots:
+- decision_criteria
+- criteria
+- timeframe
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 이번 스프린트 후보 작업과 제약을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 결제 오류 수정, 온보딩 개선, 관리자 통계 화면 중 2주 내 완료할 항목 결정
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+결제 오류 수정, 온보딩 개선, 관리자 통계 화면 중 2주 안에 끝낼 항목을 정해야 함
+```
+Compiled Prompt:
+```text
+# 작업
+스프린트 우선순위를 정리한다. 원문 요청 "다음 스프린트 우선순위 정리해줘"의 의도를 보존한다. 목표는 "스프린트 우선순위"이다.
+
+# 확인된 정보
+- 원문 요청: "다음 스프린트 우선순위 정리해줘"
+- 목표: 스프린트 우선순위
+- 1줄 맥락: 결제 오류 수정, 온보딩 개선, 관리자 통계 화면 중 2주 안에 끝낼 항목을 정해야 함
+- 출력 형식: 스프린트 우선순위
+
+# 출력 형식
+선택된 출력 형식: 스프린트 우선순위
+- 우선순위 목록, 판단 기준, 리스크, 이번 스프린트 목표를 구분한다.
+- 왜 먼저 해야 하는지와 보류할 항목을 함께 제시한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 73. pm feedback synthesis
+Draft:
+```text
+베타 테스트 피드백을 어떻게 정리할지 알려줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `email_pm`
+- clarificationMode: `multiple_choice`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.analyze`
+- expectedDomain: `product_planning`
+- expectedArtifactType: `pm_feedback_synthesis`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.analyze`
+- domain: `product_planning`
+- domainConfidence: `0.86`
+- artifactType: `pm_feedback_synthesis`
+- needsContextLine: `false`
+Filled Slots:
+- pm_feedback_source: 베타 테스트
+- output_format: 피드백 정리
+- goal: 피드백 정리
+Missing Slots:
+- analysis_target
+- criteria
+- depth
+- assumptions_policy
+Suggested Slots:
+- pm_output_format
+Questions:
+### Q1. 어떤 형식으로 정리할까요?
+
+- 인사이트 요약
+- 우선순위 목록
+- 문제/요구사항 매핑
+- 액션아이템 포함
+- 추천해줘
+Assumed Answers:
+- pm_output_format: 인사이트 요약
+Context Line:
+_Not used for this case._
+Compiled Prompt:
+```text
+# 작업
+제품 피드백을 정리한다. 원문 요청 "베타 테스트 피드백을 어떻게 정리할지 알려줘"의 의도를 보존한다. 목표는 "피드백 정리"이다.
+
+# 확인된 정보
+- 원문 요청: "베타 테스트 피드백을 어떻게 정리할지 알려줘"
+- 목표: 피드백 정리
+- PM 출력 형식: 인사이트 요약
+- 피드백 출처: 베타 테스트
+- 출력 형식: 피드백 정리
+
+# 출력 형식
+선택된 출력 형식: 피드백 정리
+PM 출력 형식: 인사이트 요약
+피드백 출처: 베타 테스트
+- 인사이트 요약 형식을 우선 반영한다.
+- 피드백 주제, 반복 패턴, 사용자 pain point, 우선순위, 액션아이템을 구분한다.
+- 원문에 없는 사실은 가정으로 표시하고 확인 필요를 분리한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 74. pm metrics dashboard
+Draft:
+```text
+제품 지표 대시보드에 넣을 항목 추천해줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `email_pm`
+- clarificationMode: `multiple_choice`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.analyze`
+- expectedDomain: `product_planning`
+- expectedArtifactType: `pm_metrics_dashboard`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.analyze`
+- domain: `product_planning`
+- domainConfidence: `0.86`
+- artifactType: `pm_metrics_dashboard`
+- needsContextLine: `false`
+Filled Slots:
+- output_format: 제품 지표 대시보드 항목
+- goal: 제품 지표 대시보드 항목
+Missing Slots:
+- analysis_target
+- criteria
+- depth
+- assumptions_policy
+Suggested Slots:
+- pm_metric_goal
+- pm_output_format
+Questions:
+### Q1. 지표를 보는 목적은?
+
+- 제품 활성화 파악
+- 전환/퍼널 개선
+- 리텐션 추적
+- 운영 상태 점검
+- 추천해줘
+
+### Q2. 어떤 형식으로 정리할까요?
+
+- 지표 목록
+- 대시보드 섹션
+- 정의와 계산식 포함
+- 우선순위 포함
+- 추천해줘
+Assumed Answers:
+- pm_metric_goal: 제품 활성화 파악
+- pm_output_format: 정의와 계산식 포함
+Context Line:
+_Not used for this case._
+Compiled Prompt:
+```text
+# 작업
+제품 지표 대시보드 항목을 추천한다. 원문 요청 "제품 지표 대시보드에 넣을 항목 추천해줘"의 의도를 보존한다. 목표는 "제품 지표 대시보드 항목"이다.
+
+# 확인된 정보
+- 원문 요청: "제품 지표 대시보드에 넣을 항목 추천해줘"
+- 목표: 제품 지표 대시보드 항목
+- PM 출력 형식: 정의와 계산식 포함
+- 지표 목적: 제품 활성화 파악
+- 출력 형식: 제품 지표 대시보드 항목
+
+# 출력 형식
+선택된 출력 형식: 제품 지표 대시보드 항목
+PM 출력 형식: 정의와 계산식 포함
+지표 목적: 제품 활성화 파악
+- 정의와 계산식 포함 형식을 우선 반영한다.
+- 지표 후보, 목적, 정의/계산식, 사용 의사결정, 우선순위를 구분한다.
+- 보기 좋은 지표보다 실제 판단에 쓰이는 지표를 우선한다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
+```
+Human Review:
+- 명확성 1~5:
+- 사용자 의도 반영 1~5:
+- 실행 가능성 1~5:
+- 과도하게 장황한가 1~5:
+- ChatGPT에 넣고 싶은가 1~5:
+- 수정 메모:
+---
+
+## Case 75. pm executive status report
+Draft:
+```text
+임원 보고용 프로젝트 현황 정리해줘
+```
+Expected:
+- caseSource: `candidate`
+- domainPack: `email_pm`
+- clarificationMode: `context_line`
+- shouldShowClarify: `true`
+- expectedTaskType: `brief.write`
+- expectedDomain: `generic`
+- expectedArtifactType: `pm_status_report`
+Actual:
+- shouldShowClarify: `true`
+- taskType: `brief.write`
+- domain: `product_planning`
+- domainConfidence: `0.86`
+- artifactType: `pm_status_report`
+- needsContextLine: `true`
+Filled Slots:
+- audience: 임원
+- pm_report_audience: 임원/리더십
+- output_format: 프로젝트 현황 보고
+- goal: 프로젝트 현황 보고
+Missing Slots:
+- tone
+- scope
+- style
+- constraints
+Suggested Slots:
+- context_line
+Questions:
+### Q1. 프로젝트 상태, 이슈, 보고 대상을 한 줄로 알려주세요.
+
+- inputType: `context_line`
+- placeholder: 예: 결제 리뉴얼 프로젝트가 2주 지연되어 리스크와 의사결정 필요
+Assumed Answers:
+_No assumed answers._
+Context Line:
+```text
+결제 리뉴얼 프로젝트가 2주 지연됐고 리스크와 다음 의사결정이 필요
+```
+Compiled Prompt:
+```text
+# 작업
+프로젝트 현황 보고를 작성한다. 원문 요청 "임원 보고용 프로젝트 현황 정리해줘"의 의도를 보존한다. 목표는 "프로젝트 현황 보고"이다.
+
+# 확인된 정보
+- 원문 요청: "임원 보고용 프로젝트 현황 정리해줘"
+- 목표: 프로젝트 현황 보고
+- 대상: 임원
+- 1줄 맥락: 결제 리뉴얼 프로젝트가 2주 지연됐고 리스크와 다음 의사결정이 필요
+- 보고 대상: 임원/리더십
+- 출력 형식: 프로젝트 현황 보고
+
+# 출력 형식
+선택된 출력 형식: 프로젝트 현황 보고
+보고 대상: 임원/리더십
+- 진행 상황, 리스크/이슈, 지표, 필요한 의사결정, 다음 액션을 구분한다.
+- 보고 대상이 바로 판단할 수 있게 요점을 앞에 둔다.
+
+# 주의할 점
+- 모르는 정보는 가정으로 표시한다.
+- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
+- 선택한 조건을 우선 반영한다.
+- 바로 사용할 수 있는 형태로 작성한다.
 ```
 Human Review:
 - 명확성 1~5:

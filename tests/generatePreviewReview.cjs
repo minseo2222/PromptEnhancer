@@ -113,7 +113,8 @@ function buildReviewCase(caseItem) {
   const questions = window.CBSRuleEngine.planQuestions(intent);
   const answers = shouldShowClarify ? assumedAnswersFor(questions, caseItem.draft, taskType, domain, caseItem.sampleAnswers) : {};
   const contextLine = shouldShowClarify ? contextLineFor(caseItem, intent) : "";
-  const compiledPrompt = shouldShowClarify
+  const isContextLinePending = shouldShowClarify && intent.needsContextLine && !contextLine;
+  const compiledPrompt = shouldShowClarify && !isContextLinePending
     ? window.CBSBriefCompiler.compileBrief({
         draft: caseItem.draft,
         domain,
@@ -143,6 +144,7 @@ function buildReviewCase(caseItem) {
     questions: shouldShowClarify ? questions : [],
     answers,
     contextLine,
+    isContextLinePending,
     compiledPrompt,
     promptLength: compiledPrompt.length
   };
@@ -165,7 +167,11 @@ function renderCase(caseItem, index) {
       : caseItem.shouldShowClarifyActual
         ? "_Not used for this case._"
         : "Skipped in runtime.";
-  const promptText = caseItem.shouldShowClarifyActual ? fenced(caseItem.compiledPrompt) : "Skipped in runtime.";
+  const promptText = caseItem.isContextLinePending
+    ? "Skipped until the user enters the one-line context."
+    : caseItem.shouldShowClarifyActual
+      ? fenced(caseItem.compiledPrompt)
+      : "Skipped in runtime.";
   const expectedTaskType = caseItem.expectedTaskType || (caseItem.expectedTaskTypes || []).join(" or ") || "not specified";
 
   return [

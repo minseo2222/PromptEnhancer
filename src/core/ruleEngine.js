@@ -96,6 +96,13 @@
     "follow_up_email",
     "objections_analysis",
     "sales_collateral",
+    "approval_request_email",
+    "schedule_change_email",
+    "apology_email",
+    "email_followup",
+    "pm_status_report",
+    "pm_user_story",
+    "pm_sprint_priority",
     "refund_reply",
     "outage_notice",
     "churn_save_reply",
@@ -237,6 +244,33 @@
     );
   }
 
+  function hasEmailWriteSignal(text) {
+    return (
+      includesAny(text, ["메일", "이메일", "email"]) &&
+      includesAny(text, ["써줘", "작성", "초안", "보내", "보내야", "작성해줘", "정리해줘"])
+    );
+  }
+
+  function hasSalesEmailSignal(text) {
+    return includesAny(text, ["영업", "세일즈", "콜드", "리드", "데모", "제안서", "계약", "가격 협상"]);
+  }
+
+  function hasPmSignal(text) {
+    return includesAny(text, [
+      "유저 스토리",
+      "사용자 스토리",
+      "user story",
+      "스프린트",
+      "요구사항",
+      "제품 지표",
+      "대시보드",
+      "베타 테스트",
+      "피드백",
+      "프로젝트 현황",
+      "현황 보고"
+    ]);
+  }
+
   function classifyArtifactType(draft) {
     const text = normalizeDraft(draft).toLowerCase();
     const hasCustomerContext = includesAny(text, ["고객", "사용자", "유저", "cs", "상담", "지원", "문의", "vip", "중요 고객"]);
@@ -293,6 +327,52 @@
 
     if (includesAny(text, ["영업 후속 메일", "후속 메일", "follow-up"])) {
       return "follow_up_email";
+    }
+
+    if (hasEmailWriteSignal(text) && !hasSalesEmailSignal(text)) {
+      if (includesAny(text, ["승인", "검토", "결재"]) && includesAny(text, ["요청", "보내", "메일"])) {
+        return "approval_request_email";
+      }
+
+      if (includesAny(text, ["일정", "미팅", "회의"]) && includesAny(text, ["변경", "조율", "연기", "미루", "재조정"])) {
+        return "schedule_change_email";
+      }
+
+      if (includesAny(text, ["사과", "죄송", "양해"])) {
+        return "apology_email";
+      }
+
+      if (includesAny(text, ["팔로업", "후속", "follow up", "follow-up"])) {
+        return "email_followup";
+      }
+
+      return "email_draft";
+    }
+
+    if (hasPmSignal(text)) {
+      if (includesAny(text, ["유저 스토리", "사용자 스토리", "user story"])) {
+        return "pm_user_story";
+      }
+
+      if (text.includes("스프린트") && includesAny(text, ["우선순위", "정리", "계획", "할 일"])) {
+        return "pm_sprint_priority";
+      }
+
+      if (includesAny(text, ["요구사항", "스펙"]) && includesAny(text, ["기능", "제품", "정리", "문서", "바꿔"])) {
+        return "pm_requirements_brief";
+      }
+
+      if (includesAny(text, ["프로젝트 현황", "현황 보고"]) || (text.includes("보고") && includesAny(text, ["프로젝트", "임원", "리더십"]))) {
+        return "pm_status_report";
+      }
+
+      if (text.includes("피드백") && includesAny(text, ["베타", "테스트", "사용자", "고객", "정리", "인사이트"])) {
+        return "pm_feedback_synthesis";
+      }
+
+      if (includesAny(text, ["제품 지표", "지표 대시보드", "대시보드", "kpi"]) && includesAny(text, ["제품", "서비스", "항목", "추천"])) {
+        return "pm_metrics_dashboard";
+      }
     }
 
     if (includesAny(text, ["데모 미팅 아젠다", "데모 아젠다", "데모 미팅"])) {
@@ -451,8 +531,33 @@
   function getDomainAnalysis(draft, taskTypeOverride) {
     const text = normalizeDraft(draft).toLowerCase();
     const taskType = taskTypeOverride || classifyTaskType(draft);
+    const artifactType = classifyArtifactType(draft);
     const domainSignals = window.CBSTemplates.DOMAIN_KEYWORD_SIGNALS || {};
     const scores = {};
+
+    if (
+      [
+        "email_draft",
+        "approval_request_email",
+        "schedule_change_email",
+        "apology_email",
+        "email_followup"
+      ].includes(artifactType)
+    ) {
+      return {
+        domain: "writing_email",
+        domainConfidence: 0.86,
+        domainScores: { writing_email: 3 }
+      };
+    }
+
+    if (artifactType && artifactType.startsWith("pm_")) {
+      return {
+        domain: "product_planning",
+        domainConfidence: 0.86,
+        domainScores: { product_planning: 3 }
+      };
+    }
 
     Object.entries(domainSignals).forEach(([domain, signals]) => {
       scores[domain] = scoreDomainSignals(text, domain, signals, taskType);
@@ -564,6 +669,15 @@
     }
 
     if (
+      artifactType === "email_draft" &&
+      ((includesAny(text, ["투자자", "임원", "대표"]) && includesAny(text, ["업데이트", "현황", "보고"])) ||
+        text.includes("가격 인상") ||
+        (includesAny(text, ["자료", "정보"]) && includesAny(text, ["요청", "부탁"])))
+    ) {
+      return true;
+    }
+
+    if (
       artifactType === "proposal_outline" &&
       text.includes("고객") &&
       !includesAny(text, ["목차", "구조", "구성", "제휴"])
@@ -575,6 +689,22 @@
   }
 
   function getContextLineLabel(intent) {
+    const draftText = intent && intent.draft ? intent.draft.toLowerCase() : "";
+
+    if (intent.artifactType === "email_draft") {
+      if (draftText.includes("가격 인상")) {
+        return "가격 인상 내용, 적용 시점, 고객 액션을 한 줄로 알려주세요.";
+      }
+
+      if (includesAny(draftText, ["자료", "정보"]) && includesAny(draftText, ["요청", "부탁"])) {
+        return "요청할 자료, 필요한 이유, 기한을 한 줄로 알려주세요.";
+      }
+
+      if (includesAny(draftText, ["투자자", "임원", "대표"]) && includesAny(draftText, ["업데이트", "현황", "보고"])) {
+        return "공유할 성과, 리스크, 다음 계획을 한 줄로 알려주세요.";
+      }
+    }
+
     const labels = {
       sales_script: "제품, 대상 고객, 콜 목적을 한 줄로 알려주세요.",
       cold_email: "제품/오퍼와 대상 고객을 한 줄로 알려주세요.",
@@ -587,6 +717,14 @@
       churn_save_reply: "해지 사유, 고객 상태, 제안 가능한 대안을 한 줄로 알려주세요.",
       customer_success_checkin: "고객 상태, 사용 맥락, 체크인 목적을 한 줄로 알려주세요.",
       support_faq: "원본 문의 목록이나 FAQ로 만들 범위를 한 줄로 알려주세요.",
+      email_draft: "메일에 들어갈 핵심 상황, 요청 내용, 기한을 한 줄로 알려주세요.",
+      approval_request_email: "승인받을 대상과 필요한 결정을 한 줄로 알려주세요.",
+      schedule_change_email: "변경 전후 일정과 상대에게 요청할 내용을 한 줄로 알려주세요.",
+      apology_email: "사과해야 하는 상황과 원하는 회복 방향을 한 줄로 알려주세요.",
+      email_followup: "회의 요약, 결정 사항, 원하는 다음 액션을 한 줄로 알려주세요.",
+      pm_user_story: "변환할 요구사항 또는 기능 설명을 한 줄로 알려주세요.",
+      pm_sprint_priority: "이번 스프린트 후보 작업과 제약을 한 줄로 알려주세요.",
+      pm_status_report: "프로젝트 상태, 이슈, 보고 대상을 한 줄로 알려주세요.",
       onboarding_doc: "제품/서비스와 온보딩 목표를 한 줄로 알려주세요."
     };
 
@@ -594,6 +732,22 @@
   }
 
   function getContextLinePlaceholder(intent) {
+    const draftText = intent && intent.draft ? intent.draft.toLowerCase() : "";
+
+    if (intent.artifactType === "email_draft") {
+      if (draftText.includes("가격 인상")) {
+        return "예: Pro 요금 7월 1일부터 15% 인상, 기존 고객은 30일 전 안내와 FAQ 링크 제공";
+      }
+
+      if (includesAny(draftText, ["자료", "정보"]) && includesAny(draftText, ["요청", "부탁"])) {
+        return "예: 다음 주 월요일까지 3월 매출 자료를 받아 보고서에 반영해야 함";
+      }
+
+      if (includesAny(draftText, ["투자자", "임원", "대표"]) && includesAny(draftText, ["업데이트", "현황", "보고"])) {
+        return "예: 4월 MRR 12% 성장, 이탈률 상승 리스크, 다음 달 엔터프라이즈 출시 예정";
+      }
+    }
+
     const placeholders = {
       sales_script: "예: SMB 대표에게 재고관리 SaaS 데모 미팅을 잡기 위한 첫 콜",
       cold_email: "예: HR팀장에게 채용 자동화 툴 데모를 제안하는 첫 메일",
@@ -606,6 +760,14 @@
       churn_save_reply: "예: 가격 부담으로 해지 고민, 월간 플랜 할인은 불가하고 사용법 지원 가능",
       customer_success_checkin: "예: 도입 2주차 고객, 기능 사용률 낮음, 활성화 지원 목적",
       support_faq: "예: 환불, 로그인 오류, 결제수단 변경 문의가 반복됨",
+      email_draft: "예: 투자자에게 4월 지표, 리스크, 다음 마일스톤을 공유",
+      approval_request_email: "예: 다음 분기 채용 예산 500만원 승인을 대표에게 요청",
+      schedule_change_email: "예: 파트너 미팅을 내부 일정 때문에 목요일 오후로 변경 요청",
+      apology_email: "예: 자료 전달이 하루 늦어졌고 재발 방지 계획을 짧게 포함",
+      email_followup: "예: 오늘 킥오프에서 일정과 담당자를 정했고 금요일까지 초안 공유 요청",
+      pm_user_story: "예: 신규 사용자가 결제 전 무료 체험 한도를 확인하고 업그레이드할 수 있어야 함",
+      pm_sprint_priority: "예: 결제 오류 수정, 온보딩 개선, 관리자 통계 화면 중 2주 내 완료할 항목 결정",
+      pm_status_report: "예: 결제 리뉴얼 프로젝트가 2주 지연되어 리스크와 의사결정 필요",
       onboarding_doc: "예: 신규 고객이 첫 주 안에 결제 연동과 팀 초대를 완료하게 하기"
     };
 
@@ -636,6 +798,10 @@
 
     if (signals.audienceHints.length) {
       filled.audience = signals.audienceHints[0];
+    }
+
+    if (text.includes("파트너사")) {
+      filled.audience = "파트너사";
     }
 
     if (signals.toneHints.length) {
@@ -720,6 +886,45 @@
 
     if (artifactType === "complaint_reply" && includesAny(text, ["배송 지연", "일정 지연", "delivery delay"])) {
       filled.artifact_topic = "배송/일정 지연";
+    }
+
+    if (artifactType === "email_draft") {
+      if (includesAny(text, ["자료", "정보"]) && includesAny(text, ["요청", "부탁"])) {
+        filled.email_purpose = "자료/정보 요청";
+      } else if (includesAny(text, ["안내", "공유", "업데이트"])) {
+        filled.email_purpose = "안내/공유";
+      }
+    }
+
+    if (artifactType === "approval_request_email") {
+      if (includesAny(text, ["예산", "비용"])) filled.approval_target = "예산/비용 승인";
+      if (includesAny(text, ["자료", "문서"])) filled.approval_target = "자료/문서 승인";
+      if (includesAny(text, ["계획", "일정"])) filled.approval_target = "일정/계획 승인";
+    }
+
+    if (artifactType === "schedule_change_email") {
+      if (includesAny(text, ["회의", "미팅"])) filled.schedule_change_context = "회의/미팅 일정 변경";
+      if (includesAny(text, ["프로젝트", "마감"])) filled.schedule_change_context = text.includes("마감") ? "마감일 조정" : "프로젝트 일정 변경";
+    }
+
+    if (artifactType === "apology_email") {
+      if (includesAny(text, ["지연", "늦"])) filled.apology_context = "일정/응대 지연";
+      if (includesAny(text, ["실수", "누락"])) filled.apology_context = "실수 또는 누락";
+      if (includesAny(text, ["서비스", "품질"])) filled.apology_context = "서비스/품질 문제";
+    }
+
+    if (artifactType === "pm_status_report") {
+      if (includesAny(text, ["임원", "대표", "리더십"])) filled.pm_report_audience = "임원/리더십";
+      if (includesAny(text, ["리스크", "이슈", "지연"])) filled.pm_report_focus = "리스크/이슈";
+    }
+
+    if (artifactType === "email_followup") {
+      if (includesAny(text, ["회의 후", "미팅 후"])) filled.previous_touchpoint = "회의/미팅 이후";
+      if (text.includes("자료")) filled.previous_touchpoint = "자료 공유 이후";
+    }
+
+    if (artifactType === "pm_feedback_synthesis" && text.includes("베타")) {
+      filled.pm_feedback_source = "베타 테스트";
     }
 
     if (text.includes("다음 달") || text.includes("한 달") || text.includes("4주")) {
@@ -1127,6 +1332,106 @@
         if (includesAny(draftText, ["환불", "돈을 돌려", "돌려달", "결제 취소", "refund", "reembolso"])) candidates.push("환불 가능/불가 기준");
         if (includesAny(draftText, ["정책", "예외"])) candidates.push("예외/승인 절차");
         if (includesAny(draftText, ["응대", "cs"])) candidates.push("상황별 응대 스크립트");
+      }
+
+      if (question.slot === "email_purpose") {
+        if (includesAny(draftText, ["자료", "정보"]) && includesAny(draftText, ["요청", "부탁"])) candidates.push("자료/정보 요청");
+        if (includesAny(draftText, ["안내", "공유", "업데이트"])) candidates.push("안내/공유");
+        if (includesAny(draftText, ["승인", "검토", "결재"])) candidates.push("승인/검토 요청");
+        if (includesAny(draftText, ["일정", "미팅", "회의"])) candidates.push("일정 조율");
+      }
+
+      if (question.slot === "email_tone") {
+        if (includesAny(draftText, ["대표", "임원", "파트너", "외부"])) candidates.push("격식 있게");
+        if (includesAny(draftText, ["사과", "죄송", "양해"])) candidates.push("정중하고 간결하게", "진심 있게 사과");
+        if (includesAny(draftText, ["승인", "검토", "근거"])) candidates.push("근거 중심으로");
+        if (includesAny(draftText, ["일정", "변경", "조율"])) candidates.push("양해를 구하는 톤");
+      }
+
+      if (question.slot === "approval_target") {
+        if (includesAny(draftText, ["예산", "비용"])) candidates.push("예산/비용 승인");
+        if (includesAny(draftText, ["자료", "문서"])) candidates.push("자료/문서 승인");
+        if (includesAny(draftText, ["계획", "일정"])) candidates.push("일정/계획 승인");
+        if (includesAny(draftText, ["검토", "결정"])) candidates.push("의사결정 검토");
+      }
+
+      if (question.slot === "schedule_change_context") {
+        if (includesAny(draftText, ["회의", "미팅"])) candidates.push("회의/미팅 일정 변경");
+        if (draftText.includes("프로젝트")) candidates.push("프로젝트 일정 변경");
+        if (draftText.includes("마감")) candidates.push("마감일 조정");
+        if (includesAny(draftText, ["행사", "운영"])) candidates.push("행사/운영 일정 변경");
+      }
+
+      if (question.slot === "apology_context") {
+        if (includesAny(draftText, ["지연", "늦"])) candidates.push("일정/응대 지연");
+        if (includesAny(draftText, ["실수", "누락"])) candidates.push("실수 또는 누락");
+        if (includesAny(draftText, ["서비스", "품질"])) candidates.push("서비스/품질 문제");
+      }
+
+      if (question.slot === "email_cta") {
+        if (includesAny(draftText, ["회의 후", "미팅 후"])) candidates.push("회의 내용/액션아이템 공유");
+        if (draftText.includes("답장")) candidates.push("답장 요청");
+        if (draftText.includes("자료")) candidates.push("자료 확인");
+        if (includesAny(draftText, ["일정", "미팅", "회의"])) candidates.push("일정 확정");
+        if (includesAny(draftText, ["승인", "결정"])) candidates.push("승인/결정 요청");
+      }
+
+      if (question.slot === "pm_user_type") {
+        if (includesAny(draftText, ["신규", "처음"])) candidates.push("신규 사용자");
+        if (includesAny(draftText, ["관리자", "운영"])) candidates.push("관리자/운영자");
+        if (includesAny(draftText, ["내부", "팀원"])) candidates.push("내부 팀원");
+      }
+
+      if (question.slot === "pm_story_scope") {
+        if (includesAny(draftText, ["수용 기준", "acceptance"])) candidates.push("수용 기준 포함");
+        if (includesAny(draftText, ["예외", "에러"])) candidates.push("예외 케이스 포함");
+        if (draftText.includes("우선순위")) candidates.push("우선순위 포함");
+      }
+
+      if (question.slot === "pm_priority_basis") {
+        if (draftText.includes("고객")) candidates.push("고객 영향");
+        if (includesAny(draftText, ["비즈니스", "매출", "성과"])) candidates.push("비즈니스 임팩트");
+        if (includesAny(draftText, ["리스크", "기술", "개발"])) candidates.push("개발 리스크");
+        if (draftText.includes("스프린트")) candidates.push("이번 스프린트 완료 가능성");
+      }
+
+      if (question.slot === "pm_output_format") {
+        if (draftText.includes("표")) candidates.push("RICE/ICE 표");
+        if (draftText.includes("스프린트")) candidates.push("스프린트 목표와 TODO");
+        if (includesAny(draftText, ["리스크", "이슈"])) candidates.push("리스크 포함");
+        if (includesAny(draftText, ["요구사항", "유저 스토리"])) candidates.push("유저 스토리 형식");
+      }
+
+      if (question.slot === "pm_requirement_scope") {
+        if (draftText.includes("문제")) candidates.push("문제 정의");
+        if (includesAny(draftText, ["사용자", "유저"])) candidates.push("사용자 시나리오");
+        if (includesAny(draftText, ["기능", "요구사항"])) candidates.push("기능 요구사항");
+      }
+
+      if (question.slot === "pm_report_audience") {
+        if (includesAny(draftText, ["임원", "대표", "리더십"])) candidates.push("임원/리더십");
+        if (draftText.includes("팀")) candidates.push("프로젝트 팀");
+        if (includesAny(draftText, ["이해관계자", "스테이크홀더"])) candidates.push("이해관계자");
+      }
+
+      if (question.slot === "pm_report_focus") {
+        if (includesAny(draftText, ["리스크", "이슈", "지연"])) candidates.push("리스크/이슈");
+        if (includesAny(draftText, ["성과", "지표"])) candidates.push("성과와 지표");
+        if (includesAny(draftText, ["결정", "의사결정"])) candidates.push("다음 의사결정");
+      }
+
+      if (question.slot === "pm_feedback_source") {
+        if (draftText.includes("베타")) candidates.push("베타 테스트");
+        if (draftText.includes("인터뷰")) candidates.push("사용자 인터뷰");
+        if (includesAny(draftText, ["문의", "불만", "고객"])) candidates.push("고객 문의/불만");
+        if (draftText.includes("내부")) candidates.push("내부 리뷰");
+      }
+
+      if (question.slot === "pm_metric_goal") {
+        if (includesAny(draftText, ["활성", "사용"])) candidates.push("제품 활성화 파악");
+        if (includesAny(draftText, ["전환", "퍼널"])) candidates.push("전환/퍼널 개선");
+        if (draftText.includes("리텐션")) candidates.push("리텐션 추적");
+        if (includesAny(draftText, ["운영", "상태"])) candidates.push("운영 상태 점검");
       }
     }
 
