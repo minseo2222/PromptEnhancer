@@ -271,7 +271,8 @@ function setupPlatform(platformId) {
   const hostByPlatform = {
     chatgpt: "chatgpt.com",
     claude: "claude.ai",
-    gemini: "gemini.google.com"
+    gemini: "gemini.google.com",
+    unsupported: "example.com"
   };
   const window = {
     document,
@@ -354,7 +355,7 @@ function setupPlatform(platformId) {
     composer.setAttribute("aria-label", "Message Claude");
     composer.textContent = draft;
     document.body.appendChild(composer);
-  } else {
+  } else if (platformId === "gemini") {
     const richTextArea = document.createElement("rich-textarea");
     composer = document.createElement("div");
     composer.setAttribute("contenteditable", "true");
@@ -363,6 +364,11 @@ function setupPlatform(platformId) {
     composer.textContent = draft;
     richTextArea.appendChild(composer);
     document.body.appendChild(richTextArea);
+  } else {
+    composer = document.createElement("textarea");
+    composer.id = "prompt-textarea";
+    composer.value = draft;
+    document.body.appendChild(composer);
   }
 
   for (const file of ["src/core/templates.js", "src/core/promptPatterns.js", "src/core/ruleEngine.js", "src/core/briefCompiler.js"]) {
@@ -410,10 +416,23 @@ async function testPlatform(platformId) {
   assert.strictEqual(window.CBSContent.getComposerText(composer), draft, `${platformId} undo should restore draft`);
 }
 
+async function testUnsupportedHost() {
+  const { document, composer, draft } = setupPlatform("unsupported");
+  await new Promise((resolve) => setTimeout(resolve, 20));
+
+  assert.strictEqual(window.CBSContent.getCurrentPlatform(), null, "unsupported host should not select a platform");
+  assert.strictEqual(window.CBSContent.findComposer(), null, "unsupported host should safely return no composer");
+
+  window.CBSContent.triggerClarifyFromShortcut();
+  assert.ok(!document.querySelector("#cbs-clarify-popover"), "unsupported host should not open a popover");
+  assert.strictEqual(window.CBSContent.getComposerText(composer), draft, "unsupported host should not alter draft text");
+}
+
 (async () => {
   for (const platformId of ["chatgpt", "claude", "gemini"]) {
     await testPlatform(platformId);
   }
+  await testUnsupportedHost();
   process.stdout.write("platform adapter DOM tests ok\n");
 })().catch((error) => {
   process.stderr.write(`${error.stack || error.message}\n`);

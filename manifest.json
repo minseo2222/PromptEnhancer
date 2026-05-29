@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Clarify Before Send",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Local-only prompt clarifier for ChatGPT, Claude, and Gemini drafts.",
   "permissions": ["storage"],
   "icons": {
