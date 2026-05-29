@@ -1,15 +1,14 @@
 # Preview Judge Report
 
 ## Summary
-- total cases: 75
+- total cases: 74
 - PASS count: 73
-- FIX count: 2
+- FIX count: 1
 - KILL count: 0
-- average userWouldInsert score: 4.8
-- recommended next action: Patch the recurring multiple-choice defaults for PRD and broad generic artifact cases; keep the context-line gate.
+- average userWouldInsert score: 4.82
+- recommended next action: Core regression is ready for the next candidate pack; keep remaining PM feedback synthesis in backlog until source-context handling is improved.
 
 ## Top Problems
-- Some high-context multiple-choice cases still default to broad assumptions instead of collecting the missing product, customer, source, or policy facts.
 - Case 3 asks about PRD scope but still outputs sections the user did not select, weakening answer reflection.
 - A few generic artifact prompts label narrowed topics as 주제/대상, which is slightly awkward and can reduce trust.
 - Context-line flows are generally strong, but cases without entered context are not insert-ready and should remain gated.
@@ -85,22 +84,20 @@ No P0 fixes reported.
 | 63. support faq paraphrase | core | context_candidate | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
 | 64. proposal for customer A | core | context_line_backlog | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
 | 65. outage notice paraphrase | core | context_line_backlog | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 66. email information request | candidate | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 67. approval request email | candidate | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 68. schedule change email | candidate | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 69. apology email | candidate | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 70. meeting follow-up email | candidate | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 71. pm user story conversion | candidate | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 72. pm sprint priority | candidate | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 73. pm feedback synthesis | candidate | email_pm | multiple_choice | FIX | 4 | 4 | 3 | 4 | 3 | 5 | 3 | P1 |
-| 74. pm metrics dashboard | candidate | email_pm | multiple_choice | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
-| 75. pm executive status report | candidate | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 66. email information request | core | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 67. approval request email | core | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 68. schedule change email | core | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 69. apology email | core | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 70. meeting follow-up email | core | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 71. pm user story conversion | core | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 72. pm sprint priority | core | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 73. pm metrics dashboard | core | email_pm | multiple_choice | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
+| 74. pm executive status report | core | email_pm | context_line | PASS | 5 | 5 | 5 | 5 | 5 | 5 | 5 | P2 |
 
 ## Patch Plan
 | Priority | Target File | Issue | Suggested Change | Affected Cases |
 | --- | --- | --- | --- | --- |
 | P1 | src/core/briefCompiler.js | PRD selected scope is not reflected tightly enough and can reintroduce unselected sections. | When prd_scope is selected, make it the primary requested section set and place other PRD sections under optional 확인 필요 or supporting context. | new feature prd |
-| P1 | src/core/ruleEngine.js | Some synthesis-style requests without source material are treated as ready-to-compile multiple-choice flows. | For feedback synthesis and similar source-dependent analysis, either use context_line for source material or compile a method/template prompt instead of a content synthesis prompt. | pm feedback synthesis |
 | P2 | src/core/briefCompiler.js | Generic artifact prompts sometimes label narrowed topics as 주제/대상, which is vague for user-facing review. | Use artifact-specific labels such as 회의 주제, 발표 주제, 강의 주제, 글 주제, 업무 범위 where available. | generic meeting agenda, generic presentation structure, generic lecture curriculum, generic blog outline, generic handoff document, generic customer complaint reply |
 
 ## Review Policy

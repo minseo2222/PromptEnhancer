@@ -1,6 +1,6 @@
 # Generality & Domain Audit
 
-생성 일시: 2026-05-29T06:12:23.633Z
+생성 일시: 2026-05-29T14:14:26.043Z
 
 이 문서는 측정 전용 리포트입니다. 제품 로직, core rule/compiler, runtime, governance 산출물은 변경하지 않습니다.
 

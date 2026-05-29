@@ -8,20 +8,20 @@
 
 ## Summary
 
-- total cases: 75
-- core cases: 65
-- candidate cases: 10
-- clarify true count: 63
+- total cases: 74
+- core cases: 74
+- candidate cases: 0
+- clarify true count: 62
 - clarify false count: 12
 - generic domain count: 45
 - context line count: 27
-- average questions per clarify case: 1.52
+- average questions per clarify case: 1.53
 - prompts over 1200 chars count: 0
 - prompts over 1600 chars count: 0
 
 ### TaskType Distribution
 
-- `brief.analyze`: 7
+- `brief.analyze`: 6
 - `brief.create`: 5
 - `brief.decide`: 5
 - `brief.extract`: 4
@@ -35,7 +35,7 @@
 - `generic`: 45
 - `marketing_strategy`: 4
 - `personal_prioritization`: 3
-- `product_planning`: 6
+- `product_planning`: 5
 - `research`: 3
 - `writing_email`: 14
 
@@ -45,7 +45,7 @@
 - `context_candidate`: 15
 - `context_line_backlog`: 2
 - `customer_support`: 8
-- `email_pm`: 10
+- `email_pm`: 9
 - `founder_strategy`: 3
 - `generic`: 13
 - `gtm_marketing`: 4
@@ -57,13 +57,12 @@
 ### Clarification Mode Distribution
 
 - `context_line`: 25
-- `multiple_choice`: 38
+- `multiple_choice`: 37
 - `suppress`: 12
 
 ### Case Source Distribution
 
-- `candidate`: 10
-- `core`: 65
+- `core`: 74
 
 ### ArtifactType Distribution
 
@@ -89,7 +88,6 @@
 - `objections_analysis`: 1
 - `onboarding_doc`: 2
 - `outage_notice`: 2
-- `pm_feedback_synthesis`: 1
 - `pm_metrics_dashboard`: 1
 - `pm_sprint_priority`: 1
 - `pm_status_report`: 1
@@ -5197,7 +5195,7 @@ Draft:
 팀원에게 자료 요청하는 메일 작성해줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `email_pm`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -5275,7 +5273,7 @@ Draft:
 대표님께 승인 요청 메일 보내야 해. 초안 좀
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `email_pm`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -5349,7 +5347,7 @@ Draft:
 파트너사에 일정 변경 메일 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `email_pm`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -5423,7 +5421,7 @@ Draft:
 고객에게 사과 메일 작성해줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `email_pm`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -5498,7 +5496,7 @@ Draft:
 회의 후 팔로업 메일 써줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `email_pm`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -5574,7 +5572,7 @@ Draft:
 신규 기능 요구사항을 유저 스토리로 바꿔줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `email_pm`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -5647,7 +5645,7 @@ Draft:
 다음 스프린트 우선순위 정리해줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `email_pm`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`
@@ -5712,91 +5710,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 73. pm feedback synthesis
-Draft:
-```text
-베타 테스트 피드백을 어떻게 정리할지 알려줘
-```
-Expected:
-- caseSource: `candidate`
-- domainPack: `email_pm`
-- clarificationMode: `multiple_choice`
-- shouldShowClarify: `true`
-- expectedTaskType: `brief.analyze`
-- expectedDomain: `product_planning`
-- expectedArtifactType: `pm_feedback_synthesis`
-Actual:
-- shouldShowClarify: `true`
-- taskType: `brief.analyze`
-- domain: `product_planning`
-- domainConfidence: `0.86`
-- artifactType: `pm_feedback_synthesis`
-- needsContextLine: `false`
-Filled Slots:
-- pm_feedback_source: 베타 테스트
-- output_format: 피드백 정리
-- goal: 피드백 정리
-Missing Slots:
-- analysis_target
-- criteria
-- depth
-- assumptions_policy
-Suggested Slots:
-- pm_output_format
-Questions:
-### Q1. 어떤 형식으로 정리할까요?
-
-- 인사이트 요약
-- 우선순위 목록
-- 문제/요구사항 매핑
-- 액션아이템 포함
-- 추천해줘
-Assumed Answers:
-- pm_output_format: 인사이트 요약
-Context Line:
-_Not used for this case._
-Compiled Prompt:
-```text
-# 작업
-제품 피드백을 정리한다. 원문 요청 "베타 테스트 피드백을 어떻게 정리할지 알려줘"의 의도를 보존한다. 목표는 "피드백 정리"이다.
-
-# 확인된 정보
-- 원문 요청: "베타 테스트 피드백을 어떻게 정리할지 알려줘"
-- 목표: 피드백 정리
-- PM 출력 형식: 인사이트 요약
-- 피드백 출처: 베타 테스트
-- 출력 형식: 피드백 정리
-
-# 출력 형식
-선택된 출력 형식: 피드백 정리
-PM 출력 형식: 인사이트 요약
-피드백 출처: 베타 테스트
-- 인사이트 요약 형식을 우선 반영한다.
-- 피드백 주제, 반복 패턴, 사용자 pain point, 우선순위, 액션아이템을 구분한다.
-- 원문에 없는 사실은 가정으로 표시하고 확인 필요를 분리한다.
-
-# 주의할 점
-- 모르는 정보는 가정으로 표시한다.
-- 주제, 대상, 역할처럼 원문에 없는 핵심 정보는 지어내지 말고 확인 질문으로 분리한다.
-- 선택한 조건을 우선 반영한다.
-- 바로 사용할 수 있는 형태로 작성한다.
-```
-Human Review:
-- 명확성 1~5:
-- 사용자 의도 반영 1~5:
-- 실행 가능성 1~5:
-- 과도하게 장황한가 1~5:
-- ChatGPT에 넣고 싶은가 1~5:
-- 수정 메모:
----
-
-## Case 74. pm metrics dashboard
+## Case 73. pm metrics dashboard
 Draft:
 ```text
 제품 지표 대시보드에 넣을 항목 추천해줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `email_pm`
 - clarificationMode: `multiple_choice`
 - shouldShowClarify: `true`
@@ -5877,13 +5797,13 @@ Human Review:
 - 수정 메모:
 ---
 
-## Case 75. pm executive status report
+## Case 74. pm executive status report
 Draft:
 ```text
 임원 보고용 프로젝트 현황 정리해줘
 ```
 Expected:
-- caseSource: `candidate`
+- caseSource: `core`
 - domainPack: `email_pm`
 - clarificationMode: `context_line`
 - shouldShowClarify: `true`

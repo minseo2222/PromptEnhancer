@@ -861,5 +861,214 @@ module.exports = [
     "backlogReason": "one-line context UX 필요",
     "originalDomainPack": "customer_support",
     "sampleContextLine": "예정 점검으로 23시부터 30분간 접속 불가, 완료 후 공지 예정"
+  },
+  {
+    "name": "email information request",
+    "draft": "팀원에게 자료 요청하는 메일 작성해줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "writing_email",
+    "expectedArtifactType": "email_draft",
+    "domainPack": "email_pm",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "sampleContextLine": "다음 주 월요일까지 3월 매출 자료를 받아 보고서에 반영해야 함",
+    "expectedIncludes": [
+      "메일",
+      "자료",
+      "요청"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "세일즈"
+    ],
+    "notes": "General email draft should ask purpose/tone without inheriting sales defaults."
+  },
+  {
+    "name": "approval request email",
+    "draft": "대표님께 승인 요청 메일 보내야 해. 초안 좀",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "writing_email",
+    "expectedArtifactType": "approval_request_email",
+    "domainPack": "email_pm",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "sampleContextLine": "다음 분기 채용 예산 500만원 승인을 요청하는 상황",
+    "expectedIncludes": [
+      "승인",
+      "메일",
+      "예산"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "콜드메일"
+    ],
+    "notes": "Approval target and context are essential, so one-line context should carry the specifics."
+  },
+  {
+    "name": "schedule change email",
+    "draft": "파트너사에 일정 변경 메일 써줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "writing_email",
+    "expectedArtifactType": "schedule_change_email",
+    "domainPack": "email_pm",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "sampleContextLine": "다음 주 미팅을 내부 일정 때문에 목요일 오후로 변경 요청",
+    "expectedIncludes": [
+      "일정",
+      "변경",
+      "메일"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "장애"
+    ],
+    "notes": "Schedule change email needs before/after context but should not become outage wording."
+  },
+  {
+    "name": "apology email",
+    "draft": "고객에게 사과 메일 작성해줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "writing_email",
+    "expectedArtifactType": "apology_email",
+    "domainPack": "email_pm",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "sampleContextLine": "자료 전달이 하루 늦어진 상황이며 재발 방지 계획을 짧게 포함",
+    "expectedIncludes": [
+      "사과",
+      "메일",
+      "재발 방지"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "가격 협상"
+    ],
+    "notes": "Apology email quality depends on the missing incident context."
+  },
+  {
+    "name": "meeting follow-up email",
+    "draft": "회의 후 팔로업 메일 써줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "writing_email",
+    "expectedArtifactType": "email_followup",
+    "domainPack": "email_pm",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "sampleContextLine": "오늘 킥오프에서 일정과 담당자를 정했고 금요일까지 초안 공유를 요청",
+    "expectedIncludes": [
+      "팔로업",
+      "메일",
+      "CTA"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "콜드메일"
+    ],
+    "notes": "Non-sales follow-up should stay generic email, not sales follow-up."
+  },
+  {
+    "name": "pm user story conversion",
+    "draft": "신규 기능 요구사항을 유저 스토리로 바꿔줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "product_planning",
+    "expectedArtifactType": "pm_user_story",
+    "domainPack": "email_pm",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "sampleContextLine": "신규 사용자가 결제 전 무료 체험 한도를 확인하고 업그레이드할 수 있어야 함",
+    "expectedIncludes": [
+      "유저 스토리",
+      "요구사항",
+      "수용 기준"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "메일 초안"
+    ],
+    "notes": "PM artifact should not be treated as simple text transform."
+  },
+  {
+    "name": "pm sprint priority",
+    "draft": "다음 스프린트 우선순위 정리해줘",
+    "expectedTaskType": "brief.decide",
+    "expectedDomain": "product_planning",
+    "expectedArtifactType": "pm_sprint_priority",
+    "domainPack": "email_pm",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "sampleContextLine": "결제 오류 수정, 온보딩 개선, 관리자 통계 화면 중 2주 안에 끝낼 항목을 정해야 함",
+    "expectedIncludes": [
+      "스프린트",
+      "우선순위",
+      "TODO"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "생산성 코치"
+    ],
+    "notes": "Sprint prioritization should ask PM criteria, not personal productivity defaults."
+  },
+  {
+    "name": "pm metrics dashboard",
+    "draft": "제품 지표 대시보드에 넣을 항목 추천해줘",
+    "expectedTaskType": "brief.analyze",
+    "expectedDomain": "product_planning",
+    "expectedArtifactType": "pm_metrics_dashboard",
+    "domainPack": "email_pm",
+    "clarificationMode": "multiple_choice",
+    "promotionGroup": "promotion_ready",
+    "expectedShouldShowClarify": true,
+    "sampleAnswers": {
+      "pm_metric_goal": "제품 활성화 파악",
+      "pm_output_format": "정의와 계산식 포함"
+    },
+    "expectedIncludes": [
+      "제품 지표",
+      "대시보드",
+      "계산식"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "메일 초안"
+    ],
+    "notes": "Metric recommendations should stay product-measurement focused."
+  },
+  {
+    "name": "pm executive status report",
+    "draft": "임원 보고용 프로젝트 현황 정리해줘",
+    "expectedTaskType": "brief.write",
+    "expectedDomain": "generic",
+    "expectedArtifactType": "pm_status_report",
+    "domainPack": "email_pm",
+    "clarificationMode": "context_line",
+    "promotionGroup": "needs_context",
+    "expectedShouldShowClarify": true,
+    "sampleContextLine": "결제 리뉴얼 프로젝트가 2주 지연됐고 리스크와 다음 의사결정이 필요",
+    "expectedIncludes": [
+      "프로젝트",
+      "현황",
+      "임원",
+      "리스크"
+    ],
+    "expectedExcludes": [
+      "신규 유저 획득",
+      "PRD",
+      "오늘 할 일"
+    ],
+    "notes": "Status report needs project facts; context_line should prevent invented status."
   }
+
 ];
