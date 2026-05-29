@@ -132,6 +132,10 @@
     }
 
     const compact = text.replace(/\s+/g, "");
+    if (hasDeliverableSummaryOrReviewSignal(text) || hasDeliverableWriteSignal(text)) {
+      return false;
+    }
+
     const simpleShortcuts = [
       "번역해줘",
       "번역해주세요",
@@ -186,6 +190,51 @@
     const isBareIdeaAnalysis = text.includes("내 아이디어") && text.includes("장단점") && text.length <= 24;
 
     return isBareAB || isBareIdeaAnalysis;
+  }
+
+  function hasSourceTextTransformSignal(text) {
+    const compact = text.replace(/\s+/g, "");
+    const sourceTextRefs = ["이문장", "이글", "이거", "이내용", "아래내용", "아래글", "이표"];
+    const transformActions = ["바꿔", "다듬", "정중하게", "번역", "맞춤법", "오탈자", "문법", "핵심만", "표로"];
+
+    return includesAny(compact, sourceTextRefs) && includesAny(compact, transformActions);
+  }
+
+  function hasDeliverableObjectSignal(text) {
+    return includesAny(text, [
+      "보고서",
+      "보고용",
+      "코멘트",
+      "현황",
+      "노트",
+      "릴리즈 노트",
+      "안내문",
+      "공지문",
+      "문서",
+      "피드백",
+      "계약서",
+      "리스크",
+      "처리방침",
+      "이용약관",
+      "체크리스트",
+      "자료"
+    ]);
+  }
+
+  function hasDeliverableSummaryOrReviewSignal(text) {
+    return (
+      includesAny(text, ["정리", "요약", "검토"]) &&
+      hasDeliverableObjectSignal(text) &&
+      !hasSourceTextTransformSignal(text)
+    );
+  }
+
+  function hasDeliverableWriteSignal(text) {
+    return (
+      includesAny(text, ["써줘", "작성", "초안", "만들어"]) &&
+      hasDeliverableObjectSignal(text) &&
+      !hasSourceTextTransformSignal(text)
+    );
   }
 
   function classifyArtifactType(draft) {
@@ -344,6 +393,18 @@
 
     if (hasPersonalPrioritizationSignal(text)) {
       return "brief.decide";
+    }
+
+    if (hasDeliverableWriteSignal(text)) {
+      return "brief.write";
+    }
+
+    if (hasDeliverableSummaryOrReviewSignal(text)) {
+      if (includesAny(text, ["검토", "리스크", "원인", "분석"])) {
+        return "brief.analyze";
+      }
+
+      return "brief.generic";
     }
 
     if (includesAny(text, ["요약", "핵심만", "표로", "변환"]) && !includesAny(text, ["전략", "계획", "분석"])) {
@@ -703,7 +764,7 @@
     }
 
     if (taskType === "brief.extract") {
-      return false;
+      return hasDeliverableSummaryOrReviewSignal(text) || hasDeliverableWriteSignal(text);
     }
 
     if (hasBareMissingObject(text)) {
@@ -711,6 +772,10 @@
     }
 
     if (normalized.length >= MIN_HIGH_INTENT_LENGTH && taskType !== "brief.generic") {
+      return true;
+    }
+
+    if (normalized.length >= MIN_HIGH_INTENT_LENGTH && (hasDeliverableSummaryOrReviewSignal(text) || hasDeliverableWriteSignal(text))) {
       return true;
     }
 

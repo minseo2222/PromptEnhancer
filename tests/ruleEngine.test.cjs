@@ -25,7 +25,21 @@ const falseCases = [
   "이 문장 번역해줘",
   "이거 요약해줘",
   "맞춤법 고쳐줘",
-  "안녕"
+  "안녕",
+  "이 문장 영업스럽게 바꿔줘",
+  "이 문장 고객에게 더 공감 있게 바꿔줘",
+  "이 문장 좀 더 정중하게 바꿔줘",
+  "논문 초록을 세 줄로 요약해줘"
+];
+
+const deliverableGateCases = [
+  "이번 분기 성과 리뷰 코멘트 정리해줘",
+  "베타 테스트 피드백을 어떻게 정리할지 알려줘",
+  "월별 손익 보고서 요약해줘",
+  "이 계약서 리스크 검토해줘",
+  "개인정보 처리방침 개정 안내문 써줘",
+  "임원 보고용 프로젝트 현황 정리해줘",
+  "보안 업데이트 릴리즈 노트 써줘"
 ];
 
 for (const draft of trueCases) {
@@ -37,6 +51,12 @@ for (const draft of trueCases) {
 for (const draft of falseCases) {
   if (window.CBSRuleEngine.shouldShowClarify(draft)) {
     throw new Error(`Expected simple draft to stay quiet: ${draft}`);
+  }
+}
+
+for (const draft of deliverableGateCases) {
+  if (!window.CBSRuleEngine.shouldShowClarify(draft)) {
+    throw new Error(`Expected deliverable request to show Clarify: ${draft}`);
   }
 }
 
